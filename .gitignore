@@ -1,0 +1,7 @@
+# CSV de datos — demasiado grande para GitHub (327 MB)
+data/sh_datos_40_2014_202603.csv
+
+# Sistema
+.DS_Store
+__pycache__/
+*.pyc
