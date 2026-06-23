@@ -19,7 +19,7 @@ import os
 BASE = os.path.dirname(os.path.abspath(__file__))
 FILE_INST  = os.path.join(os.path.dirname(BASE), 'data', 'cat_instituciones_40.csv')
 FILE_CONC  = os.path.join(os.path.dirname(BASE), 'data', 'cat_conceptos_40.csv')
-FILE_DATOS = os.path.join(os.path.dirname(BASE), 'data', 'sh_datos_40_2014_202603.csv')
+FILE_DATOS = os.path.join(os.path.dirname(BASE), 'data', 'sh_datos_40_2014_202604.csv')
 FILE_OUT   = os.path.join(os.path.dirname(BASE), 'docs', 'data', 'bancos_mx.json')
 
 # ── Conceptos a extraer ─────────────────────────────────────────────────────

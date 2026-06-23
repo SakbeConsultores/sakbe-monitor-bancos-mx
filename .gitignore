@@ -1,5 +1,10 @@
-# CSV de datos — demasiado grande para GitHub (327 MB)
-data/sh_datos_40_2014_202603.csv
+# CSV de datos del CNBV — demasiado grande para GitHub (>100 MB).
+# Patron generico: el nombre cambia cada mes (sh_datos_40_2014_YYYYMM.csv).
+data/sh_datos_*.csv
+
+# Respaldos automaticos del JSON
+docs/data/*.bak_*
+*.bak
 
 # Sistema
 .DS_Store
