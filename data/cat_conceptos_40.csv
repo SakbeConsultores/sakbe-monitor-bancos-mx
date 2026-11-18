@@ -3,305 +3,305 @@
 40,1,40100045,"Efectivo y equivalentes de efectivo",2,0,2
 40,1,40100046,"Caja",3,0,3
 40,1,40100047,"Bancos",3,0,4
-40,1,40100048,"Efectivo y equivalentes de efectivo restringidos o dados en garantÌa",3,0,5
+40,1,40100048,"Efectivo y equivalentes de efectivo restringidos o dados en garant√≠a",3,0,5
 40,1,40100049,"Divisas a recibir",4,0,6
 40,1,40100050,"Otros",3,0,7
 40,1,40100184,"Cuentas de margen (instrumentos financieros derivados)",2,0,8
 40,1,40100051,"Inversiones en instrumentos financieros",2,0,9
 40,1,40100054,"Instrumentos financieros negociables",3,0,10
-40,1,40100052,"Instrumentos financieros negociables sin restricciÛn",4,0,11
+40,1,40100052,"Instrumentos financieros negociables sin restricci√≥n",4,0,11
 40,1,40100055,"Instrumentos financieros para cobrar y vender",3,0,12
-40,1,40100053,"Instrumentos financieros para cobrar y vender sin restricciÛn",4,0,13
-40,1,40100056,"Instrumentos financieros para cobrar principal e interÈs (valores)(neto)",3,0,14
-40,1,40100057,"Instrumentos financieros para cobrar principal e interÈs (valores)",4,0,15
-40,1,40100058,"EstimaciÛn de pÈrdidas cred espera para inver. en instru. finan. para cobr prin e interÈs (valores)",4,0,16
+40,1,40100053,"Instrumentos financieros para cobrar y vender sin restricci√≥n",4,0,13
+40,1,40100056,"Instrumentos financieros para cobrar principal e inter√©s (valores)(neto)",3,0,14
+40,1,40100057,"Instrumentos financieros para cobrar principal e inter√©s (valores)",4,0,15
+40,1,40100058,"Estimaci√≥n de p√©rdidas cred espera para inver. en instru. finan. para cobr prin e inter√©s (valores)",4,0,16
 40,1,40100059,"Operaciones con instrumentos financieros y derivados",2,0,17
-40,1,40100185,"Cartera de crÈdito con riesgo de crÈdito",2,0,18
-40,1,40100186,"CrÈditos comerciales",3,0,19
+40,1,40100185,"Cartera de cr√©dito con riesgo de cr√©dito",2,0,18
+40,1,40100186,"Cr√©ditos comerciales",3,0,19
 40,1,40100187,"Actividad empresarial o comercial",4,0,20
 40,1,40100188,"Operaciones quirografarias",5,0,21
 40,1,40100189,"Operaciones prendarias",5,0,22
-40,1,40100190,"CrÈditos puente",5,0,23
-40,1,40100191,"Operaciones de factoraje financiero, descuento o cesiÛn de derechos de crÈdito",5,0,24
+40,1,40100190,"Cr√©ditos puente",5,0,23
+40,1,40100191,"Operaciones de factoraje financiero, descuento o cesi√≥n de derechos de cr√©dito",5,0,24
 40,1,40100192,"Operaciones de arrendamiento financiero",5,0,25
-40,1,40100193,"Operaciones con garantÌa hipotecaria",5,0,26
-40,1,40100194,"CrÈditos para proyectos de inversiÛn con fuente de pago propia",5,0,27
+40,1,40100193,"Operaciones con garant√≠a hipotecaria",5,0,26
+40,1,40100194,"Cr√©ditos para proyectos de inversi√≥n con fuente de pago propia",5,0,27
 40,1,40100195,"Otros",5,0,28
 40,1,40100196,"Entidades financieras",4,0,29
-40,1,40100197,"CrÈditos interbancarios",5,0,30
-40,1,40100198,"CrÈditos a entidades financieras no bancarias",5,0,31
+40,1,40100197,"Cr√©ditos interbancarios",5,0,30
+40,1,40100198,"Cr√©ditos a entidades financieras no bancarias",5,0,31
 40,1,40100199,"Otros",5,0,32
 40,1,40100200,"Entidades gubernamentales",4,0,33
-40,1,40100201,"CrÈditos al gobierno federal",5,0,34
-40,1,40100202,"CrÈditos a estados y municipios",5,0,35
-40,1,40100203,"CrÈditos a empresas productivas del estado",5,0,36
-40,1,40100204,"CrÈditos a organismos descentralizados o desconcentrados",5,0,37
+40,1,40100201,"Cr√©ditos al gobierno federal",5,0,34
+40,1,40100202,"Cr√©ditos a estados y municipios",5,0,35
+40,1,40100203,"Cr√©ditos a empresas productivas del estado",5,0,36
+40,1,40100204,"Cr√©ditos a organismos descentralizados o desconcentrados",5,0,37
 40,1,40100205,"Otros",5,0,38
-40,1,40100206,"CrÈditos de consumo",3,0,39
-40,1,40100207,"Tarjeta de crÈdito",4,0,40
+40,1,40100206,"Cr√©ditos de consumo",3,0,39
+40,1,40100207,"Tarjeta de cr√©dito",4,0,40
 40,1,40100208,"Consumo no revolvente",4,0,41
 40,1,40100209,"Personales",5,0,42
-40,1,40100210,"NÛmina",5,0,43
+40,1,40100210,"N√≥mina",5,0,43
 40,1,40100211,"ABCD",5,0,44
 40,1,40100212,"Automotriz",6,0,45
-40,1,40100213,"AdquisiciÛn de bienes muebles",6,0,46
+40,1,40100213,"Adquisici√≥n de bienes muebles",6,0,46
 40,1,40100214,"Operaciones de arrendamiento financiero",5,0,47
-40,1,40100215,"MicrocrÈditos",5,0,48
-40,1,40100216,"Otros crÈditos de consumo",5,0,49
-40,1,40100217,"CrÈditos a la vivienda",3,0,50
+40,1,40100215,"Microcr√©ditos",5,0,48
+40,1,40100216,"Otros cr√©ditos de consumo",5,0,49
+40,1,40100217,"Cr√©ditos a la vivienda",3,0,50
 40,1,40100218,"Media y residencia",4,0,51
-40,1,40100219,"De interÈs social",4,0,52
-40,1,40100220,"CrÈditos adquiridos al infonavit o el fovissste",4,0,53
-40,1,40100221,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la banca de desarrollo o fideicomisos p˙blicos",4,0,54
-40,1,40100222,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",4,0,55
+40,1,40100219,"De inter√©s social",4,0,52
+40,1,40100220,"Cr√©ditos adquiridos al infonavit o el fovissste",4,0,53
+40,1,40100221,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la banca de desarrollo o fideicomisos p√∫blicos",4,0,54
+40,1,40100222,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",4,0,55
 40,1,40100223,"Otros",4,0,56
-40,1,40100224,"Cartera de crÈdito con riesgo de crÈdito etapa 1 + 2",3,0,57
-40,1,40100225,"CrÈditos comerciales",4,0,58
+40,1,40100224,"Cartera de cr√©dito con riesgo de cr√©dito etapa 1 + 2",3,0,57
+40,1,40100225,"Cr√©ditos comerciales",4,0,58
 40,1,40100226,"Actividad empresarial o comercial",5,0,59
 40,1,40100227,"Operaciones quirografarias",6,0,60
 40,1,40100228,"Operaciones prendarias",6,0,61
-40,1,40100229,"CrÈditos puente",6,0,62
-40,1,40100230,"Operaciones de factoraje financiero, descuento o cesiÛn de derechos de crÈdito",6,0,63
+40,1,40100229,"Cr√©ditos puente",6,0,62
+40,1,40100230,"Operaciones de factoraje financiero, descuento o cesi√≥n de derechos de cr√©dito",6,0,63
 40,1,40100231,"Operaciones de arrendamiento financiero",6,0,64
-40,1,40100232,"Operaciones con garantÌa hipotecaria",6,0,65
-40,1,40100233,"CrÈditos para proyectos de inversiÛn con fuente de pago propia",6,0,66
+40,1,40100232,"Operaciones con garant√≠a hipotecaria",6,0,65
+40,1,40100233,"Cr√©ditos para proyectos de inversi√≥n con fuente de pago propia",6,0,66
 40,1,40100234,"Otros",6,0,67
 40,1,40100235,"Entidades financieras",5,0,68
-40,1,40100236,"CrÈditos interbancarios",6,0,69
-40,1,40100237,"CrÈditos a entidades financieras no bancarias",6,0,70
+40,1,40100236,"Cr√©ditos interbancarios",6,0,69
+40,1,40100237,"Cr√©ditos a entidades financieras no bancarias",6,0,70
 40,1,40100238,"Otros",6,0,71
 40,1,40100239,"Entidades gubernamentales",5,0,72
-40,1,40100240,"CrÈditos al gobierno federal",6,0,73
-40,1,40100241,"CrÈditos a estados y municipios",6,0,74
-40,1,40100242,"CrÈditos a empresas productivas del estado",6,0,75
-40,1,40100243,"CrÈditos a organismos descentralizados o desconcentrados",6,0,76
+40,1,40100240,"Cr√©ditos al gobierno federal",6,0,73
+40,1,40100241,"Cr√©ditos a estados y municipios",6,0,74
+40,1,40100242,"Cr√©ditos a empresas productivas del estado",6,0,75
+40,1,40100243,"Cr√©ditos a organismos descentralizados o desconcentrados",6,0,76
 40,1,40100244,"Otros",6,0,77
-40,1,40100245,"CrÈditos de consumo",4,0,78
-40,1,40100246,"Tarjeta de crÈdito",5,0,79
+40,1,40100245,"Cr√©ditos de consumo",4,0,78
+40,1,40100246,"Tarjeta de cr√©dito",5,0,79
 40,1,40100247,"Consumo no revolvente",5,0,80
 40,1,40100248,"Personales",6,0,81
-40,1,40100249,"NÛmina",6,0,82
+40,1,40100249,"N√≥mina",6,0,82
 40,1,40100250,"ABCD",6,0,83
 40,1,40100251,"Automotriz",7,0,84
-40,1,40100252,"AdquisiciÛn de bienes muebles",7,0,85
+40,1,40100252,"Adquisici√≥n de bienes muebles",7,0,85
 40,1,40100253,"Operaciones de arrendamiento financiero",6,0,86
-40,1,40100254,"MicrocrÈditos",6,0,87
-40,1,40100255,"Otros crÈditos de consumo",6,0,88
-40,1,40100256,"CrÈditos a la vivienda",4,0,89
+40,1,40100254,"Microcr√©ditos",6,0,87
+40,1,40100255,"Otros cr√©ditos de consumo",6,0,88
+40,1,40100256,"Cr√©ditos a la vivienda",4,0,89
 40,1,40100257,"Media y residencia",5,0,90
-40,1,40100258,"De interÈs social",5,0,91
-40,1,40100259,"CrÈditos adquiridos al infonavit o el fovissste",5,0,92
-40,1,40100260,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la bd o fideicomisos p˙blicos",5,0,93
-40,1,40100261,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",5,0,94
+40,1,40100258,"De inter√©s social",5,0,91
+40,1,40100259,"Cr√©ditos adquiridos al infonavit o el fovissste",5,0,92
+40,1,40100260,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la bd o fideicomisos p√∫blicos",5,0,93
+40,1,40100261,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",5,0,94
 40,1,40100262,"Otros",5,0,95
-40,1,40100263,"Cartera de crÈdito con riesgo de crÈdito etapa 1",4,0,96
-40,1,40100264,"CrÈditos comerciales",5,0,97
+40,1,40100263,"Cartera de cr√©dito con riesgo de cr√©dito etapa 1",4,0,96
+40,1,40100264,"Cr√©ditos comerciales",5,0,97
 40,1,40100265,"Actividad empresarial o comercial",6,0,98
 40,1,40100266,"Operaciones quirografarias",7,0,99
 40,1,40100267,"Operaciones prendarias",7,0,100
-40,1,40100268,"CrÈditos puente",7,0,101
-40,1,40100269,"Operaciones de factoraje financiero, descuento o cesiÛn de derechos de crÈdito",7,0,102
+40,1,40100268,"Cr√©ditos puente",7,0,101
+40,1,40100269,"Operaciones de factoraje financiero, descuento o cesi√≥n de derechos de cr√©dito",7,0,102
 40,1,40100270,"Operaciones de arrendamiento financiero",7,0,103
-40,1,40100271,"Operaciones con garantÌa hipotecaria",7,0,104
-40,1,40100272,"CrÈditos para proyectos de inversiÛn con fuente de pago propia",7,0,105
+40,1,40100271,"Operaciones con garant√≠a hipotecaria",7,0,104
+40,1,40100272,"Cr√©ditos para proyectos de inversi√≥n con fuente de pago propia",7,0,105
 40,1,40100273,"Otros",7,0,106
 40,1,40100274,"Entidades financieras",6,0,107
-40,1,40100275,"CrÈditos interbancarios",7,0,108
-40,1,40100276,"CrÈditos a entidades financieras no bancarias",7,0,109
+40,1,40100275,"Cr√©ditos interbancarios",7,0,108
+40,1,40100276,"Cr√©ditos a entidades financieras no bancarias",7,0,109
 40,1,40100277,"Otros",7,0,110
 40,1,40100278,"Entidades gubernamentales",6,0,111
-40,1,40100279,"CrÈditos al gobierno federal",7,0,112
-40,1,40100280,"CrÈditos a estados y municipios",7,0,113
-40,1,40100281,"CrÈditos a empresas productivas del estado",7,0,114
-40,1,40100282,"CrÈditos a organismos descentralizados o desconcentrados",7,0,115
+40,1,40100279,"Cr√©ditos al gobierno federal",7,0,112
+40,1,40100280,"Cr√©ditos a estados y municipios",7,0,113
+40,1,40100281,"Cr√©ditos a empresas productivas del estado",7,0,114
+40,1,40100282,"Cr√©ditos a organismos descentralizados o desconcentrados",7,0,115
 40,1,40100283,"Otros",7,0,116
-40,1,40100284,"CrÈditos de consumo",5,0,117
-40,1,40100285,"Tarjeta de crÈdito",6,0,118
+40,1,40100284,"Cr√©ditos de consumo",5,0,117
+40,1,40100285,"Tarjeta de cr√©dito",6,0,118
 40,1,40100286,"Consumo no revolvente",6,0,119
 40,1,40100287,"Personales",7,0,120
-40,1,40100288,"NÛmina",7,0,121
+40,1,40100288,"N√≥mina",7,0,121
 40,1,40100289,"ABCD",7,0,122
 40,1,40100290,"Automotriz",8,0,123
-40,1,40100291,"AdquisiciÛn de bienes muebles",8,0,124
+40,1,40100291,"Adquisici√≥n de bienes muebles",8,0,124
 40,1,40100292,"Operaciones de arrendamiento financiero",7,0,125
-40,1,40100293,"MicrocrÈditos",7,0,126
-40,1,40100294,"Otros crÈditos de consumo",7,0,127
-40,1,40100295,"CrÈditos a la vivienda",5,0,128
+40,1,40100293,"Microcr√©ditos",7,0,126
+40,1,40100294,"Otros cr√©ditos de consumo",7,0,127
+40,1,40100295,"Cr√©ditos a la vivienda",5,0,128
 40,1,40100296,"Media y residencia",6,0,129
-40,1,40100297,"De interÈs social",6,0,130
-40,1,40100298,"CrÈditos adquiridos al infonavit o el fovissste",6,0,131
-40,1,40100299,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la bd o fideicomisos p˙blicos",6,0,132
-40,1,40100300,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",6,0,133
+40,1,40100297,"De inter√©s social",6,0,130
+40,1,40100298,"Cr√©ditos adquiridos al infonavit o el fovissste",6,0,131
+40,1,40100299,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la bd o fideicomisos p√∫blicos",6,0,132
+40,1,40100300,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",6,0,133
 40,1,40100301,"Otros",6,0,134
-40,1,40100302,"Cartera de crÈdito con riesgo de crÈdito etapa 2",4,0,135
-40,1,40100303,"CrÈditos comerciales",5,0,136
+40,1,40100302,"Cartera de cr√©dito con riesgo de cr√©dito etapa 2",4,0,135
+40,1,40100303,"Cr√©ditos comerciales",5,0,136
 40,1,40100304,"Actividad empresarial o comercial",6,0,137
 40,1,40100305,"Operaciones quirografarias",7,0,138
 40,1,40100306,"Operaciones prendarias",7,0,139
-40,1,40100307,"CrÈditos puente",7,0,140
-40,1,40100308,"Operaciones de factoraje financiero, descuento o cesiÛn de derechos de crÈdito",7,0,141
+40,1,40100307,"Cr√©ditos puente",7,0,140
+40,1,40100308,"Operaciones de factoraje financiero, descuento o cesi√≥n de derechos de cr√©dito",7,0,141
 40,1,40100309,"Operaciones de arrendamiento financiero",7,0,142
-40,1,40100310,"Operaciones con garantÌa hipotecaria",7,0,143
-40,1,40100311,"CrÈditos para proyectos de inversiÛn con fuente de pago propia",7,0,144
+40,1,40100310,"Operaciones con garant√≠a hipotecaria",7,0,143
+40,1,40100311,"Cr√©ditos para proyectos de inversi√≥n con fuente de pago propia",7,0,144
 40,1,40100312,"Otros",7,0,145
 40,1,40100313,"Entidades financieras",6,0,146
-40,1,40100314,"CrÈditos interbancarios",7,0,147
-40,1,40100315,"CrÈditos a entidades financieras no bancarias",7,0,148
+40,1,40100314,"Cr√©ditos interbancarios",7,0,147
+40,1,40100315,"Cr√©ditos a entidades financieras no bancarias",7,0,148
 40,1,40100316,"Otros",7,0,149
 40,1,40100317,"Entidades gubernamentales",6,0,150
-40,1,40100318,"CrÈditos al gobierno federal",7,0,151
-40,1,40100319,"CrÈditos a estados y municipios",7,0,152
-40,1,40100320,"CrÈditos a empresas productivas del estado",7,0,153
-40,1,40100321,"CrÈditos a organismos descentralizados o desconcentrados",7,0,154
+40,1,40100318,"Cr√©ditos al gobierno federal",7,0,151
+40,1,40100319,"Cr√©ditos a estados y municipios",7,0,152
+40,1,40100320,"Cr√©ditos a empresas productivas del estado",7,0,153
+40,1,40100321,"Cr√©ditos a organismos descentralizados o desconcentrados",7,0,154
 40,1,40100322,"Otros",7,0,155
-40,1,40100323,"CrÈditos de consumo",5,0,156
-40,1,40100324,"Tarjeta de crÈdito",6,0,157
+40,1,40100323,"Cr√©ditos de consumo",5,0,156
+40,1,40100324,"Tarjeta de cr√©dito",6,0,157
 40,1,40100325,"Consumo no revolvente",6,0,158
 40,1,40100326,"Personales",7,0,159
-40,1,40100327,"NÛmina",7,0,160
+40,1,40100327,"N√≥mina",7,0,160
 40,1,40100328,"ABCD",7,0,161
 40,1,40100329,"Automotriz",8,0,162
-40,1,40100330,"AdquisiciÛn de bienes muebles",8,0,163
+40,1,40100330,"Adquisici√≥n de bienes muebles",8,0,163
 40,1,40100331,"Operaciones de arrendamiento financiero",7,0,164
-40,1,40100332,"MicrocrÈditos",7,0,165
-40,1,40100333,"Otros crÈditos de consumo",7,0,166
-40,1,40100334,"CrÈditos a la vivienda",5,0,167
+40,1,40100332,"Microcr√©ditos",7,0,165
+40,1,40100333,"Otros cr√©ditos de consumo",7,0,166
+40,1,40100334,"Cr√©ditos a la vivienda",5,0,167
 40,1,40100335,"Media y residencia",6,0,168
-40,1,40100336,"De interÈs social",6,0,169
-40,1,40100337,"CrÈditos adquiridos al infonavit o el fovissste",6,0,170
-40,1,40100338,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la bd o fideicomisos p˙blicos",6,0,171
-40,1,40100339,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",6,0,172
+40,1,40100336,"De inter√©s social",6,0,169
+40,1,40100337,"Cr√©ditos adquiridos al infonavit o el fovissste",6,0,170
+40,1,40100338,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la bd o fideicomisos p√∫blicos",6,0,171
+40,1,40100339,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",6,0,172
 40,1,40100340,"Otros",6,0,173
-40,1,40100341,"Cartera de crÈdito con riesgo de crÈdito etapa 3",3,0,174
-40,1,40100342,"CrÈditos comerciales",4,0,175
+40,1,40100341,"Cartera de cr√©dito con riesgo de cr√©dito etapa 3",3,0,174
+40,1,40100342,"Cr√©ditos comerciales",4,0,175
 40,1,40100343,"Actividad empresarial o comercial",5,0,176
 40,1,40100344,"Operaciones quirografarias",6,0,177
 40,1,40100345,"Operaciones prendarias",6,0,178
-40,1,40100346,"CrÈditos puente",6,0,179
-40,1,40100347,"Operaciones de factoraje financiero, descuento o cesiÛn de derechos de crÈdito",6,0,180
+40,1,40100346,"Cr√©ditos puente",6,0,179
+40,1,40100347,"Operaciones de factoraje financiero, descuento o cesi√≥n de derechos de cr√©dito",6,0,180
 40,1,40100348,"Operaciones de arrendamiento financiero",6,0,181
-40,1,40100349,"Operaciones con garantÌa hipotecaria",6,0,182
-40,1,40100350,"CrÈditos para proyectos de inversiÛn con fuente de pago propia",6,0,183
+40,1,40100349,"Operaciones con garant√≠a hipotecaria",6,0,182
+40,1,40100350,"Cr√©ditos para proyectos de inversi√≥n con fuente de pago propia",6,0,183
 40,1,40100351,"Otros",6,0,184
 40,1,40100352,"Entidades financieras",5,0,185
-40,1,40100353,"CrÈditos interbancarios",6,0,186
-40,1,40100354,"CrÈditos a entidades financieras no bancarias",6,0,187
+40,1,40100353,"Cr√©ditos interbancarios",6,0,186
+40,1,40100354,"Cr√©ditos a entidades financieras no bancarias",6,0,187
 40,1,40100355,"Otros",6,0,188
 40,1,40100356,"Entidades gubernamentales",5,0,189
-40,1,40100357,"CrÈditos al gobierno federal",6,0,190
-40,1,40100358,"CrÈditos a estados y municipios",6,0,191
-40,1,40100359,"CrÈditos a empresas productivas del estado",6,0,192
-40,1,40100360,"CrÈditos a organismos descentralizados o desconcentrados",6,0,193
+40,1,40100357,"Cr√©ditos al gobierno federal",6,0,190
+40,1,40100358,"Cr√©ditos a estados y municipios",6,0,191
+40,1,40100359,"Cr√©ditos a empresas productivas del estado",6,0,192
+40,1,40100360,"Cr√©ditos a organismos descentralizados o desconcentrados",6,0,193
 40,1,40100361,"Otros",6,0,194
-40,1,40100362,"CrÈditos de consumo",4,0,195
-40,1,40100363,"Tarjeta de crÈdito",5,0,196
+40,1,40100362,"Cr√©ditos de consumo",4,0,195
+40,1,40100363,"Tarjeta de cr√©dito",5,0,196
 40,1,40100364,"Consumo no revolvente",5,0,197
 40,1,40100365,"Personales",6,0,198
-40,1,40100366,"NÛmina",6,0,199
+40,1,40100366,"N√≥mina",6,0,199
 40,1,40100367,"ABCD",6,0,200
 40,1,40100368,"Automotriz",7,0,201
-40,1,40100369,"AdquisiciÛn de bienes muebles",7,0,202
+40,1,40100369,"Adquisici√≥n de bienes muebles",7,0,202
 40,1,40100370,"Operaciones de arrendamiento financiero",6,0,203
-40,1,40100371,"MicrocrÈditos",6,0,204
-40,1,40100372,"Otros crÈditos de consumo",6,0,205
-40,1,40100373,"CrÈditos a la vivienda",4,0,206
+40,1,40100371,"Microcr√©ditos",6,0,204
+40,1,40100372,"Otros cr√©ditos de consumo",6,0,205
+40,1,40100373,"Cr√©ditos a la vivienda",4,0,206
 40,1,40100374,"Media y residencia",5,0,207
-40,1,40100375,"De interÈs social",5,0,208
-40,1,40100376,"CrÈditos adquiridos al infonavit o el fovissste",5,0,209
-40,1,40100377,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la bd o fideicomisos p˙blicos",5,0,210
-40,1,40100378,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",5,0,211
+40,1,40100375,"De inter√©s social",5,0,208
+40,1,40100376,"Cr√©ditos adquiridos al infonavit o el fovissste",5,0,209
+40,1,40100377,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la bd o fideicomisos p√∫blicos",5,0,210
+40,1,40100378,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",5,0,211
 40,1,40100379,"Otros",5,0,212
-40,1,40100380,"Cartera de crÈdito valuada a valor razonable",3,0,213
-40,1,40100381,"CrÈditos comerciales",4,0,214
+40,1,40100380,"Cartera de cr√©dito valuada a valor razonable",3,0,213
+40,1,40100381,"Cr√©ditos comerciales",4,0,214
 40,1,40100382,"Actividad empresarial o comercial",5,0,215
 40,1,40100383,"Operaciones quirografarias",6,0,216
 40,1,40100384,"Operaciones prendarias",6,0,217
-40,1,40100385,"CrÈditos puente",6,0,218
-40,1,40100386,"Operaciones de factoraje financiero, descuento o cesiÛn de derechos de crÈdito",6,0,219
+40,1,40100385,"Cr√©ditos puente",6,0,218
+40,1,40100386,"Operaciones de factoraje financiero, descuento o cesi√≥n de derechos de cr√©dito",6,0,219
 40,1,40100387,"Operaciones de arrendamiento financiero",6,0,220
-40,1,40100388,"Operaciones con garantÌa hipotecaria",6,0,221
-40,1,40100389,"CrÈditos para proyectos de inversiÛn con fuente de pago propia",6,0,222
+40,1,40100388,"Operaciones con garant√≠a hipotecaria",6,0,221
+40,1,40100389,"Cr√©ditos para proyectos de inversi√≥n con fuente de pago propia",6,0,222
 40,1,40100390,"Otros",6,0,223
 40,1,40100391,"Entidades financieras",5,0,224
-40,1,40100392,"CrÈditos interbancarios",6,0,225
-40,1,40100393,"CrÈditos a entidades financieras no bancarias",6,0,226
+40,1,40100392,"Cr√©ditos interbancarios",6,0,225
+40,1,40100393,"Cr√©ditos a entidades financieras no bancarias",6,0,226
 40,1,40100394,"Otros",6,0,227
 40,1,40100395,"Entidades gubernamentales",5,0,228
-40,1,40100396,"CrÈditos al gobierno federal",6,0,229
-40,1,40100397,"CrÈditos a estados y municipios",6,0,230
-40,1,40100398,"CrÈditos a empresas productivas del estado",6,0,231
-40,1,40100399,"CrÈditos a organismos descentralizados o desconcentrados",6,0,232
+40,1,40100396,"Cr√©ditos al gobierno federal",6,0,229
+40,1,40100397,"Cr√©ditos a estados y municipios",6,0,230
+40,1,40100398,"Cr√©ditos a empresas productivas del estado",6,0,231
+40,1,40100399,"Cr√©ditos a organismos descentralizados o desconcentrados",6,0,232
 40,1,40100400,"Otros",6,0,233
-40,1,40100401,"CrÈditos de consumo",4,0,234
-40,1,40100402,"Tarjeta de crÈdito",5,0,235
+40,1,40100401,"Cr√©ditos de consumo",4,0,234
+40,1,40100402,"Tarjeta de cr√©dito",5,0,235
 40,1,40100403,"Consumo no revolvente",5,0,236
 40,1,40100404,"Personales",6,0,237
-40,1,40100405,"NÛmina",6,0,238
+40,1,40100405,"N√≥mina",6,0,238
 40,1,40100406,"ABCD",6,0,239
 40,1,40100407,"Automotriz",7,0,240
-40,1,40100408,"AdquisiciÛn de bienes muebles",7,0,241
+40,1,40100408,"Adquisici√≥n de bienes muebles",7,0,241
 40,1,40100409,"Operaciones de arrendamiento financiero",6,0,242
-40,1,40100410,"MicrocrÈditos",6,0,243
-40,1,40100411,"Otros crÈditos de consumo",6,0,244
-40,1,40100412,"CrÈditos a la vivienda",4,0,245
+40,1,40100410,"Microcr√©ditos",6,0,243
+40,1,40100411,"Otros cr√©ditos de consumo",6,0,244
+40,1,40100412,"Cr√©ditos a la vivienda",4,0,245
 40,1,40100413,"Media y residencia",5,0,246
-40,1,40100414,"De interÈs social",5,0,247
-40,1,40100415,"CrÈditos adquiridos al infonavit o el fovissste",5,0,248
-40,1,40100416,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la bd o fideicomisos p˙blicos",5,0,249
-40,1,40100417,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",5,0,250
+40,1,40100414,"De inter√©s social",5,0,247
+40,1,40100415,"Cr√©ditos adquiridos al infonavit o el fovissste",5,0,248
+40,1,40100416,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la bd o fideicomisos p√∫blicos",5,0,249
+40,1,40100417,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",5,0,250
 40,1,40100418,"Otros",5,0,251
 40,1,40100576,"Partidas diferidas",2,0,252
-40,1,40100031,"EstimaciÛn preventiva para riesgos crediticios",2,0,253
-40,1,40100032,"CrÈditos comerciales",3,0,254
+40,1,40100031,"Estimaci√≥n preventiva para riesgos crediticios",2,0,253
+40,1,40100032,"Cr√©ditos comerciales",3,0,254
 40,1,40100060,"Actividad empresarial o comercial",4,0,255
 40,1,40100061,"Entidades financieras",4,0,256
 40,1,40100062,"Entidades gubernamentales",4,0,257
-40,1,40100033,"CrÈditos de consumo",3,0,258
-40,1,40100063,"Tarjeta de crÈdito",4,0,259
+40,1,40100033,"Cr√©ditos de consumo",3,0,258
+40,1,40100063,"Tarjeta de cr√©dito",4,0,259
 40,1,40100064,"Consumo no revolvente",4,0,260
 40,1,40100065,"Personales",4,0,261
-40,1,40100066,"NÛmina",4,0,262
+40,1,40100066,"N√≥mina",4,0,262
 40,1,40100069,"ABCD",4,0,263
 40,1,40100067,"Automotriz",5,0,264
-40,1,40100068,"AdquisiciÛn de bienes muebles",5,0,265
+40,1,40100068,"Adquisici√≥n de bienes muebles",5,0,265
 40,1,40100070,"Operaciones de arrendamiento financiero",4,0,266
-40,1,40100071,"MicrocrÈditos",4,0,267
-40,1,40100072,"Otros crÈditos de consumo",4,0,268
-40,1,40100034,"CrÈditos a la vivienda",3,0,269
+40,1,40100071,"Microcr√©ditos",4,0,267
+40,1,40100072,"Otros cr√©ditos de consumo",4,0,268
+40,1,40100034,"Cr√©ditos a la vivienda",3,0,269
 40,1,40100073,"Media y residencial",4,0,270
-40,1,40100074,"De interÈs social",4,0,271
-40,1,40100075,"CrÈditos adquiridos al infonavit o el fovissste",4,0,272
-40,1,40100076,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la banca de desarrollo o fideicomisos p˙blicos",4,0,273
-40,1,40100077,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",4,0,274
+40,1,40100074,"De inter√©s social",4,0,271
+40,1,40100075,"Cr√©ditos adquiridos al infonavit o el fovissste",4,0,272
+40,1,40100076,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la banca de desarrollo o fideicomisos p√∫blicos",4,0,273
+40,1,40100077,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",4,0,274
 40,1,40100078,"Adicional",3,0,275
-40,1,40100551,"Cartera de crÈdito (neto)",1,0,276
+40,1,40100551,"Cartera de cr√©dito (neto)",1,0,276
 40,1,40100552,"Otras cuentas por cobrar (neto)",1,0,277
 40,1,40100553,"Bienes adjudicados (neto)",1,0,278
 40,1,40100554,"Otros activos",1,0,279
-40,1,40100042,"CaptaciÛn total",1,0,280
+40,1,40100042,"Captaci√≥n total",1,0,280
 40,1,40100096,"Pasivo",1,0,281
-40,1,40100085,"CaptaciÛn tradicional",2,0,282
-40,1,40100079,"DepÛsitos de exigibilidad inmediata",3,0,283
-40,1,40100080,"DepÛsitos a plazo + tÌtulos de crÈdito emitidos",3,0,284
-40,1,40100081,"Del p˙blico en general",4,0,285
+40,1,40100085,"Captaci√≥n tradicional",2,0,282
+40,1,40100079,"Dep√≥sitos de exigibilidad inmediata",3,0,283
+40,1,40100080,"Dep√≥sitos a plazo + t√≠tulos de cr√©dito emitidos",3,0,284
+40,1,40100081,"Del p√∫blico en general",4,0,285
 40,1,40100082,"Mercado de dinero",4,0,286
-40,1,40100083,"TÌtulos de crÈdito emitidos",4,0,287
-40,1,40100084,"Cuenta global de captaciÛn sin movimientos",3,0,288
-40,1,40100086,"PrÈstamos interbancarios y de otros organismos",2,0,289
+40,1,40100083,"T√≠tulos de cr√©dito emitidos",4,0,287
+40,1,40100084,"Cuenta global de captaci√≥n sin movimientos",3,0,288
+40,1,40100086,"Pr√©stamos interbancarios y de otros organismos",2,0,289
 40,1,40100087,"De exigibilidad inmediata",3,0,290
 40,1,40100088,"De corto plazo",3,0,291
 40,1,40100089,"De largo plazo",3,0,292
 40,1,40100090,"Operaciones con instrumentos financieros y derivados",2,0,293
 40,1,40100091,"Otras cuentas por pagar",2,0,294
 40,1,40100092,"Instrumentos financieros que califican como pasivo",2,0,295
-40,1,40100093,"Obligaciones subordinadas en circulaciÛn",3,0,296
-40,1,40100094,"Aportaciones para futuros aumentos de capital pendientes de formalizar por su Ûrgano de gobierno",3,0,297
+40,1,40100093,"Obligaciones subordinadas en circulaci√≥n",3,0,296
+40,1,40100094,"Aportaciones para futuros aumentos de capital pendientes de formalizar por su √≥rgano de gobierno",3,0,297
 40,1,40100095,"Otros",3,0,298
 40,1,40100097,"Otros pasivos",2,0,299
 40,1,40100002,"Capital contable",1,0,300
 40,1,40100098,"Capital contribuido",2,0,301
 40,1,40100099,"Capital ganado",2,0,302
-40,1,40100100,"ParticipaciÛn no controladora",2,0,303
+40,1,40100100,"Participaci√≥n no controladora",2,0,303
 40,1,40100101,"Suma pasivo + capital",1,0,304
 40,2,40100006,"Ingresos por intereses",2,0,305
 40,2,40100102,"Intereses de efectivo y equivalentes de efectivo",3,0,306
@@ -309,334 +309,334 @@
 40,2,40100104,"Intereses y rendimientos a favor provenientes de inversiones en instrumentos financieros",3,0,308
 40,2,40100105,"Intereses y rendimientos a favor en operaciones de reporto",3,0,309
 40,2,40100106,"Ingresos provenientes de operaciones de cobertura",3,0,310
-40,2,40100107,"Ingresos provenientes de instrumentos financieros derivados de negociaciÛn",3,0,311
-40,2,40100419,"Intereses de cartera de crÈdito con riesgo de crÈdito",3,0,312
-40,2,40100420,"CrÈditos comerciales",4,0,313
+40,2,40100107,"Ingresos provenientes de instrumentos financieros derivados de negociaci√≥n",3,0,311
+40,2,40100419,"Intereses de cartera de cr√©dito con riesgo de cr√©dito",3,0,312
+40,2,40100420,"Cr√©ditos comerciales",4,0,313
 40,2,40100421,"Actividad empresarial o comercial",5,0,314
 40,2,40100422,"Entidades financieras",5,0,315
 40,2,40100423,"Entidades gubernamentales",5,0,316
-40,2,40100424,"CrÈditos de consumo",4,0,317
-40,2,40100425,"Tarjeta de crÈdito",5,0,318
+40,2,40100424,"Cr√©ditos de consumo",4,0,317
+40,2,40100425,"Tarjeta de cr√©dito",5,0,318
 40,2,40100426,"Consumo no revolvente",5,0,319
-40,2,40100435,"CrÈditos a la vivienda",4,0,320
-40,2,40100441,"Intereses de cartera de crÈdito con riesgo de crÈdito etapa 1 + 2",4,0,321
-40,2,40100442,"CrÈditos comerciales",5,0,322
+40,2,40100435,"Cr√©ditos a la vivienda",4,0,320
+40,2,40100441,"Intereses de cartera de cr√©dito con riesgo de cr√©dito etapa 1 + 2",4,0,321
+40,2,40100442,"Cr√©ditos comerciales",5,0,322
 40,2,40100443,"Actividad empresarial o comercial",6,0,323
 40,2,40100444,"Entidades financieras",6,0,324
 40,2,40100445,"Entidades gubernamentales",6,0,325
-40,2,40100446,"CrÈditos de consumo",5,0,326
-40,2,40100447,"Tarjeta de crÈdito",6,0,327
+40,2,40100446,"Cr√©ditos de consumo",5,0,326
+40,2,40100447,"Tarjeta de cr√©dito",6,0,327
 40,2,40100448,"Consumo no revolvente",6,0,328
-40,2,40100457,"CrÈditos a la vivienda",5,0,329
-40,2,40100463,"Intereses de cartera de crÈdito con riesgo de crÈdito etapa 1",5,0,330
-40,2,40100464,"CrÈditos comerciales",6,0,331
+40,2,40100457,"Cr√©ditos a la vivienda",5,0,329
+40,2,40100463,"Intereses de cartera de cr√©dito con riesgo de cr√©dito etapa 1",5,0,330
+40,2,40100464,"Cr√©ditos comerciales",6,0,331
 40,2,40100465,"Actividad empresarial o comercial",7,0,332
 40,2,40100466,"Entidades financieras",7,0,333
 40,2,40100467,"Entidades gubernamentales",7,0,334
-40,2,40100468,"CrÈditos de consumo",6,0,335
-40,2,40100469,"Tarjeta de crÈdito",7,0,336
+40,2,40100468,"Cr√©ditos de consumo",6,0,335
+40,2,40100469,"Tarjeta de cr√©dito",7,0,336
 40,2,40100470,"Consumo no revolvente",7,0,337
-40,2,40100479,"CrÈditos a la vivienda",6,0,338
-40,2,40100485,"Intereses de cartera de crÈdito con riesgo de crÈdito etapa 2",5,0,339
-40,2,40100486,"CrÈditos comerciales",6,0,340
+40,2,40100479,"Cr√©ditos a la vivienda",6,0,338
+40,2,40100485,"Intereses de cartera de cr√©dito con riesgo de cr√©dito etapa 2",5,0,339
+40,2,40100486,"Cr√©ditos comerciales",6,0,340
 40,2,40100487,"Actividad empresarial o comercial",7,0,341
 40,2,40100488,"Entidades financieras",7,0,342
 40,2,40100489,"Entidades gubernamentales",7,0,343
-40,2,40100490,"CrÈditos de consumo",6,0,344
-40,2,40100491,"Tarjeta de crÈdito",7,0,345
+40,2,40100490,"Cr√©ditos de consumo",6,0,344
+40,2,40100491,"Tarjeta de cr√©dito",7,0,345
 40,2,40100492,"Consumo no revolvente",7,0,346
-40,2,40100501,"CrÈditos a la vivienda",6,0,347
-40,2,40100507,"Intereses de cartera de crÈdito con riesgo de crÈdito etapa 3",4,0,348
-40,2,40100508,"CrÈditos comerciales",5,0,349
+40,2,40100501,"Cr√©ditos a la vivienda",6,0,347
+40,2,40100507,"Intereses de cartera de cr√©dito con riesgo de cr√©dito etapa 3",4,0,348
+40,2,40100508,"Cr√©ditos comerciales",5,0,349
 40,2,40100509,"Actividad empresarial o comercial",6,0,350
 40,2,40100510,"Entidades financieras",6,0,351
 40,2,40100511,"Entidades gubernamentales",6,0,352
-40,2,40100512,"CrÈditos de consumo",5,0,353
-40,2,40100513,"Tarjeta de crÈdito",6,0,354
+40,2,40100512,"Cr√©ditos de consumo",5,0,353
+40,2,40100513,"Tarjeta de cr√©dito",6,0,354
 40,2,40100514,"Consumo no revolvente",6,0,355
-40,2,40100523,"CrÈditos a la vivienda",5,0,356
-40,2,40100529,"Intereses de cartera de crÈdito valuada a valor razonable",4,0,357
-40,2,40100530,"CrÈditos comerciales",5,0,358
+40,2,40100523,"Cr√©ditos a la vivienda",5,0,356
+40,2,40100529,"Intereses de cartera de cr√©dito valuada a valor razonable",4,0,357
+40,2,40100530,"Cr√©ditos comerciales",5,0,358
 40,2,40100531,"Actividad empresarial o comercial",6,0,359
 40,2,40100532,"Entidades financieras",6,0,360
 40,2,40100533,"Entidades gubernamentales",6,0,361
-40,2,40100534,"CrÈditos de consumo",5,0,362
-40,2,40100535,"Tarjeta de crÈdito",6,0,363
+40,2,40100534,"Cr√©ditos de consumo",5,0,362
+40,2,40100535,"Tarjeta de cr√©dito",6,0,363
 40,2,40100536,"Consumo no revolvente",6,0,364
-40,2,40100545,"CrÈditos a la vivienda",5,0,365
-40,2,40100108,"Comisiones por el otorgamiento del crÈdito",3,0,366
-40,2,40100109,"CrÈditos comerciales",4,0,367
+40,2,40100545,"Cr√©ditos a la vivienda",5,0,365
+40,2,40100108,"Comisiones por el otorgamiento del cr√©dito",3,0,366
+40,2,40100109,"Cr√©ditos comerciales",4,0,367
 40,2,40100110,"Actividad empresarial o comercial",5,0,368
 40,2,40100111,"Entidades financieras",5,0,369
 40,2,40100112,"Entidades gubernamentales",5,0,370
-40,2,40100113,"CrÈditos de consumo",4,0,371
-40,2,40100114,"Tarjeta de crÈdito",5,0,372
+40,2,40100113,"Cr√©ditos de consumo",4,0,371
+40,2,40100114,"Tarjeta de cr√©dito",5,0,372
 40,2,40100115,"Consumo no revolvente",5,0,373
-40,2,40100116,"CrÈditos a la vivienda",4,0,374
-40,2,40100117,"Premios a favor en operaciones de prÈstamo de valores",3,0,375
+40,2,40100116,"Cr√©ditos a la vivienda",4,0,374
+40,2,40100117,"Premios a favor en operaciones de pr√©stamo de valores",3,0,375
 40,2,40100555,"Otros ingresos por intereses",3,0,376
 40,2,40100007,"Gastos por intereses",2,0,377
-40,2,40100118,"Intereses por depÛsitos de exigibilidad inmediata",3,0,378
-40,2,40100119,"Intereses por depÛsitos a plazo",3,0,379
-40,2,40100120,"Intereses por prÈstamos interbancarios y de otros organismos",3,0,380
-40,2,40100121,"Intereses, costos de transacciÛn y descuentos a cargo por emisiÛn de instrumentos financieros que califican como pasivo",3,0,381
+40,2,40100118,"Intereses por dep√≥sitos de exigibilidad inmediata",3,0,378
+40,2,40100119,"Intereses por dep√≥sitos a plazo",3,0,379
+40,2,40100120,"Intereses por pr√©stamos interbancarios y de otros organismos",3,0,380
+40,2,40100121,"Intereses, costos de transacci√≥n y descuentos a cargo por emisi√≥n de instrumentos financieros que califican como pasivo",3,0,381
 40,2,40100122,"Obligaciones subordinadas",4,0,382
-40,2,40100123,"Otros tÌtulos emitidos",4,0,383
+40,2,40100123,"Otros t√≠tulos emitidos",4,0,383
 40,2,40100124,"Intereses y rendimientos a cargo en operaciones de reporto",3,0,384
 40,2,40100125,"Gastos provenientes de operaciones de cobertura",3,0,385
-40,2,40100126,"Gastos provenientes de instrumentos financieros derivados de negociaciÛn",3,0,386
-40,2,40100127,"Premios a cargo en operaciones de prÈstamo de valores",3,0,387
-40,2,40100128,"PÈrdida por valorizaciÛn",3,0,388
+40,2,40100126,"Gastos provenientes de instrumentos financieros derivados de negociaci√≥n",3,0,386
+40,2,40100127,"Premios a cargo en operaciones de pr√©stamo de valores",3,0,387
+40,2,40100128,"P√©rdida por valorizaci√≥n",3,0,388
 40,2,40100129,"Otros gastos por intereses",3,0,389
-40,2,40100130,"Resultado por posiciÛn monetaria neto (margen financiero)",2,0,390
+40,2,40100130,"Resultado por posici√≥n monetaria neto (margen financiero)",2,0,390
 40,2,40100008,"Margen financiero",1,0,391
-40,2,40100131,"EstimaciÛn preventiva para riesgos crediticios",1,0,392
-40,2,40100132,"CrÈditos comerciales",2,0,393
+40,2,40100131,"Estimaci√≥n preventiva para riesgos crediticios",1,0,392
+40,2,40100132,"Cr√©ditos comerciales",2,0,393
 40,2,40100133,"Actividad empresarial o comercial",3,0,394
 40,2,40100134,"Entidades financieras",3,0,395
 40,2,40100135,"Entidades gubernamentales",3,0,396
-40,2,40100136,"CrÈditos de consumo",2,0,397
-40,2,40100137,"Tarjeta de crÈdito",3,0,398
+40,2,40100136,"Cr√©ditos de consumo",2,0,397
+40,2,40100137,"Tarjeta de cr√©dito",3,0,398
 40,2,40100138,"Consumo no revolvente",3,0,399
-40,2,40100139,"CrÈditos a la vivienda",2,0,400
-40,2,40100140,"Derivada de derechos de cobro adquiridos (crÈditos deteriorados)",3,0,401
+40,2,40100139,"Cr√©ditos a la vivienda",2,0,400
+40,2,40100140,"Derivada de derechos de cobro adquiridos (cr√©ditos deteriorados)",3,0,401
 40,2,40100141,"Adicional",3,0,402
-40,2,40100142,"RecuperaciÛn de cartera de crÈdito",3,0,403
+40,2,40100142,"Recuperaci√≥n de cartera de cr√©dito",3,0,403
 40,2,40100009,"Margen financiero ajustado por riesgos crediticios",1,0,404
 40,2,40100010,"Comisiones y tarifas cobradas",2,0,405
-40,2,40100143,"Operaciones de crÈdito",3,0,406
-40,2,40100144,"CrÈditos comerciales",4,0,407
+40,2,40100143,"Operaciones de cr√©dito",3,0,406
+40,2,40100144,"Cr√©ditos comerciales",4,0,407
 40,2,40100145,"Actividad empresarial o comercial",5,0,408
 40,2,40100146,"Entidades financieras",5,0,409
 40,2,40100147,"Entidades gubernamentales",5,0,410
-40,2,40100148,"CrÈditos de consumo",4,0,411
-40,2,40100149,"Tarjeta de crÈdito",5,0,412
-40,2,40100150,"Primera anualidad y subsecuentes de tarjeta de crÈdito",6,0,413
+40,2,40100148,"Cr√©ditos de consumo",4,0,411
+40,2,40100149,"Tarjeta de cr√©dito",5,0,412
+40,2,40100150,"Primera anualidad y subsecuentes de tarjeta de cr√©dito",6,0,413
 40,2,40100151,"Negocios afiliados",6,0,414
 40,2,40100152,"Consumo no revolvente",5,0,415
 40,2,40100153,"Personales",6,0,416
-40,2,40100154,"NÛmina",6,0,417
+40,2,40100154,"N√≥mina",6,0,417
 40,2,40100155,"ABCD",6,0,418
 40,2,40100156,"Automotriz",7,0,419
-40,2,40100157,"AdquisiciÛn de bienes muebles",7,0,420
+40,2,40100157,"Adquisici√≥n de bienes muebles",7,0,420
 40,2,40100158,"Operaciones de arrendamiento financiero",6,0,421
-40,2,40100159,"MicrocrÈditos",6,0,422
-40,2,40100160,"Otros crÈditos de consumo",6,0,423
-40,2,40100161,"CrÈditos a la vivienda",4,0,424
+40,2,40100159,"Microcr√©ditos",6,0,422
+40,2,40100160,"Otros cr√©ditos de consumo",6,0,423
+40,2,40100161,"Cr√©ditos a la vivienda",4,0,424
 40,2,40100162,"Compraventa de instrumentos financieros",5,0,425
 40,2,40100163,"Manejo de cuenta",5,0,426
 40,2,40100164,"Transferencia de fondos",5,0,427
-40,2,40100165,"Servicios de banca electrÛnica",5,0,428
+40,2,40100165,"Servicios de banca electr√≥nica",5,0,428
 40,2,40100166,"Otras comisiones cobradas",5,0,429
 40,2,40100167,"Comisiones y tarifas pagadas",2,0,430
-40,2,40100168,"Resultado por intermediaciÛn",2,0,431
-40,2,40100169,"Otros ingresos (egresos) de la operaciÛn",2,0,432
-40,2,40100170,"Ingresos totales de la operaciÛn",2,0,433
-40,2,40100011,"Gastos de administraciÛn y promociÛn",2,0,434
-40,2,40100012,"Resultado de la operaciÛn",1,0,435
+40,2,40100168,"Resultado por intermediaci√≥n",2,0,431
+40,2,40100169,"Otros ingresos (egresos) de la operaci√≥n",2,0,432
+40,2,40100170,"Ingresos totales de la operaci√≥n",2,0,433
+40,2,40100011,"Gastos de administraci√≥n y promoci√≥n",2,0,434
+40,2,40100012,"Resultado de la operaci√≥n",1,0,435
 40,2,40100171,"Otros productos",2,0,436
 40,2,40100172,"Otros gastos",2,0,437
-40,2,40100173,"ParticipaciÛn en el resultado neto de otras entidades",2,0,438
+40,2,40100173,"Participaci√≥n en el resultado neto de otras entidades",2,0,438
 40,2,40100174,"Resultado antes de impuestos a la utilidad",1,0,439
 40,2,40200217,"Impuestos a la utilidad",2,0,440
 40,2,40100176,"Impuestos a la utilidad causados",3,0,441
 40,2,40100177,"Impuestos a la utilidad diferidos",3,0,442
-40,2,40100178,"EstimaciÛn por impuestos a la utilidad no recuperables",3,0,443
-40,2,40100179,"Incremento por actualizaciÛn de impuestos a la utilidad",3,0,444
+40,2,40100178,"Estimaci√≥n por impuestos a la utilidad no recuperables",3,0,443
+40,2,40100179,"Incremento por actualizaci√≥n de impuestos a la utilidad",3,0,444
 40,2,40100180,"Resultado de operaciones continuas",1,0,445
 40,2,40100181,"Operaciones discontinuadas",2,0,446
 40,2,40100013,"Resultado neto",1,0,447
 40,2,40100182,"Otros resultados integrales",2,0,448
-40,2,40100183,"ParticipaciÛn en ori de otras entidades",2,0,449
+40,2,40100183,"Participaci√≥n en ori de otras entidades",2,0,449
 40,2,40100014,"Resultado integral",1,0,450
-40,5,40200017,"Õndice de morosidad (IMOR) cartera de crÈdito total",1,1,451
-40,5,40200018,"CrÈditos comerciales",2,1,452
+40,5,40200017,"√çndice de morosidad (IMOR) cartera de cr√©dito total",1,1,451
+40,5,40200018,"Cr√©ditos comerciales",2,1,452
 40,5,40200038,"Actividad empresarial o comercial",3,1,453
 40,5,40200039,"Entidades financieras",3,1,454
 40,5,40200040,"Entidades gubernamentales",3,1,455
-40,5,40200019,"CrÈditos de consumo",2,1,456
-40,5,40200041,"Tarjeta de crÈdito",3,1,457
+40,5,40200019,"Cr√©ditos de consumo",2,1,456
+40,5,40200041,"Tarjeta de cr√©dito",3,1,457
 40,5,40200042,"Consumo no revolvente",3,1,458
 40,5,40200043,"Personales",4,1,459
-40,5,40200044,"NÛmina",4,1,460
+40,5,40200044,"N√≥mina",4,1,460
 40,5,40200045,"ABCD",4,1,461
 40,5,40200046,"Automotriz",5,1,462
-40,5,40200047,"AdquisiciÛn de bienes muebles",5,1,463
+40,5,40200047,"Adquisici√≥n de bienes muebles",5,1,463
 40,5,40200048,"Operaciones de arrendamiento financiero",4,1,464
-40,5,40200049,"MicrocrÈditos",4,1,465
-40,5,40200050,"Otros crÈditos de consumo",4,1,466
-40,5,40200020,"CrÈditos a la vivienda",2,1,467
+40,5,40200049,"Microcr√©ditos",4,1,465
+40,5,40200050,"Otros cr√©ditos de consumo",4,1,466
+40,5,40200020,"Cr√©ditos a la vivienda",2,1,467
 40,5,40200051,"Media y residencial",3,1,468
-40,5,40200052,"De interÈs social",3,1,469
-40,5,40200053,"CrÈditos adquiridos al infonavit o el fovissste",3,1,470
-40,5,40200054,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la banca de desarrollo o fideicomisos p˙blicos",3,1,471
-40,5,40200055,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",3,1,472
-40,5,40200033,"Õndice de morosidad ajustado (IMORA) cartera de crÈdito total",1,1,473
-40,5,40200034,"CrÈditos comerciales",2,1,474
+40,5,40200052,"De inter√©s social",3,1,469
+40,5,40200053,"Cr√©ditos adquiridos al infonavit o el fovissste",3,1,470
+40,5,40200054,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la banca de desarrollo o fideicomisos p√∫blicos",3,1,471
+40,5,40200055,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",3,1,472
+40,5,40200033,"√çndice de morosidad ajustado (IMORA) cartera de cr√©dito total",1,1,473
+40,5,40200034,"Cr√©ditos comerciales",2,1,474
 40,5,40200056,"Actividad empresarial o comercial",3,1,475
 40,5,40200057,"Entidades financieras",3,1,476
 40,5,40200058,"Entidades gubernamentales",3,1,477
-40,5,40200035,"CrÈditos de consumo",2,1,478
-40,5,40200059,"Tarjeta de crÈdito",3,1,479
+40,5,40200035,"Cr√©ditos de consumo",2,1,478
+40,5,40200059,"Tarjeta de cr√©dito",3,1,479
 40,5,40200060,"Consumo no revolvente",3,1,480
 40,5,40200061,"Personales",4,1,481
-40,5,40200062,"NÛmina",4,1,482
+40,5,40200062,"N√≥mina",4,1,482
 40,5,40200063,"ABCD",4,1,483
 40,5,40200064,"Automotriz",5,1,484
-40,5,40200065,"AdquisiciÛn de bienes muebles",5,1,485
+40,5,40200065,"Adquisici√≥n de bienes muebles",5,1,485
 40,5,40200066,"Operaciones de arrendamiento financiero",4,1,486
-40,5,40200067,"MicrocrÈditos",4,1,487
-40,5,40200068,"Otros crÈditos de consumo",4,1,488
-40,5,40200036,"CrÈditos a la vivienda",2,1,489
+40,5,40200067,"Microcr√©ditos",4,1,487
+40,5,40200068,"Otros cr√©ditos de consumo",4,1,488
+40,5,40200036,"Cr√©ditos a la vivienda",2,1,489
 40,5,40200069,"Media y residencial",3,1,490
-40,5,40200070,"De interÈs social",3,1,491
-40,5,40200071,"CrÈditos adquiridos al infonavit o el fovissste",3,1,492
-40,5,40200072,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la banca de desarrollo o fideicomisos p˙blicos",3,1,493
-40,5,40200073,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",3,1,494
-40,5,40200074,"Tasa de deterioro ajustada (TDA) cartera de crÈdito total",1,1,495
-40,5,40200075,"CrÈditos comerciales",2,1,496
+40,5,40200070,"De inter√©s social",3,1,491
+40,5,40200071,"Cr√©ditos adquiridos al infonavit o el fovissste",3,1,492
+40,5,40200072,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la banca de desarrollo o fideicomisos p√∫blicos",3,1,493
+40,5,40200073,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",3,1,494
+40,5,40200074,"Tasa de deterioro ajustada (TDA) cartera de cr√©dito total",1,1,495
+40,5,40200075,"Cr√©ditos comerciales",2,1,496
 40,5,40200076,"Actividad empresarial o comercial",3,1,497
 40,5,40200077,"Entidades financieras",3,1,498
 40,5,40200078,"Entidades gubernamentales",3,1,499
-40,5,40200079,"CrÈditos de consumo",2,1,500
-40,5,40200080,"Tarjeta de crÈdito",3,1,501
+40,5,40200079,"Cr√©ditos de consumo",2,1,500
+40,5,40200080,"Tarjeta de cr√©dito",3,1,501
 40,5,40200081,"Consumo no revolvente",3,1,502
 40,5,40200082,"Personales",4,1,503
-40,5,40200083,"NÛmina",4,1,504
+40,5,40200083,"N√≥mina",4,1,504
 40,5,40200084,"ABCD",4,1,505
 40,5,40200085,"Automotriz",5,1,506
-40,5,40200086,"AdquisiciÛn de bienes muebles",5,1,507
+40,5,40200086,"Adquisici√≥n de bienes muebles",5,1,507
 40,5,40200087,"Operaciones de arrendamiento financiero",4,1,508
-40,5,40200088,"MicrocrÈditos",4,1,509
-40,5,40200089,"Otros crÈditos de consumo",4,1,510
-40,5,40200090,"CrÈditos a la vivienda",2,1,511
+40,5,40200088,"Microcr√©ditos",4,1,509
+40,5,40200089,"Otros cr√©ditos de consumo",4,1,510
+40,5,40200090,"Cr√©ditos a la vivienda",2,1,511
 40,5,40200091,"Media y residencial",3,1,512
-40,5,40200092,"De interÈs social",3,1,513
-40,5,40200093,"CrÈditos adquiridos al infonavit o el fovissste",3,1,514
-40,5,40200094,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la banca de desarrollo o fideicomisos p˙blicos",3,1,515
-40,5,40200095,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",3,1,516
-40,5,40200096,"Õndice de cobertura (ICOR) cartera de crÈdito total",1,1,517
-40,5,40200097,"CrÈditos comerciales",2,1,518
+40,5,40200092,"De inter√©s social",3,1,513
+40,5,40200093,"Cr√©ditos adquiridos al infonavit o el fovissste",3,1,514
+40,5,40200094,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la banca de desarrollo o fideicomisos p√∫blicos",3,1,515
+40,5,40200095,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",3,1,516
+40,5,40200096,"√çndice de cobertura (ICOR) cartera de cr√©dito total",1,1,517
+40,5,40200097,"Cr√©ditos comerciales",2,1,518
 40,5,40200098,"Actividad empresarial o comercial",3,1,519
 40,5,40200099,"Entidades financieras",3,1,520
 40,5,40200100,"Entidades gubernamentales",3,1,521
-40,5,40200101,"CrÈditos de consumo",2,1,522
-40,5,40200102,"Tarjeta de crÈdito",3,1,523
+40,5,40200101,"Cr√©ditos de consumo",2,1,522
+40,5,40200102,"Tarjeta de cr√©dito",3,1,523
 40,5,40200103,"Consumo no revolvente",3,1,524
 40,5,40200104,"Personales",4,1,525
-40,5,40200105,"NÛmina",4,1,526
+40,5,40200105,"N√≥mina",4,1,526
 40,5,40200106,"ABCD",4,1,527
 40,5,40200107,"Automotriz",5,1,528
-40,5,40200108,"AdquisiciÛn de bienes muebles",5,1,529
+40,5,40200108,"Adquisici√≥n de bienes muebles",5,1,529
 40,5,40200109,"Operaciones de arrendamiento financiero",4,1,530
-40,5,40200110,"MicrocrÈditos",4,1,531
-40,5,40200111,"Otros crÈditos de consumo",4,1,532
-40,5,40200112,"CrÈditos a la vivienda",2,1,533
+40,5,40200110,"Microcr√©ditos",4,1,531
+40,5,40200111,"Otros cr√©ditos de consumo",4,1,532
+40,5,40200112,"Cr√©ditos a la vivienda",2,1,533
 40,5,40200113,"Media y residencial",3,1,534
-40,5,40200114,"De interÈs social",3,1,535
-40,5,40200115,"CrÈditos adquiridos al infonavit o el fovissste",3,1,536
-40,5,40200116,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la banca de desarrollo o fideicomisos p˙blicos",3,1,537
-40,5,40200117,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",3,1,538
-40,5,40200118,"EPRC / (cartera etapa 1 + etapa 2 + etapa 3) de cartera de crÈdito total",1,1,539
-40,5,40200119,"CrÈditos comerciales",2,1,540
+40,5,40200114,"De inter√©s social",3,1,535
+40,5,40200115,"Cr√©ditos adquiridos al infonavit o el fovissste",3,1,536
+40,5,40200116,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la banca de desarrollo o fideicomisos p√∫blicos",3,1,537
+40,5,40200117,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",3,1,538
+40,5,40200118,"EPRC / (cartera etapa 1 + etapa 2 + etapa 3) de cartera de cr√©dito total",1,1,539
+40,5,40200119,"Cr√©ditos comerciales",2,1,540
 40,5,40200120,"Actividad empresarial o comercial",3,1,541
 40,5,40200121,"Entidades financieras",3,1,542
 40,5,40200122,"Entidades gubernamentales",3,1,543
-40,5,40200123,"CrÈditos de consumo",2,1,544
-40,5,40200124,"Tarjeta de crÈdito",3,1,545
+40,5,40200123,"Cr√©ditos de consumo",2,1,544
+40,5,40200124,"Tarjeta de cr√©dito",3,1,545
 40,5,40200125,"Consumo no revolvente",3,1,546
 40,5,40200126,"Personales",4,1,547
-40,5,40200127,"NÛmina",4,1,548
+40,5,40200127,"N√≥mina",4,1,548
 40,5,40200128,"ABCD",4,1,549
 40,5,40200129,"Automotriz",5,1,550
-40,5,40200130,"AdquisiciÛn de bienes muebles",5,1,551
+40,5,40200130,"Adquisici√≥n de bienes muebles",5,1,551
 40,5,40200131,"Operaciones de arrendamiento financiero",4,1,552
-40,5,40200132,"MicrocrÈditos",4,1,553
-40,5,40200133,"Otros crÈditos de consumo",4,1,554
-40,5,40200134,"CrÈditos a la vivienda",2,1,555
+40,5,40200132,"Microcr√©ditos",4,1,553
+40,5,40200133,"Otros cr√©ditos de consumo",4,1,554
+40,5,40200134,"Cr√©ditos a la vivienda",2,1,555
 40,5,40200135,"Media y residencial",3,1,556
-40,5,40200136,"De interÈs social",3,1,557
-40,5,40200137,"CrÈditos adquiridos al infonavit o el fovissste",3,1,558
-40,5,40200138,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la banca de desarrollo o fideicomisos p˙blicos",3,1,559
-40,5,40200139,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",3,1,560
-40,5,40200140,"Tasa de interÈs implÌcita de cartera de crÈdito con riesgo de crÈdito etapa 1 + 2",1,1,561
-40,5,40200141,"CrÈditos comerciales",2,1,562
+40,5,40200136,"De inter√©s social",3,1,557
+40,5,40200137,"Cr√©ditos adquiridos al infonavit o el fovissste",3,1,558
+40,5,40200138,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la banca de desarrollo o fideicomisos p√∫blicos",3,1,559
+40,5,40200139,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",3,1,560
+40,5,40200140,"Tasa de inter√©s impl√≠cita de cartera de cr√©dito con riesgo de cr√©dito etapa 1 + 2",1,1,561
+40,5,40200141,"Cr√©ditos comerciales",2,1,562
 40,5,40200142,"Actividad empresarial o comercial",3,1,563
 40,5,40200143,"Entidades financieras",3,1,564
 40,5,40200144,"Entidades gubernamentales",3,1,565
-40,5,40200145,"CrÈditos de consumo",2,1,566
-40,5,40200146,"Tarjeta de crÈdito",3,1,567
+40,5,40200145,"Cr√©ditos de consumo",2,1,566
+40,5,40200146,"Tarjeta de cr√©dito",3,1,567
 40,5,40200147,"Consumo no revolvente",3,1,568
-40,5,40200156,"CrÈditos a la vivienda",2,1,569
-40,5,40200162,"Tasa de interÈs implÌcita anualizada de cartera de crÈdito con riesgo de crÈdito etapa 1 + 2",1,1,570
-40,5,40200163,"CrÈditos comerciales",2,1,571
+40,5,40200156,"Cr√©ditos a la vivienda",2,1,569
+40,5,40200162,"Tasa de inter√©s impl√≠cita anualizada de cartera de cr√©dito con riesgo de cr√©dito etapa 1 + 2",1,1,570
+40,5,40200163,"Cr√©ditos comerciales",2,1,571
 40,5,40200164,"Actividad empresarial o comercial",3,1,572
 40,5,40200165,"Entidades financieras",3,1,573
 40,5,40200166,"Entidades gubernamentales",3,1,574
-40,5,40200167,"CrÈditos de consumo",2,1,575
-40,5,40200168,"Tarjeta de crÈdito",3,1,576
+40,5,40200167,"Cr√©ditos de consumo",2,1,575
+40,5,40200168,"Tarjeta de cr√©dito",3,1,576
 40,5,40200169,"Consumo no revolvente",3,1,577
-40,5,40200178,"CrÈditos a la vivienda",2,1,578
-40,5,40200037,"Tasa de interÈs implÌcita pasiva",1,1,579
-40,5,40200218,"Margen de intermediaciÛn financiera",1,1,580
+40,5,40200178,"Cr√©ditos a la vivienda",2,1,578
+40,5,40200037,"Tasa de inter√©s impl√≠cita pasiva",1,1,579
+40,5,40200218,"Margen de intermediaci√≥n financiera",1,1,580
 40,5,40200001,"ROA",1,1,581
 40,5,40200002,"ROE",1,1,582
-40,8,40200216,"CaptaciÛn total + operaciones con instrumentos financieros y derivados + obligaciones subordinadas (Promedio 12 meses)",1,0,583
+40,8,40200216,"Captaci√≥n total + operaciones con instrumentos financieros y derivados + obligaciones subordinadas (Promedio 12 meses)",1,0,583
 40,8,40200009,"Gastos por intereses (Suma flujo 12 meses)",1,0,584
 40,8,40200015,"Resultado neto (Suma flujo 12 meses)",1,0,585
-40,8,40200184,"Intereses de cartera de crÈdito con riesgo de crÈdito etapa 1 + 2 (Suma flujo 12 meses)",1,0,586
-40,8,40200185,"CrÈditos comerciales",2,0,587
+40,8,40200184,"Intereses de cartera de cr√©dito con riesgo de cr√©dito etapa 1 + 2 (Suma flujo 12 meses)",1,0,586
+40,8,40200185,"Cr√©ditos comerciales",2,0,587
 40,8,40200186,"Actividad empresarial o comercial",3,0,588
 40,8,40200187,"Entidades financieras",3,0,589
 40,8,40200188,"Entidades gubernamentales",3,0,590
-40,8,40200189,"CrÈditos de consumo",2,0,591
-40,8,40200190,"Tarjeta de crÈdito",3,0,592
+40,8,40200189,"Cr√©ditos de consumo",2,0,591
+40,8,40200190,"Tarjeta de cr√©dito",3,0,592
 40,8,40200191,"Consumo no revolvente",3,0,593
-40,8,40200192,"CrÈditos a la vivienda",2,0,594
+40,8,40200192,"Cr√©ditos a la vivienda",2,0,594
 40,8,40200193,"Quitas y castigos total (Suma 12 meses)",1,0,595
-40,8,40200194,"CrÈditos comerciales",2,0,596
+40,8,40200194,"Cr√©ditos comerciales",2,0,596
 40,8,40200195,"Actividad empresarial o comercial",3,0,597
 40,8,40200196,"Entidades financieras",3,0,598
 40,8,40200197,"Entidades gubernamentales",3,0,599
-40,8,40200198,"CrÈditos de consumo",2,0,600
-40,8,40200199,"Tarjeta de crÈdito",3,0,601
+40,8,40200198,"Cr√©ditos de consumo",2,0,600
+40,8,40200199,"Tarjeta de cr√©dito",3,0,601
 40,8,40200200,"Consumo no revolvente",3,0,602
 40,8,40200201,"Personales",4,0,603
-40,8,40200202,"NÛmina",4,0,604
+40,8,40200202,"N√≥mina",4,0,604
 40,8,40200203,"ABCD",4,0,605
 40,8,40200204,"Automotriz",5,0,606
-40,8,40200205,"AdquisiciÛn de bienes muebles",5,0,607
+40,8,40200205,"Adquisici√≥n de bienes muebles",5,0,607
 40,8,40200206,"Operaciones de arrendamiento financiero",4,0,608
-40,8,40200207,"MicrocrÈditos",4,0,609
-40,8,40200208,"Otros crÈditos de consumo",4,0,610
-40,8,40200209,"CrÈditos a la vivienda",2,0,611
+40,8,40200207,"Microcr√©ditos",4,0,609
+40,8,40200208,"Otros cr√©ditos de consumo",4,0,610
+40,8,40200209,"Cr√©ditos a la vivienda",2,0,611
 40,8,40200210,"Media y residencial",3,0,612
-40,8,40200211,"De interÈs social",3,0,613
-40,8,40200212,"CrÈditos adquiridos al infonavit o el fovissste",3,0,614
-40,8,40200213,"RemodelaciÛn o mejoramiento con garantÌa otorgada por la banca de desarrollo o fideicomisos p˙blicos",3,0,615
-40,8,40200214,"RemodelaciÛn o mejoramiento con garantÌa de la subcuenta de vivienda",3,0,616
+40,8,40200211,"De inter√©s social",3,0,613
+40,8,40200212,"Cr√©ditos adquiridos al infonavit o el fovissste",3,0,614
+40,8,40200213,"Remodelaci√≥n o mejoramiento con garant√≠a otorgada por la banca de desarrollo o fideicomisos p√∫blicos",3,0,615
+40,8,40200214,"Remodelaci√≥n o mejoramiento con garant√≠a de la subcuenta de vivienda",3,0,616
 40,8,40200215,"Otros castigos, eliminaciones y recuperaciones",3,0,617
 40,8,40100038,"Quitas y castigos total (Monto reportado en el mes)",1,0,618
-40,8,40100039,"CrÈditos comerciales ",2,0,619
+40,8,40100039,"Cr√©ditos comerciales ",2,0,619
 40,8,40100556,"Actividad Empresarial o Comercial ",3,0,620
 40,8,40100557,"Entidades Financieras ",3,0,621
 40,8,40100558,"Entidades Gubernamentales ",3,0,622
-40,8,40100040,"CrÈditos de consumo ",2,0,623
-40,8,40100559,"Tarjeta de CrÈdito ",3,0,624
+40,8,40100040,"Cr√©ditos de consumo ",2,0,623
+40,8,40100559,"Tarjeta de Cr√©dito ",3,0,624
 40,8,40100560,"Consumo no Revolvente ",3,0,625
 40,8,40100561,"Personales ",4,0,626
-40,8,40100562,"NÛmina ",4,0,627
+40,8,40100562,"N√≥mina ",4,0,627
 40,8,40100563,"ABCD ",4,0,628
 40,8,40100564,"Automotriz ",5,0,629
-40,8,40100565,"AdquisiciÛn de Bienes Muebles ",5,0,630
+40,8,40100565,"Adquisici√≥n de Bienes Muebles ",5,0,630
 40,8,40100566,"Operaciones de Arrendamiento Financiero ",4,0,631
-40,8,40100567,"MicrocrÈditos ",4,0,632
-40,8,40100568,"Otros CrÈditos de Consumo ",4,0,633
-40,8,40100041,"CrÈditos a la vivienda ",2,0,634
+40,8,40100567,"Microcr√©ditos ",4,0,632
+40,8,40100568,"Otros Cr√©ditos de Consumo ",4,0,633
+40,8,40100041,"Cr√©ditos a la vivienda ",2,0,634
 40,8,40100569,"Media y Residencia ",3,0,635
-40,8,40100570,"De InterÈs Social ",3,0,636
-40,8,40100571,"CrÈditos Adquiridos al INFONAVIT o el FOVISSSTE ",3,0,637
-40,8,40100572,"RemodelaciÛn o Mejora con GarantÌa Otorgada por la BD o Fideicomisos P˙blicos ",3,0,638
-40,8,40100573,"RemodelaciÛn o Mejora con GarantÌa de la Subcuenta de Vivienda ",3,0,639
+40,8,40100570,"De Inter√©s Social ",3,0,636
+40,8,40100571,"Cr√©ditos Adquiridos al INFONAVIT o el FOVISSSTE ",3,0,637
+40,8,40100572,"Remodelaci√≥n o Mejora con Garant√≠a Otorgada por la BD o Fideicomisos P√∫blicos ",3,0,638
+40,8,40100573,"Remodelaci√≥n o Mejora con Garant√≠a de la Subcuenta de Vivienda ",3,0,639
 40,8,40100574,"Otros castigos, eliminaciones y recuperaciones",3,0,640
 40,5,40200032,"Liquidez",1,1,641

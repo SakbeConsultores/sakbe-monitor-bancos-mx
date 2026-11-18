@@ -10,3 +10,6 @@ docs/data/*.bak_*
 .DS_Store
 __pycache__/
 *.pyc
+
+# Respaldos de catalogos y datos
+data/*.bak_*
