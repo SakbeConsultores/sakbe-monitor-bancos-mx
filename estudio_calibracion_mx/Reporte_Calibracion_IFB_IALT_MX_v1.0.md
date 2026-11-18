@@ -1,4 +1,4 @@
-# Calibración IFB e IALT México · v1.0 (propuesta)
+# Calibración IFB e IALT México · v1.0
 
 Sakbé Consultores · 18 de noviembre de 2026
 
@@ -54,8 +54,8 @@ Famsa queda sin ICAP en abril y mayo de 2020; la regla del silencio activa el ov
 
 Los depósitos van en pesos nominales. Con inflación, un banco con depósitos planos a 6 meses pierde en términos reales y el percentil lo castiga contra la historia de su grupo, que crece en promedio. BBVA y Santander salen en Naranja en septiembre de 2026 con variaciones de −0,2% y una cobertura de caja baja frente a la historia del G-7, en el mes estacionalmente más alto. Es un resultado defendible, pero conviene decidir si la fuga se mide en términos reales.
 
-## 5. Decisiones pendientes
+## 5. Decisiones (18-nov-2026)
 
-1. Aprobar la regla de calibración (P25 / P90 ponderados) o pedir variantes.
-2. ¿Fuga de depósitos en términos nominales o deflactada por INPC?
-3. Confirmar la lista de eventos corporativos (Banamex y Citi México dic-2024, Multiva ago-2025, Kapital sep-2025 y jun-2026). Quedan por revisar saltos de Bajío (feb-2022) y Banorte (ene-2022).
+1. Umbrales del IFB: aprobada la regla P25 / P90 ponderados por activo, con los mínimos de categoría I como alerta en ICAP y CCF.
+2. Fuga de depósitos: se mide en pesos corrientes, con el dato tal como lo publica la CNBV, que es el número vigente al momento de emisión. No se deflacta.
+3. Eventos corporativos: Banamex y Citi México (dic-2024), Multiva (ago-2025) y Kapital (sep-2025 y jun-2026). Revisados los dos saltos pendientes. Bajío ene-2022 es una reclasificación de un mes: unos 35 mil millones de pesos pasan de plazo del público a mercado de dinero y regresan en febrero con el activo estable; la fuga queda neutra en ene-2022 y jul-2022. Banorte ene-2022 sube 26% de activo por operaciones con instrumentos financieros y derivados y otros pasivos, con depósitos y cartera sin cambio; es presentación contable y no lleva tratamiento.

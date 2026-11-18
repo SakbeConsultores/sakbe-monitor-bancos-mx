@@ -42,7 +42,10 @@ Lo que cambia para Mexico, y por que:
  11. Umbrales calibrados con la serie mexicana 2014-2026 (UMBRALES_MX), con
      regla explicita: saludable = percentil 25 ponderado por activo del lado
      bueno, alerta = percentil 90 ponderado del lado malo; ICAP y CCF usan el
-     minimo regulatorio como alerta. PROPUESTA pendiente de aprobacion.
+     minimo regulatorio como alerta. Aprobados por Gustavo el 18-nov-2026.
+ 12. La fuga de depositos se mide en pesos corrientes, con el dato tal como lo
+     publica la CNBV (decision de Gustavo, 18-nov-2026): es el numero vigente
+     al momento de emision. No se deflacta por INPC.
 
 Uso: python3 src/scoring_mx.py docs/data/bancos_mx_v2.json docs/data/bancos_mx_v2.json
 """
@@ -82,6 +85,15 @@ EVENTOS = [
     ("040128", "2026-06", "Kapital: segunda incorporacion de activos de Intercam"),
 ]
 REINICIO_SERIE = {"040124": "2024-12"}   # Citi Mexico: antes era Deutsche Bank / CBM Banco
+
+# Meses sueltos con dato de depositos inconsistente: la fuga vale 50 en ese mes y en
+# el mes en que ese dato entra como base de la variacion a 6 meses.
+# Bajio ene-2022: 35 mil millones pasan de plazo del publico a mercado de dinero y
+# regresan en feb-2022 con el activo estable. Es una reclasificacion de un mes.
+ANOMALIAS_DEPOSITOS = [("040030", "2022-01", "Bajio: reclasificacion de un mes entre plazo y mercado de dinero")]
+# Revisado y SIN tratamiento: Banorte ene-2022, activo +26% por operaciones con
+# instrumentos financieros y derivados y otros pasivos (presentacion IFRS 9);
+# depositos y cartera sin cambio.   # Citi Mexico: antes era Deutsche Bank / CBM Banco
 EVENTO_MESES = 6
 
 # ── IFB ────────────────────────────────────────────────────────────────────
@@ -270,6 +282,12 @@ def compute_ialt(data):
         h = _historia(v, dirn, months, corte)
         shf[s] = h.where(h.notna(), sx[s])
         score[s] = IALT_ALPHA_TRANSVERSAL * sx[s] + (1 - IALT_ALPHA_TRANSVERSAL) * shf[s]
+    for ent, mes, desc in ANOMALIAS_DEPOSITOS:
+        if ent in banks and mes in months:
+            j0 = months.index(mes)
+            for j in (j0, j0 + 6):
+                if j < len(months):
+                    evento.iat[banks.index(ent), j] = desc
     ev = evento.notna()
     for d_ in (sx, shf, score):
         d_["fuga_dep_6m"] = d_["fuga_dep_6m"].mask(ev, 50.0)
@@ -303,6 +321,7 @@ def compute_ialt(data):
                       "piso_solvencia": "fuera de los minimos de categoria I sin suplementos (ICAP 10,5%, CCB 8,5%, CCF 7%)",
                       "piso_liquidez": "no aplica en Mexico", "piso_ialt_min": PISO_IALT_MIN,
                       "quiebre_ifrs9": QUIEBRE_IFRS9, "eventos": EVENTOS, "reinicio_serie": REINICIO_SERIE,
+                      "anomalias_depositos": ANOMALIAS_DEPOSITOS, "fuga_en": "pesos corrientes (sin deflactar)",
                       "generado": _dt.date.today().isoformat(), "ultimo_mes": months[-1]}}
     for s in IALT_SENALES:
         res[f"score_{s}"] = _jm(score[s], 1); res[f"val_{s}"] = _jm(sen[s], 5)
@@ -380,7 +399,7 @@ def compute_ifb(data):
                                              "peso_interno": round(p, 6)}
                                             for (s, k, lo, hi, dr, l, o), p in zip(lst, _pesos(dim))]
                                       for dim, lst in UMBRALES_MX.items()},
-                      "estado_umbrales": "PROPUESTA 18-nov-2026, pendiente de aprobacion",
+                      "estado_umbrales": "Aprobados por Gustavo el 18-nov-2026",
                       "excepciones": {"S_sistema_fija_en_2": "Igual que Ecuador."},
                       "generado": _dt.date.today().isoformat()}}
     for k in IFB_PESOS:
