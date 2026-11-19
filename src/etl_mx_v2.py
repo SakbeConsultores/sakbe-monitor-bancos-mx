@@ -68,17 +68,20 @@ C = {  # concepto CNBV -> clave interna
     40100085: "captacion_trad", 40100079: "dep_vista", 40100081: "dep_plazo",
     40100082: "dep_mdo_dinero", 40100083: "titulos_emitidos", 40100084: "cta_global",
     40100087: "pi_inmediato", 40100088: "pi_corto",
+    40100263: "cart_etapa1", 40100302: "cart_etapa2", 40100551: "cart_neta",
     # resultados (acumulados del ano)
     40100006: "ing_int", 40100007: "gto_int", 40100008: "margen_fin",
     40100131: "eprc_res", 40100170: "ing_tot_op", 40100011: "gastos_adm",
-    40100013: "resultado",
+    40100013: "resultado", 40100010: "com_cobradas", 40100167: "com_pagadas",
+    40100012: "resultado_op",
     # indicadores CNBV
     40200017: "imor", 40200033: "imora", 40200096: "icor", 40200001: "roa",
     40200002: "roe", 40200032: "liquidez", 40200037: "tasa_pasiva",
     40200218: "mif", 40200018: "imor_comercial", 40200019: "imor_consumo",
     40200020: "imor_vivienda",
 }
-FLUJOS = ["ing_int", "gto_int", "margen_fin", "eprc_res", "ing_tot_op", "gastos_adm", "resultado"]
+FLUJOS = ["ing_int", "gto_int", "margen_fin", "eprc_res", "ing_tot_op", "gastos_adm", "resultado",
+          "resultado_op"]
 
 def leer(path):
     keep = set(map(str, C))
@@ -150,14 +153,29 @@ def main(path):
         "mif": S["mif"], "tasa_pasiva": S["tasa_pasiva"],
         "mor_comercial": S["imor_comercial"], "mor_consumo": S["imor_consumo"],
         "mor_vivienda": S["imor_vivienda"],
+        # Claves con el nombre que usa el dashboard de Ecuador (se rotulan para Mexico en el tablero)
+        "mor_prod": S["imor_comercial"],      # rotulo MX: mora comercial
+        "mor_micro": S["imor_vivienda"],      # rotulo MX: mora vivienda
+        "act_prod_tot": div(act_prod, S["activo"]),
+        "intermediacion": div(S["cartera_bruta"], dep),
+        "margen_act": div(F["resultado_op_12m"], act_prom),
+        "margen_pat": div(F["resultado_op_12m"], prom12(S["patrimonio_bal"])),
     }
     BAL = {k: S[k] for k in ["activo", "pasivos", "patrimonio_bal", "efectivo", "inversiones",
                              "inv_neg_sr", "inv_cyv_sr", "cartera_bruta", "cart_etapa12",
                              "cart_etapa3", "adjudicados", "captacion_trad", "dep_vista",
                              "dep_plazo", "dep_mdo_dinero", "titulos_emitidos"]}
-    BAL.update({"cart_prov": prov, "depositos": dep, "ictl_fondos": S["efectivo"],
-                "pasivo_liquido": pas_liq, "activos_productivos": act_prod})
+    BAL.update({"cart_prov": S["cart_prov"], "depositos": dep, "ictl_fondos": S["efectivo"],
+                "pasivo_liquido": pas_liq, "activos_productivos": act_prod,
+                "cart_neta": S["cart_neta"], "cart_pv": S["cart_etapa1"], "cart_cndi": S["cart_etapa2"],
+                "cart_vencida": S["cart_etapa3"],
+                # estado de resultados acumulado del ano, como en Ecuador (cascada de resultados)
+                "resultado": S["resultado"], "pyg_ingresos": S["ing_int"], "pyg_int_causados": S["gto_int"],
+                "pyg_provisiones": S["eprc_res"], "pyg_gastos_op": S["gastos_adm"],
+                "pyg_com_netas": S["com_cobradas"] - S["com_pagadas"]})
     BAL.update(F)
+    # Montos en MILES de pesos, la misma unidad que el JSON de Ecuador (miles de USD)
+    BAL = {k: v / 1000.0 for k, v in BAL.items()}
 
     # ICAP
     ic = pd.read_csv(F_ICAP, dtype={"periodo": str, "clave": str})
@@ -204,7 +222,7 @@ def main(path):
             "months": [f"{p[:4]}-{p[4:]}" for p in meses],
             "banks": ids, "display": display, "grupo_cnbv": grupo,
             "generated": datetime.date.today().isoformat(),
-            "pais": "MX", "moneda": "MXN (pesos corrientes)",
+            "pais": "MX", "moneda": "MXN (pesos corrientes)", "unidad_bal": "miles de pesos",
             "fuente": "CNBV Portafolio de Informacion, sector 40 Banca Multiple, saldo 130 "
                       "(institucion sin consolidar); ICAP de los PDF ICAP_BM_AAAAMM",
             "cierres": {"040131": "2020-06", "040102": "2021-09", "040143": "2025-10"},
@@ -213,7 +231,7 @@ def main(path):
         "ind": {k: mat(v, 6) for k, v in IND.items()},
         "pt": {k: mat(v, 6) for k, v in PT.items()},
         "pt_notas": {k: matstr(v) for k, v in NOTAS.items()},
-        "bal": {k: mat(v, 0) for k, v in BAL.items()},
+        "bal": {k: mat(v, 1) for k, v in BAL.items()},
     }
     with open(F_OUT, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, separators=(",", ":"))

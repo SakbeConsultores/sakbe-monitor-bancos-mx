@@ -2,10 +2,20 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Monitor Banca Múltiple México — Sakbé Consultores</title>
+<!-- PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#163043">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Monitor Bancos">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link rel="stylesheet" href="https://use.typekit.net/ura5jew.css">
+<link rel="stylesheet" href="https://use.typekit.net/rgk8jih.css">
 <style>
+/* ── Variables de marca Sakbé ── */
 :root {
   --dark:   #163043;
   --light:  #DCEFF2;
@@ -20,39 +30,105 @@
   --yellow: #c8820a;
   --red:    #b83232;
 }
+
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--dark); font-size: 14px; }
 
-/* Header */
-#header { background: var(--dark); color: var(--white); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+/* ── Header ── */
+#header {
+  background: var(--dark);
+  color: var(--white);
+  padding: 14px 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.25);
+}
 #header h1 { font-size: 17px; font-weight: 600; letter-spacing: 0.2px; }
 #header .subtitle { font-size: 11px; color: var(--teal); margin-top: 2px; }
 #header .brand { font-size: 11px; color: var(--sand); letter-spacing: 1px; text-transform: uppercase; }
 
-/* Controles */
-#controls { background: var(--white); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+/* ── Controles ── */
+#controls {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
 .ctrl-group { display: flex; align-items: center; gap: 8px; }
 .ctrl-group label { font-size: 12px; color: var(--slate); font-weight: 600; white-space: nowrap; }
-select { border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--dark); font-size: 13px; padding: 5px 8px; }
+select, input[type=range] { border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--dark); font-size: 13px; padding: 5px 8px; }
 select:focus { outline: none; border-color: var(--dark); }
+#period-label { font-size: 13px; font-weight: 600; color: var(--dark); min-width: 80px; }
 #meta-info { margin-left: auto; font-size: 11px; color: var(--slate); }
-.view-btn { padding: 5px 14px; font-size: 12px; font-weight: 600; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--slate); cursor: pointer; }
-.view-btn.active { background: var(--dark); color: var(--white); border-color: var(--dark); }
 
-/* Tabs */
-#tabs { background: var(--white); border-bottom: 2px solid var(--border); display: flex; padding: 0 24px; gap: 0; overflow-x: auto; }
-.tab-btn { padding: 10px 18px; font-size: 13px; font-weight: 500; color: var(--slate); cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+/* ── Tabs ── */
+#tabs {
+  background: var(--white);
+  border-bottom: 2px solid var(--border);
+  display: flex;
+  padding: 0 24px;
+  gap: 0;
+  overflow-x: auto;
+}
+.tab-btn {
+  padding: 10px 18px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  cursor: pointer;
+  border: none;
+  background: none;
+  border-bottom: 3px solid transparent;
+  margin-bottom: -2px;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
 .tab-btn:hover { color: var(--dark); }
 .tab-btn.active { color: var(--dark); border-bottom-color: var(--rust); font-weight: 600; }
 
-/* Contenido */
+/* ── Contenido ── */
 #content { padding: 20px 24px; max-width: 1400px; }
 .tab-pane { display: none; }
 .tab-pane.active { display: block; }
 
-/* KPI Cards */
-.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
-.kpi-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px; position: relative; overflow: hidden; }
+/* ── Cards ── */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 12px; margin-bottom: 20px; }
+/* Vista Ejecutiva: 14 KPIs en exactamente dos filas de siete (14 = 7x2, sin
+   huecos). Se fija el número de columnas en vez de dejar auto-fill para que el
+   corte de fila no dependa del ancho de la ventana. Mismo criterio que el
+   dashboard de cooperativas, para poder leer los dos tableros en paralelo.
+   Cada card cae a ~168 px, así que aquí dentro se compacta la tipografía. */
+#kpi-grid { grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+#kpi-grid .kpi-card  { padding: 11px 9px; }
+#kpi-grid .kpi-label { font-size: 9.5px; letter-spacing: 0.2px; margin-bottom: 4px;
+                       /* dos renglones reservados: "Oblig. con el Público" y
+                          "Cobertura Prob." envuelven, el resto no, y así las
+                          catorce cards mantienen el valor a la misma altura */
+                       min-height: 26px; line-height: 1.3; }
+#kpi-grid .kpi-value { font-size: 19px; }
+#kpi-grid .kpi-delta { font-size: 10px; }
+/* Pestaña Cartera: 10 KPIs en dos filas de cinco. A 5 columnas cada card queda
+   holgada, así que no hace falta compactar la tipografía como en la de 7. */
+#kpi-cartera { grid-template-columns: repeat(5, minmax(0, 1fr)); }
+/* Pestaña Liquidez: 8 KPIs en dos filas de cuatro, mismo criterio que
+   cooperativas. */
+#kpi-liquidez { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+/* Pestaña Solvencia: 8 KPIs en dos filas de cuatro, réplica del tablero de
+   cooperativas (mismo orden y colores institucionales). */
+#kpi-solvencia { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+#kpi-cartera .kpi-label { min-height: 26px; line-height: 1.3; }
+.kpi-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px;
+  position: relative;
+  overflow: hidden;
+}
 .kpi-card .kpi-label { font-size: 11px; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
 .kpi-card .kpi-value { font-size: 22px; font-weight: 700; color: var(--dark); }
 .kpi-card .kpi-delta { font-size: 11px; margin-top: 3px; }
@@ -61,8 +137,17 @@ select:focus { outline: none; border-color: var(--dark); }
 .delta-down { color: var(--red); }
 .delta-neu { color: var(--slate); }
 
-/* IFB Score */
-.ifb-score-box { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; display: flex; align-items: center; gap: 24px; margin-bottom: 16px; }
+/* ── IFB Score ── */
+.ifb-score-box {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 16px;
+}
 .ifb-score-num { font-size: 56px; font-weight: 800; line-height: 1; }
 .ifb-solid  { color: #1f7a4b; }
 .ifb-stable { color: #3a9e6a; }
@@ -72,7 +157,13 @@ select:focus { outline: none; border-color: var(--dark); }
 .ifb-meta   { font-size: 11px; color: var(--slate); margin-top: 2px; }
 
 .camels-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin: 16px 0; }
-.camels-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+.camels-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
 .camels-card .c-dim { font-size: 20px; font-weight: 800; color: var(--dark); }
 .camels-card .c-name { font-size: 10px; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0; }
 .camels-card .c-score { font-size: 26px; font-weight: 700; }
@@ -83,7 +174,7 @@ select:focus { outline: none; border-color: var(--dark); }
 .score-1 { color: #b83232; } .fill-1 { background: #b83232; width: 33%; }
 .score-null { color: var(--border); }
 
-/* Tablas */
+/* ── Tablas ── */
 .data-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--white); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
 .data-table th { background: var(--dark); color: var(--white); padding: 9px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
 .data-table th.num, .data-table td.num { text-align: right; }
@@ -92,45 +183,225 @@ select:focus { outline: none; border-color: var(--dark); }
 .data-table tr:hover td { background: var(--light); }
 .data-table .bank-name { font-weight: 600; }
 .rank-badge { display: inline-block; background: var(--teal); color: var(--dark); font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
-.group-badge { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 3px; background: var(--light); color: var(--slate); margin-left: 4px; }
 
-/* Charts */
-.chart-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+/* ── Gráficos ── */
+.chart-wrap {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 16px;
+}
 .chart-title { font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 12px; }
 .chart-canvas { position: relative; }
+
+/* ── Grid de charts ── */
 .chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.chart-row.one { grid-template-columns: 1fr; }   /* gráfica a todo el ancho (IFB) */
+/* La gráfica de ancho completo necesita altura fija. Los charts de este tablero
+   corren con maintainAspectRatio:false, así que toman el alto del contenedor; si
+   el contenedor no lo declara, al ocupar toda la fila la gráfica se estira. En
+   cooperativas el equivalente queda topado en 260 px, así que aquí se fija en
+   240 px. Para subirla o bajarla, este es el único número que hay que tocar. */
+.chart-row.one .chart-canvas { height: 240px; }
 .chart-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
 
-/* Semáforo */
+/* ── Semáforo ── */
 .sema { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
-.sema-3 { background: #2a7a4b; } .sema-2 { background: #c8820a; } .sema-1 { background: #b83232; }
+.sema-3 { background: #2a7a4b; }
+.sema-2 { background: #c8820a; }
+.sema-1 { background: #b83232; }
 
-/* ICTL */
-.ictl-score-row { display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: center; margin-bottom: 20px; }
-.ictl-num-box { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-align: center; }
-.ictl-num { font-size: 56px; font-weight: 800; line-height: 1; }
-.ictl-80 { color: #1f7a4b; } .ictl-60 { color: #3a9e6a; } .ictl-40 { color: #c8820a; } .ictl-0 { color: #b83232; }
-.ictl-components { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
-.ictl-comp { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
-.ictl-comp .ic-label { font-size: 11px; color: var(--slate); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
-.ictl-comp .ic-val { font-size: 22px; font-weight: 700; color: var(--dark); }
-.ictl-comp .ic-score { font-size: 12px; margin-top: 4px; }
-.ictl-bar { height: 8px; border-radius: 4px; background: var(--border); margin-top: 8px; }
-.ictl-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+/* ── Bar fill ── */
+.bar-bg { background: var(--border); border-radius: 2px; height: 6px; }
+.bar-val { height: 100%; border-radius: 2px; }
 
-/* Modal */
-.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; }
-.modal-overlay.open { display:flex; }
-.modal-box { background:var(--white); border-radius:12px; padding:28px; max-width:540px; width:90%; position:relative; max-height:80vh; overflow-y:auto; }
-.modal-close { position:absolute; top:12px; right:16px; font-size:20px; cursor:pointer; color:var(--slate); background:none; border:none; }
-.modal-dim-letter { font-size:40px; font-weight:800; color:var(--dark); line-height:1; }
-.modal-dim-name { font-size:16px; font-weight:700; color:var(--dark); }
-.modal-dim-weight { font-size:11px; color:var(--slate); }
-.modal-ind-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
-.modal-ind-row:last-child { border-bottom:none; }
-.modal-total-box { background:var(--light); border-radius:8px; padding:14px; text-align:center; margin-top:16px; }
-.modal-total-label { font-size:12px; font-weight:600; color:var(--slate); text-transform:uppercase; letter-spacing:.5px; }
-.modal-total-score { font-size:30px; font-weight:800; }
+/* ── Referencia regulatoria ── */
+.ref-tag { font-size: 10px; background: var(--light); color: var(--slate); padding: 2px 6px; border-radius: 4px; margin-left: 6px; }
+
+/* ── Loading / error ── */
+#loading { padding: 60px; text-align: center; color: var(--slate); }
+
+/* ── Botones Vista Sistema/Banco ── */
+.view-btn {
+  padding: 5px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--slate);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.view-btn.active { background: var(--dark); color: var(--white); border-color: var(--dark); }
+.view-btn:hover:not(.active) { border-color: var(--dark); color: var(--dark); }
+
+/* ── Modal CAMELS ── */
+#camels-modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+}
+#camels-modal-overlay.open { display: flex; }
+#camels-modal {
+  background: var(--white);
+  border-radius: 10px;
+  padding: 24px;
+  min-width: 340px;
+  max-width: 480px;
+  width: 90%;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+  position: relative;
+}
+.modal-close-btn {
+  position: absolute;
+  top: 10px; right: 14px;
+  font-size: 22px;
+  cursor: pointer;
+  color: var(--slate);
+  background: none;
+  border: none;
+  line-height: 1;
+}
+.modal-close-btn:hover { color: var(--dark); }
+.modal-dim-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 12px;
+}
+.modal-dim-letter { font-size: 40px; font-weight: 800; color: var(--dark); line-height: 1; }
+.modal-dim-info { display: flex; flex-direction: column; gap: 3px; }
+.modal-dim-name { font-size: 16px; font-weight: 700; color: var(--dark); }
+.modal-dim-weight { font-size: 11px; color: var(--slate); }
+.modal-ind-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.modal-ind-table th {
+  font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px;
+  color: var(--slate); padding: 4px 6px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.modal-ind-table th.r, .modal-ind-table td.r { text-align: right; }
+.modal-ind-table td { padding: 8px 6px; border-bottom: 1px solid var(--border); }
+.modal-ind-table tr:last-child td { border-bottom: none; }
+.modal-total-box {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 2px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.modal-total-label { font-size: 12px; font-weight: 600; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; }
+.modal-total-score { font-size: 30px; font-weight: 800; }
+.modal-note { font-size: 10px; color: var(--slate); margin-top: 10px; font-style: italic; line-height: 1.5; }
+
+/* ── Responsive / móvil ── */
+@media (max-width: 768px) {
+  body { font-size: 13px; -webkit-text-size-adjust: 100%; }
+
+  #header { padding: 12px 14px; flex-wrap: wrap; gap: 6px; }
+  #header h1 { font-size: 15px; }
+  #gen-date { text-align: left !important; width: 100%; }
+
+  #controls { padding: 10px 14px; gap: 12px; }
+  .ctrl-group { flex: 1 1 auto; }
+  .ctrl-group select { flex: 1; min-width: 0; }
+  #meta-info { margin-left: 0; width: 100%; }
+
+  #tabs { padding: 0 8px; -webkit-overflow-scrolling: touch; }
+  .tab-btn { padding: 10px 12px; font-size: 12px; }
+
+  #content { padding: 14px 12px; }
+
+  /* gráficos a una columna */
+  .chart-row, .chart-row-3 { grid-template-columns: 1fr; }
+
+  /* KPIs y CAMELS más compactos */
+  .kpi-grid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
+  .camels-grid { grid-template-columns: repeat(3, 1fr); }
+
+  /* IFB score apilado */
+  .ifb-score-box { flex-direction: column; align-items: flex-start; gap: 12px; padding: 16px; }
+  .ifb-score-num { font-size: 44px; }
+
+  /* tablas con scroll horizontal */
+  #ifb-ranking-table, #table-cartera, #table-liquidez, #table-solvencia,
+  #table-rentabilidad, #tbl-rank-sol, #tbl-rank-mor, #tbl-rank-roa, #tbl-rank-act,
+  #ialt-content, .chart-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .data-table { font-size: 12px; }
+  .data-table th, .data-table td { padding: 7px 8px; white-space: nowrap; }
+  /* La columna "Qué mide" (IALT) lleva una descripción larga: si hereda el
+     nowrap de arriba, el texto se corta contra el overflow:hidden de
+     .data-table en vez de envolver a varias líneas. */
+  .data-table th.col-desc, .data-table td.col-desc { white-space: normal; }
+
+  #camels-modal { padding: 18px; }
+}
+
+@media (max-width: 480px) {
+  .camels-grid { grid-template-columns: repeat(2, 1fr); }
+  #header h1 { font-size: 14px; }
+  .kpi-card .kpi-value { font-size: 18px; }
+  .ifb-score-num { font-size: 38px; }
+}
+/* ── Sakbé · Hero de índice (gauge + serie histórica completa) ──
+   Design system Sakbé: fondo-oscuro como énfasis puntual, Dashiell Fine y
+   Owners Text, acento-sobre-oscuro en la serie, esquinas rectas, sin sombras,
+   relleno interno space-8 (32 px) y space-6 (24 px) en móvil. */
+.sk-hero {
+  --sk-oscuro: #163043;          /* sakbe-101 · fondo-oscuro */
+  --sk-claro: #dceff2;           /* sakbe-01  · texto-sobre-oscuro */
+  --sk-linea: #c5dddd;           /* sakbe-201 · líneas y texto secundario sobre oscuro */
+  --sk-acento: #d9b39d;          /* sakbe-401 · acento-sobre-oscuro */
+  --sk-display: "dashiell-fine", "Dashiell Fine", Georgia, serif;
+  --sk-body: "owners-text", "Owners Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: var(--sk-oscuro);
+  color: var(--sk-claro);
+  border-radius: 0;
+  padding: 32px;
+  margin-bottom: 16px;
+  display: grid;
+  grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+  column-gap: 32px;
+  align-items: stretch;
+  font-family: var(--sk-body);
+  font-weight: 300;
+}
+.sk-hero-left { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.sk-hero-right { display: flex; flex-direction: column; min-width: 0; }
+.sk-gauge { width: 100%; max-width: 280px; height: auto; display: block; overflow: visible; }
+.sk-g-num { font-family: var(--sk-display); font-weight: 400; font-size: 64px; fill: #ffffff; }
+.sk-g-cat { font-family: var(--sk-body); font-weight: 400; font-size: 20px; fill: var(--sk-claro); }
+.sk-g-lim { font-family: var(--sk-body); font-weight: 300; font-size: 14px; fill: var(--sk-linea); }
+.sk-delta { font: 400 14px/22px var(--sk-body); color: var(--sk-acento); margin-top: 8px; text-align: center; }
+.sk-delta .sk-delta-t { color: var(--sk-linea); font-weight: 300; margin-left: 4px; }
+.sk-kicker { font: 500 12px/16px var(--sk-body); letter-spacing: 0.08em; text-transform: uppercase; color: var(--sk-acento); }
+.sk-title { font: 400 28px/36px var(--sk-display); color: var(--sk-claro); margin-top: 8px; }
+.sk-sub { font: 300 14px/22px var(--sk-body); color: var(--sk-linea); margin-top: 4px; }
+.sk-chart { position: relative; flex: 1 1 auto; min-height: 200px; margin-top: 16px; }
+.sk-chart svg { position: absolute; left: 0; top: 0; display: block; overflow: visible; touch-action: pan-y; }
+.sk-ax { font: 300 12px var(--sk-body); fill: var(--sk-linea); }
+.sk-tip {
+  position: absolute; pointer-events: none; display: none;
+  background: var(--sk-claro); color: var(--sk-oscuro);
+  font: 400 12px/16px var(--sk-body); padding: 4px 8px; border-radius: 0; white-space: nowrap;
+}
+.sk-tip b { font-weight: 500; font-variant-numeric: tabular-nums; }
+@media (max-width: 760px) {
+  .sk-hero { grid-template-columns: 1fr; row-gap: 24px; padding: 24px; }
+  .sk-title { font-size: 24px; line-height: 32px; }
+  .sk-chart { min-height: 180px; }
+}
 </style>
 </head>
 <body>
@@ -138,27 +409,24 @@ select:focus { outline: none; border-color: var(--dark); }
 <div id="header">
   <div>
     <div class="brand">Sakbé Consultores</div>
-    <h1>Monitor Banca Múltiple México</h1>
+    <h1>Monitor de Banca Múltiple México</h1>
     <div class="subtitle" id="header-subtitle">Cargando datos...</div>
   </div>
-  <div style="font-size:11px;color:var(--teal);text-align:right">
-    Fuente: CNBV · Sector 40<br>
-    <span id="header-generated"></span>
-  </div>
+  <div style="text-align:right;font-size:11px;color:var(--teal);" id="gen-date"></div>
 </div>
 
 <div id="controls">
   <div class="ctrl-group">
-    <button class="view-btn active" id="btn-sistema" onclick="setView('sistema')">Sistema / Grupo</button>
-    <button class="view-btn" id="btn-banco" onclick="setView('banco')">Banco Individual</button>
+    <button id="btn-sistema" class="view-btn active" onclick="setView('sistema')">Sistema</button>
+    <button id="btn-banco" class="view-btn" onclick="setView('banco')">Banco</button>
   </div>
   <div class="ctrl-group">
-    <label>Entidad</label>
-    <select id="bank-sel" onchange="STATE.bank=+this.value; renderAll()"></select>
+    <label>Banco</label>
+    <select id="bank-sel"></select>
   </div>
   <div class="ctrl-group">
     <label>Período</label>
-    <select id="period-sel" onchange="STATE.month=+this.value; renderAll()"></select>
+    <select id="period-sel"></select>
   </div>
   <div id="meta-info"></div>
 </div>
@@ -168,62 +436,63 @@ select:focus { outline: none; border-color: var(--dark); }
   <button class="tab-btn" onclick="switchTab('ejecutivo')">Vista Ejecutiva</button>
   <button class="tab-btn" onclick="switchTab('cartera')">Cartera</button>
   <button class="tab-btn" onclick="switchTab('liquidez')">Liquidez</button>
-  <button class="tab-btn" onclick="switchTab('capital')">Capital</button>
+  <button class="tab-btn" onclick="switchTab('solvencia')">Solvencia</button>
   <button class="tab-btn" onclick="switchTab('rentabilidad')">Rentabilidad</button>
   <button class="tab-btn" onclick="switchTab('benchmark')">Benchmarking</button>
-  <button class="tab-btn" onclick="switchTab('ictl')">ICTL</button>
+  <button class="tab-btn" onclick="switchTab('ialt')">IALT</button>
 </div>
 
 <div id="content">
+  <div id="loading">Cargando datos del sistema bancario...</div>
 
   <!-- TAB IFB -->
-  <div class="tab-pane active" id="pane-ifb">
-    <div class="ifb-score-box">
-      <div>
-        <div class="ifb-score-num" id="ifb-num">—</div>
-        <div class="ifb-label" id="ifb-cat">—</div>
-        <div class="ifb-meta">Índice de Fragilidad Bancaria (IFB)</div>
-      </div>
-      <div style="flex:1;min-width:260px;height:240px"><canvas id="chart-ifb-radar"></canvas></div>
-    </div>
+  <div class="tab-pane" id="pane-ifb">
+    <div class="sk-hero" id="sk-hero-ifb"></div>
     <div class="camels-grid" id="camels-cards"></div>
-    <div class="chart-row">
-      <div class="chart-wrap">
-        <div class="chart-title" id="chart-hist-title">Histórico IFB</div>
-        <div class="chart-canvas"><canvas id="chart-ifb-hist" height="200"></canvas></div>
-      </div>
-      <div class="chart-wrap">
-        <div class="chart-title">ROA y ROE — Histórico</div>
-        <div class="chart-canvas"><canvas id="chart-ifb-roaroe" height="200"></canvas></div>
-      </div>
-    </div>
     <div class="chart-wrap">
-      <div class="chart-title">IFB — Ranking · Período seleccionado <span style="font-size:11px;color:var(--slate);font-weight:400">(frágil → sólido)</span></div>
+      <div class="chart-title">IFB — Ranking sistema bancario · Período seleccionado</div>
       <div id="ifb-ranking-table"></div>
     </div>
   </div>
 
   <!-- TAB EJECUTIVO -->
   <div class="tab-pane" id="pane-ejecutivo">
-    <div class="kpi-grid" id="kpi-ejecutivo"></div>
-    <div class="chart-row">
+    <div class="kpi-grid" id="kpi-grid"></div>
+    <!-- IFB a todo el ancho, con los cortes de categoría punteados -->
+    <div class="chart-row one">
       <div class="chart-wrap">
-        <div class="chart-title" id="chart-ej-ifb-title">Histórico IFB</div>
-        <div class="chart-canvas"><canvas id="chart-ej-ifb" height="200"></canvas></div>
-      </div>
-      <div class="chart-wrap">
-        <div class="chart-title">Activos y Cartera — Histórico</div>
-        <div class="chart-canvas"><canvas id="chart-ej-bal" height="200"></canvas></div>
+        <div class="chart-title" id="chart-hist-title">IFB — Índice de Fragilidad Bancaria</div>
+        <div class="chart-canvas"><canvas id="chart-eje-ifb" height="200"></canvas></div>
       </div>
     </div>
     <div class="chart-row">
       <div class="chart-wrap">
-        <div class="chart-title">IMOR — Histórico</div>
-        <div class="chart-canvas"><canvas id="chart-ej-imor" height="200"></canvas></div>
+        <div class="chart-title">Activos, Cartera y Depósitos — histórico</div>
+        <div class="chart-canvas"><canvas id="chart-eje-bal" height="200"></canvas></div>
       </div>
       <div class="chart-wrap">
-        <div class="chart-title">ROA y ROE — Histórico</div>
-        <div class="chart-canvas"><canvas id="chart-ej-rent" height="200"></canvas></div>
+        <div class="chart-title">Morosidad total — histórico</div>
+        <div class="chart-canvas"><canvas id="chart-eje-mor" height="200"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">Liquidez — histórico</div>
+        <div class="chart-canvas"><canvas id="chart-eje-liq" height="200"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Solvencia — histórico</div>
+        <div class="chart-canvas"><canvas id="chart-eje-sol" height="200"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">ROA y ROE — histórico</div>
+        <div class="chart-canvas"><canvas id="chart-eje-rent" height="200"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Eficiencia operativa — histórico</div>
+        <div class="chart-canvas"><canvas id="chart-eje-ef" height="200"></canvas></div>
       </div>
     </div>
   </div>
@@ -233,16 +502,22 @@ select:focus { outline: none; border-color: var(--dark); }
     <div class="kpi-grid" id="kpi-cartera"></div>
     <div class="chart-row">
       <div class="chart-wrap">
-        <div class="chart-title">IMOR por tipo de cartera — Histórico</div>
-        <div class="chart-canvas"><canvas id="chart-cart-imor" height="220"></canvas></div>
+        <div class="chart-title">Composición de cartera — período seleccionado</div>
+        <div class="chart-canvas"><canvas id="chart-cart-comp" height="220"></canvas></div>
       </div>
+      <div class="chart-wrap" style="display:none">
+        <div class="chart-title">Cartera vencida: antigüedad — cartera consumo</div>
+        <div class="chart-canvas"><canvas id="chart-cart-aging" height="220"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-row one">
       <div class="chart-wrap">
-        <div class="chart-title">Índice de Cobertura (ICOR) — Histórico</div>
-        <div class="chart-canvas"><canvas id="chart-cart-icor" height="220"></canvas></div>
+        <div class="chart-title">Evolución de morosidad — 24 meses</div>
+        <div class="chart-canvas"><canvas id="chart-cart-mor24" height="200"></canvas></div>
       </div>
     </div>
     <div class="chart-wrap">
-      <div class="chart-title">Calidad de cartera — Todos los bancos · Período seleccionado</div>
+      <div class="chart-title">Morosidad total — Todos los bancos · Período seleccionado</div>
       <div id="table-cartera"></div>
     </div>
   </div>
@@ -250,14 +525,20 @@ select:focus { outline: none; border-color: var(--dark); }
   <!-- TAB LIQUIDEZ -->
   <div class="tab-pane" id="pane-liquidez">
     <div class="kpi-grid" id="kpi-liquidez"></div>
-    <div class="chart-row">
+    <div class="chart-row one">
       <div class="chart-wrap">
-        <div class="chart-title">Liquidez (FD/Depósitos CP) — Histórico</div>
+        <div class="chart-title">Ratio de liquidez — histórico completo</div>
         <div class="chart-canvas"><canvas id="chart-liq-ratio" height="220"></canvas></div>
       </div>
+    </div>
+    <div class="chart-row">
       <div class="chart-wrap">
-        <div class="chart-title">Margen de Intermediación Financiera — Histórico</div>
-        <div class="chart-canvas"><canvas id="chart-liq-mif" height="220"></canvas></div>
+        <div class="chart-title">Efectivo vs. Depósitos del público</div>
+        <div class="chart-canvas"><canvas id="chart-liq-fondos" height="220"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Depósitos a la vista vs. Depósitos a plazo</div>
+        <div class="chart-canvas"><canvas id="chart-liq-dep" height="220"></canvas></div>
       </div>
     </div>
     <div class="chart-wrap">
@@ -266,22 +547,22 @@ select:focus { outline: none; border-color: var(--dark); }
     </div>
   </div>
 
-  <!-- TAB CAPITAL -->
-  <div class="tab-pane" id="pane-capital">
-    <div class="kpi-grid" id="kpi-capital"></div>
+  <!-- TAB SOLVENCIA -->
+  <div class="tab-pane" id="pane-solvencia">
+    <div class="kpi-grid" id="kpi-solvencia"></div>
     <div class="chart-row">
       <div class="chart-wrap">
-        <div class="chart-title">Capital Contable / Activo — Histórico</div>
-        <div class="chart-canvas"><canvas id="chart-cap-ratio" height="220"></canvas></div>
+        <div class="chart-title">ICAP por banco — Período seleccionado <span class="ref-tag">Mín. 10,5% categoría I</span></div>
+        <div class="chart-canvas"><canvas id="chart-sol-bar" height="220"></canvas></div>
       </div>
       <div class="chart-wrap">
-        <div class="chart-title">Capital Contable y Activo Total — Histórico</div>
-        <div class="chart-canvas"><canvas id="chart-cap-abs" height="220"></canvas></div>
+        <div class="chart-title">ICAP (capital neto / APSRT) — Histórico <span class="ref-tag">Mín. 10,5% categoría I</span></div>
+        <div class="chart-canvas"><canvas id="chart-sol-coef" height="220"></canvas></div>
       </div>
     </div>
     <div class="chart-wrap">
-      <div class="chart-title">Capital — Todos los bancos · Período seleccionado</div>
-      <div id="table-capital"></div>
+      <div class="chart-title">Solvencia — Todos los bancos · Período seleccionado</div>
+      <div id="table-solvencia"></div>
     </div>
   </div>
 
@@ -289,7 +570,7 @@ select:focus { outline: none; border-color: var(--dark); }
   <div class="tab-pane" id="pane-rentabilidad">
     <div class="kpi-grid" id="kpi-rent"></div>
     <div class="chart-wrap">
-      <div class="chart-title" id="wf-title">Composición del Margen — Período seleccionado</div>
+      <div class="chart-title" id="wf-title">Composición del Resultado — Período seleccionado</div>
       <div class="chart-canvas" style="height:200px"><canvas id="chart-waterfall"></canvas></div>
     </div>
     <div class="chart-row">
@@ -310,37 +591,63 @@ select:focus { outline: none; border-color: var(--dark); }
 
   <!-- TAB BENCHMARK -->
   <div class="tab-pane" id="pane-benchmark">
-    <div class="ctrl-group" style="margin-bottom:14px">
-      <label>Ordenar por</label>
-      <select id="bench-sort" onchange="renderBenchmark()">
-        <option value="ifb">IFB (Índice de Fragilidad)</option>
-        <option value="imor">IMOR (Morosidad Total)</option>
-        <option value="icor">ICOR (Cobertura)</option>
-        <option value="roa">ROA</option>
-        <option value="roe">ROE</option>
-        <option value="liquidez">Liquidez</option>
-        <option value="efic_margen">Eficiencia (Gastos/Margen)</option>
-        <option value="capital_activo">Capital/Activo</option>
-        <option value="activo">Activos Totales</option>
-      </select>
+    <div style="font-size:12px;color:var(--slate);margin-bottom:14px">Distribución del sistema bancario en el periodo seleccionado. La línea naranja es el banco seleccionado.</div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">Distribución de morosidad total (p25/p50/p75)</div>
+        <div class="chart-canvas"><canvas id="bm-chart-mor" height="220"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Distribución de solvencia (p25/p50/p75)</div>
+        <div class="chart-canvas"><canvas id="bm-chart-sol" height="220"></canvas></div>
+      </div>
     </div>
-    <div id="bench-table"></div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">Distribución de liquidez (p25/p50/p75)</div>
+        <div class="chart-canvas"><canvas id="bm-chart-liq" height="220"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Distribución de ROA (p25/p50/p75)</div>
+        <div class="chart-canvas"><canvas id="bm-chart-roa" height="220"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">Top 10 — Mayor solvencia</div>
+        <div id="tbl-rank-sol"></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Top 10 — Menor morosidad</div>
+        <div id="tbl-rank-mor"></div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">Top 10 — Mayor ROA</div>
+        <div id="tbl-rank-roa"></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Top 10 — Mayor total de activos</div>
+        <div id="tbl-rank-act"></div>
+      </div>
+    </div>
   </div>
 
-  <!-- TAB ICTL -->
-  <div class="tab-pane" id="pane-ictl">
-    <div id="ictl-content"></div>
+  <!-- TAB IALT -->
+  <div class="tab-pane" id="pane-ialt">
+    <div id="ialt-content"></div>
   </div>
 
-</div>
+</div><!-- /content -->
 
-<!-- Modal CAMELS -->
-<div class="modal-overlay" id="camels-modal-overlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">×</button>
-    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px">
+<!-- Modal CAMELS Detalle -->
+<div id="camels-modal-overlay" onclick="if(event.target===this)closeCAMELSModal()">
+  <div id="camels-modal">
+    <button class="modal-close-btn" onclick="closeCAMELSModal()">×</button>
+    <div class="modal-dim-header">
       <div class="modal-dim-letter" id="camels-modal-dim">C</div>
-      <div>
+      <div class="modal-dim-info">
         <div class="modal-dim-name" id="camels-modal-name">Capital</div>
         <div class="modal-dim-weight" id="camels-modal-weight"></div>
       </div>
@@ -354,122 +661,264 @@ select:focus { outline: none; border-color: var(--dark); }
 </div>
 
 <script>
-// ════════════════════════════════════════════════════════════════════════════
-// ESTADO GLOBAL
-// ════════════════════════════════════════════════════════════════════════════
+// ── Estado global ──────────────────────────────────────────────────────────
 let DATA = null;
 let CHARTS = {};
-let STATE = { bank: 0, month: 0, lastBank: null, view: 'sistema' };
+let STATE = { bank: 0, month: 0, lastBank: null };
 
-const AGGREGATES = new Set(['5','59','60','61','62','63','64']);
-const PEER_G7    = new Set(['040002','040012','040014','040021','040036','040044','040072']);
-const PEER_MED   = new Set(['040030','040037','040042','040058','040113','040132','040156','040112','040136','040143','040145']);
-
-// ════════════════════════════════════════════════════════════════════════════
-// UTILIDADES
-// ════════════════════════════════════════════════════════════════════════════
+// ── Utilidades ─────────────────────────────────────────────────────────────
 const fmtPct  = v => v == null ? '—' : (v * 100).toFixed(2) + '%';
 const fmtPct1 = v => v == null ? '—' : (v * 100).toFixed(1) + '%';
 const fmtNum  = v => v == null ? '—' : v.toFixed(2);
-const fmtX    = v => v == null ? '—' : v.toFixed(2) + 'x';
-
-// Pesos en MXN (sin multiplicar — los balances ya vienen en pesos)
-function fmtMXN(v) {
-  if (v == null) return '—';
-  const a = Math.abs(v);
-  if (a >= 1e12) return (v < 0 ? '-' : '') + (a / 1e12).toFixed(2) + 'T';
-  if (a >= 1e9)  return (v < 0 ? '-' : '') + (a / 1e9).toFixed(1)  + 'B';
-  if (a >= 1e6)  return (v < 0 ? '-' : '') + (a / 1e6).toFixed(1)  + 'M';
-  if (a >= 1e3)  return (v < 0 ? '-' : '') + (a / 1e3).toFixed(0)  + 'K';
-  return v.toFixed(0);
-}
+const fmtM    = v => { if (v == null) return '—'; const a = Math.abs(v); return (v<0?'-':'') + (a>=1e9 ? (a/1e9).toFixed(2)+'B' : a>=1e6 ? (a/1e6).toFixed(1)+'M' : a>=1e3 ? (a/1e3).toFixed(0)+'K' : a.toFixed(0)); };
+// BAL/PT vienen en miles USD → multiplicar ×1000 para mostrar en USD real
+const fmtBal  = v => { if (v == null) return '—'; return fmtM(v * 1000); };
 
 function monthLabel(m) {
   const [y, mo] = m.split('-');
-  const n = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-  return n[+mo - 1] + ' ' + y;
+  const names = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return names[+mo-1] + ' ' + y;
 }
 
-function get(key, bi, mi) {
-  bi = bi ?? STATE.bank; mi = mi ?? STATE.month;
+function get(key, bi=STATE.bank, mi=STATE.month) {
   return DATA.ind[key]?.[bi]?.[mi] ?? null;
 }
-function getDer(key, bi, mi) {
-  bi = bi ?? STATE.bank; mi = mi ?? STATE.month;
-  return DATA.der[key]?.[bi]?.[mi] ?? null;
+function getPT(key, bi=STATE.bank, mi=STATE.month) {
+  return DATA.pt[key]?.[bi]?.[mi] ?? null;
 }
-function getBal(key, bi, mi) {
-  bi = bi ?? STATE.bank; mi = mi ?? STATE.month;
+function getBal(key, bi=STATE.bank, mi=STATE.month) {
   return DATA.bal[key]?.[bi]?.[mi] ?? null;
 }
-function getSerie(key, bi, type) {
-  bi = bi ?? STATE.bank; type = type ?? 'ind';
-  const src = type === 'ind' ? DATA.ind : type === 'der' ? DATA.der : DATA.bal;
-  return src[key]?.[bi] ?? [];
+function getSerie(key, bi=STATE.bank, type='ind') {
+  const src = type === 'ind' ? DATA.ind : type === 'pt' ? DATA.pt : DATA.bal;
+  return (src[key]?.[bi] ?? []);
+}
+function getSistema(key, type='ind') {
+  const si = DATA.meta.banks.indexOf('SISTEMA');
+  if (si === -1) return [];
+  return getSerie(key, si, type);
 }
 
-// Sistema = entidad '5'
-function getSI() { return DATA.meta.banks.indexOf('5'); }
-
-function bankDisplay(bi) {
-  const code = DATA.meta.banks[bi];
-  return DATA.meta.display[code] || code;
+function delta(cur, prev) {
+  if (cur == null || prev == null) return null;
+  return cur - prev;
 }
 
-function delta(cur, prev, pct) {
-  if (cur == null || prev == null || prev === 0) return null;
-  return pct ? (cur - prev) / Math.abs(prev) : cur - prev;
+// ── IFB (CAMELS) — lectura del modelo precalculado ─────────────────────────
+//
+// El cálculo vivía aquí en JavaScript hasta el 2026-08-05. Se movió a
+// src/scoring.py porque los dos scripts de reporte tenían que reimplementarlo
+// para poder emitirlo en los documentos, y una reimplementación siempre acaba
+// divergiendo: el ICTL llegó a diferir 45 puntos entre reporte y tablero.
+//
+// Estas funciones conservan la firma anterior para no tocar los 12 puntos que
+// las llaman, pero ya no calculan: leen DATA.ifb.
+
+const IFB_DIMS = ['C','A','M','E','L','S'];
+
+// ── Bancos cerrados ───────────────────────────────────────────────────────
+// meta.cierres = { "BANCO X": "AAAA-MM" } (lo escribe scoring.py). Un banco
+// cerrado solo aparece hasta su último mes con información.
+function bancoActivo(i, mi) {
+  const cierre = DATA.meta.cierres?.[DATA.meta.banks[i]];
+  return !cierre || DATA.meta.months[mi] <= cierre;
+}
+function etiquetaCierre(b) {
+  const cierre = DATA.meta.cierres?.[b];
+  return cierre ? ` (cerrado ${monthLabel(cierre)})` : '';
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-// SPARKLINES
-// ════════════════════════════════════════════════════════════════════════════
-function sparkSVG(data, color, h) {
-  h = h || 30; color = color || '#163043';
-  const vals = data.filter(v => v != null);
-  if (!vals.length) return `<svg width="100%" height="${h}"></svg>`;
-  const mn = Math.min(...vals), mx = Math.max(...vals), rng = mx - mn || 1, n = data.length;
-  const pts = data.map((v, i) => ({
-    x: n === 1 ? 50 : (i / (n - 1)) * 100,
-    y: v == null ? null : h - ((v - mn) / rng) * (h - 4) - 2
-  })).filter(p => p.y != null);
-  if (!pts.length) return `<svg width="100%" height="${h}"></svg>`;
-  const d = pts.map((p, i) => (i ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' ');
-  const lp = pts[pts.length - 1];
+function computeCAMELS(bi, mi) {
+  const F = DATA.ifb;
+  if (!F) return { ifb: null, dims: Object.fromEntries(IFB_DIMS.map(d => [d, null])) };
+  const dims = {};
+  for (const d of IFB_DIMS) dims[d] = F['dim_'+d]?.[bi]?.[mi] ?? null;
+  return { ifb: F.IFB?.[bi]?.[mi] ?? null, dims };
+}
+
+// Score CONTINUO 1,0–3,0 de un sub-indicador contra sus umbrales. Se usa solo
+// en el modal de detalle, que muestra el desglose. Los umbrales NO se declaran
+// aquí: vienen de DATA.ifb.config.indicadores, que los exporta scoring.py.
+//
+// Espejo exacto de _score1() en src/scoring.py, que llama a score_interp() en
+// sakbe_scoring_common.py. Antes esta función devolvía escalones (1, 2 o 3
+// según la banda) mientras el motor ya interpolaba, así que la tabla del modal
+// no reconstruía el score de la card. Ahora ambos usan la misma recta: 1,0 en
+// t_bajo, 3,0 en t_alto, 2,0 en el punto medio, y recorte fuera del rango.
+function score1(v, tLow, tHigh, dir) {
+  if (v == null || isNaN(v)) return null;
+  const span = tHigh - tLow;
+  if (!(span > 0)) return null;
+  const pos = (dir === 'high' || dir === 'alto') ? (v - tLow) / span
+                                                 : (tHigh - v) / span;
+  return 1 + 2 * Math.min(Math.max(pos, 0), 1);
+}
+
+const IFB_CAT_CLS = { 'Solido':'ifb-solid', 'Estable':'ifb-stable',
+                      'Atencion':'ifb-watch', 'Fragil':'ifb-fragil' };
+const IFB_CAT_LBL = { 'Solido':'Sólido', 'Estable':'Estable',
+                      'Atencion':'Atención', 'Fragil':'Frágil' };
+
+// Escala unificada IFC/IFB (metodología v2.0, ago-2026). Solo se usa si el
+// JSON no trae ifb.config.categorias: la fuente de verdad es el motor.
+//
+// Se lee dentro de una función, no en una constante de módulo: DATA se asigna
+// de forma asíncrona después de cargar el JSON, así que al parsear este script
+// todavía es null.
+const IFB_CORTES_FALLBACK = [[2.30,'Solido'],[2.00,'Estable'],[1.70,'Atencion'],[0,'Fragil']];
+function ifbCortes() { return DATA?.ifb?.config?.categorias || IFB_CORTES_FALLBACK; }
+
+function ifbCategory(v) {
+  if (v == null) return { label:'—', cls:'score-null' };
+  // Los cortes vienen del JSON para que no puedan desincronizarse del motor.
+  const cortes = ifbCortes();
+  for (const [corte, nombre] of cortes) {
+    if (v >= corte) return { label: IFB_CAT_LBL[nombre] || nombre, cls: IFB_CAT_CLS[nombre] || 'score-null' };
+  }
+  return { label:'—', cls:'score-null' };
+}
+
+function ifbSemaClass(v) {
+  if (v == null) return 'score-null';
+  // Mismos cortes que ifbCategory, leídos del config del motor.
+  const c = ifbCortes();
+  if (v >= c[0][0]) return 'score-3';
+  if (v >= c[2][0]) return 'score-2';
+  return 'score-1';
+}
+
+// ── Sparklines SVG ─────────────────────────────────────────────────────────
+function sparkSVG(data, color='#163043', h=30) {
+  const vals = data.filter(v=>v!=null);
+  if (!vals.length) return '<svg width="100%" height="'+h+'"></svg>';
+  const mn = Math.min(...vals), mx = Math.max(...vals);
+  const rng = mx-mn || 1;
+  const n = data.length;
+  const pts = data.map((v,i)=>{
+    const x = n===1 ? 50 : (i/(n-1))*100;
+    const y = v==null ? null : h - ((v-mn)/rng)*(h-4) - 2;
+    return {x,y};
+  }).filter(p=>p.y!=null);
+  if (!pts.length) return '<svg width="100%" height="'+h+'"></svg>';
+  const d = pts.map((p,i)=>(i?'L':'M')+p.x.toFixed(1)+' '+p.y.toFixed(1)).join(' ');
   return `<svg viewBox="0 0 100 ${h}" width="100%" height="${h}" preserveAspectRatio="none">
     <path d="${d}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round"/>
-    <circle cx="${lp.x.toFixed(1)}" cy="${lp.y.toFixed(1)}" r="2" fill="${color}"/>
+    <circle cx="${pts[pts.length-1].x.toFixed(1)}" cy="${pts[pts.length-1].y.toFixed(1)}" r="2" fill="${color}"/>
   </svg>`;
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-// CHARTS
-// ════════════════════════════════════════════════════════════════════════════
+// ── Helpers de charts ───────────────────────────────────────────────────────
 const MONTHS = () => DATA.meta.months.map(monthLabel);
-const C = { DARK:'#163043', RUST:'#9D4D31', TEAL:'#C5DDDD', SAND:'#D9B39D', SLATE:'#525E64',
-             GREEN:'#2a7a4b', YELLOW:'#c8820a', RED:'#b83232' };
+const C_DARK  = '#163043';
+const C_RUST  = '#9D4D31';
+const C_TEAL  = '#C5DDDD';
+const C_SAND  = '#D9B39D';
+const C_SLATE = '#525E64';
+// Semáforo: mismos hex que las variables CSS --green / --red, para que las
+// líneas de umbral de las gráficas coincidan con los badges de categoría.
+const C_GREEN = '#2a7a4b';
+const C_RED   = '#b83232';
 
-function destroyChart(id) { if (CHARTS[id]) { CHARTS[id].destroy(); delete CHARTS[id]; } }
+function destroyChart(id) {
+  if (CHARTS[id]) { CHARTS[id].destroy(); delete CHARTS[id]; }
+}
 
-function lineChart(id, datasets, opts) {
-  opts = opts || {};
+// Config cruda de Chart.js, para las gráficas que necesitan combinaciones
+// (stacked bar, dos líneas con estilos distintos) que lineChart/barChart no
+// cubren. Mismo helper que usa el dashboard de cooperativas, para poder
+// copiar sus configs de gráfica tal cual, color por color.
+function mkChart(id, cfg) {
+  destroyChart(id);
+  const el = document.getElementById(id);
+  if (!el) return;
+  CHARTS[id] = new Chart(el, cfg);
+  return CHARTS[id];
+}
+
+function lineChart(id, datasets, opts={}) {
   destroyChart(id);
   const ctx = document.getElementById(id);
   if (!ctx) return;
   CHARTS[id] = new Chart(ctx, {
     type: 'line',
-    data: { labels: MONTHS(), datasets },
+    // opts.labels permite graficar una ventana en vez del histórico completo
+    // (la evolución de morosidad a 24 meses de la pestaña Cartera).
+    data: { labels: opts.labels ?? MONTHS(), datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
       plugins: {
-        legend: { display: opts.legend !== false, position: 'top', labels: { font: { size: 11 }, boxWidth: 10 } },
-        tooltip: { callbacks: { label: c => (opts.fmt || fmtPct)(c.raw) } }
+        legend: { display: opts.legend ?? true, position:'top', labels:{ font:{size:11}, boxWidth:10 } },
+        tooltip: { callbacks: { label: ctx => (opts.fmt ?? fmtPct)(ctx.raw) } }
       },
       scales: {
-        x: { ticks: { font: { size: 10 }, maxTicksLimit: 18 }, grid: { color: '#eee' } },
-        y: { ticks: { font: { size: 10 }, callback: opts.fmt || fmtPct }, grid: { color: '#eee' } }
+        x: { ticks: { font:{size:10} }, grid:{ color:'#eee' } },
+        // opts.yMin / opts.yMax fijan la escala vertical. Se usa en el IFB para
+        // que la gráfica siempre corra de 1,0 a 3,0 y las líneas de umbral
+        // queden en la misma posición aunque cambie el banco seleccionado.
+        y: { ticks: { font:{size:10}, callback: opts.fmt ?? fmtPct }, grid:{ color:'#eee' },
+             ...(opts.yMin != null ? { min: opts.yMin } : {}),
+             ...(opts.yMax != null ? { max: opts.yMax } : {}),
+             ...(opts.refLine ? { afterDataLimits: ax => {
+               ax.min = Math.min(ax.min, opts.refLine * 0.9);
+             }} : {}) }
       },
-      elements: { point: { radius: 1 }, line: { tension: 0.3 } }
+      elements: { point:{ radius: opts.pointRadius ?? 2 }, line:{ tension:0.3 } }
+    }
+  });
+}
+
+// Dona para la composición de cartera. El tooltip muestra el monto y su peso
+// sobre el total, que es la lectura que interesa en esa gráfica.
+function donutChart(id, labels, values, colors, opts={}) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  const total = values.reduce((a,b)=>a+(b||0),0);
+  CHARTS[id] = new Chart(ctx, {
+    type: 'doughnut',
+    data: { labels, datasets:[{ data: values, backgroundColor: colors, borderWidth: 2 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { position:'bottom', labels:{ font:{size:11}, boxWidth:10 } },
+        tooltip: { callbacks: { label: c => ' ' + (opts.fmt ?? fmtBal)(c.raw) +
+          (total ? ' ('+((c.raw/total)*100).toFixed(1)+'%)' : '') } }
+      }
+    }
+  });
+}
+
+function barChart(id, labels, values, opts={}) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  // opts.colors: un color fijo por barra (aging de cartera). Tiene prioridad
+  // sobre colorFn, que asigna color en función del valor.
+  const colors = opts.colors
+    ? values.map((v,i) => v == null ? '#eee' : opts.colors[i])
+    : values.map(v => v == null ? '#eee' : (opts.colorFn ? opts.colorFn(v) : C_DARK));
+  CHARTS[id] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderRadius: 4 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false, indexAxis: opts.horizontal ? 'y' : 'x',
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: ctx => (opts.fmt ?? fmtPct)(ctx.raw) } }
+      },
+      // En barras horizontales el eje de valores es X y el de categorías Y, así
+      // que el formateador tiene que cambiar de eje. Antes estaba fijo en Y, lo
+      // que habría formateado las etiquetas de categoría y dejado los valores
+      // en crudo. Este es el primer uso de horizontal, así que no hay gráficas
+      // publicadas afectadas por el cambio.
+      scales: opts.horizontal ? {
+        x: { ticks: { font:{size:10}, callback: opts.fmt ?? fmtPct }, grid:{ color:'#eee' } },
+        y: { ticks: { font:{size:11} }, grid:{ display:false } }
+      } : {
+        x: { ticks: { font:{size:10} }, grid:{ color:'#eee' } },
+        y: { ticks: { font:{size:10}, callback: opts.fmt ?? fmtPct }, grid:{ color:'#eee' } }
+      },
+      elements: { bar:{ borderRadius:4 } }
     }
   });
 }
@@ -483,952 +932,1737 @@ function radarChart(id, labels, datasets) {
     data: { labels, datasets },
     options: {
       responsive: true, maintainAspectRatio: false,
-      scales: { r: { min: 0, max: 3, ticks: { stepSize: 1, font: { size: 9 } }, pointLabels: { font: { size: 11 } } } },
-      plugins: { legend: { display: true, labels: { font: { size: 10 }, boxWidth: 10 } } },
-      elements: { point: { radius: 3 } }
+      scales: { r: { min:0, max:3, ticks:{ stepSize:1, font:{size:9} }, pointLabels:{ font:{size:11} } } },
+      plugins: { legend:{ display:true, labels:{ font:{size:10}, boxWidth:10 } } },
+      elements: { point:{ radius:3 } }
     }
   });
 }
 
-function barChart(id, labels, values, opts) {
-  opts = opts || {};
-  destroyChart(id);
-  const ctx = document.getElementById(id);
-  if (!ctx) return;
-  const colors = values.map(v => v == null ? '#eee' : (opts.colorFn ? opts.colorFn(v) : C.DARK));
-  CHARTS[id] = new Chart(ctx, {
-    type: 'bar',
-    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderRadius: 3 }] },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      indexAxis: opts.horizontal ? 'y' : 'x',
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => (opts.fmt || fmtPct)(c.raw) } } },
-      scales: {
-        x: { ticks: { font: { size: 10 } }, grid: { color: '#eee' } },
-        y: { ticks: { font: { size: 10 }, callback: opts.fmt || fmtPct }, grid: { color: '#eee' } }
-      }
+// ── Renderizado ─────────────────────────────────────────────────────────────
+
+function renderAll() {
+  renderIFB();
+  renderEjecutivo();
+  renderCartera();
+  renderLiquidez();
+  renderSolvencia();
+  renderRentabilidad();
+  renderBenchmark();
+  renderIALT();
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
+// HERO DE ÍNDICE SAKBÉ (gauge 1.0–3.0 + serie histórica completa)
+// Lo comparten IFB (bancos, desde 2014) e IFC (cooperativas, desde 2018).
+// Cada tablero solo entrega datos; el dibujo vive aquí. Los cortes de
+// categoría llegan del JSON del motor, no se declaran en esta función.
+// ═══════════════════════════════════════════════════════════════════════════
+const SK_MES = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const SK_COLOR_CAT = { Fragil:'#a61d1d', Atencion:'#e8894a', Estable:'#f0b429', Solido:'#2e7d4f' }; // riesgo-critico / alto / medio / bajo
+function skMesLargo(ym) { const [y, m] = ym.split('-'); const n = SK_MES[+m - 1]; return n.charAt(0).toUpperCase() + n.slice(1) + ' ' + y; }
+function skPol(cx, cy, r, deg) { const a = deg * Math.PI / 180; return [cx + r * Math.sin(a), cy - r * Math.cos(a)]; }
+function skArc(cx, cy, r, d0, d1) {
+  const [x0, y0] = skPol(cx, cy, r, d0), [x1, y1] = skPol(cx, cy, r, d1);
+  return `M${x0.toFixed(2)} ${y0.toFixed(2)}A${r} ${r} 0 ${(d1 - d0) > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+}
+function skEsc(s) { return String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+// Gauge de 270° (abajo abierto). Escala 1.0–3.0; cada tramo mide lo que mide su categoría.
+function skGaugeSVG(v, cortes, catLabel) {
+  const cx = 140, cy = 130, r = 108, sw = 20, GAP = 3;
+  const toDeg = s => -135 + 270 * (Math.min(3, Math.max(1, s)) - 1) / 2;
+  const c1 = cortes[0][0], c2 = cortes[1][0], c3 = cortes[2][0];
+  const segs = [[1, c3, 'Fragil'], [c3, c2, 'Atencion'], [c2, c1, 'Estable'], [c1, 3, 'Solido']];
+  let g = '';
+  for (const [a, b, k] of segs) {
+    const d0 = toDeg(a) + (a > 1 ? GAP / 2 : 0), d1 = toDeg(b) - (b < 3 ? GAP / 2 : 0);
+    const col = SK_COLOR_CAT[k];
+    g += `<path d="${skArc(cx, cy, r, d0, d1)}" fill="none" stroke="${col}" stroke-width="${sw}" opacity="0.35"/>`;
+    if (v != null && v > a) {
+      const dv = Math.min(d1, toDeg(v));
+      if (dv > d0) g += `<path d="${skArc(cx, cy, r, d0, dv)}" fill="none" stroke="${col}" stroke-width="${sw}"/>`;
     }
+  }
+  let marker = '';
+  if (v != null) { const [mx, my] = skPol(cx, cy, r, toDeg(v)); marker = `<circle cx="${mx.toFixed(2)}" cy="${my.toFixed(2)}" r="8" fill="#ffffff" stroke="#163043" stroke-width="3"/>`; }
+  const [lx0, ly0] = skPol(cx, cy, r, -135), [lx1, ly1] = skPol(cx, cy, r, 135);
+  return `<svg class="sk-gauge" viewBox="0 0 280 250" role="img" aria-label="Índice ${v != null ? v.toFixed(2) : 'sin dato'}, ${skEsc(catLabel)}">
+    ${g}${marker}
+    <text class="sk-g-num" x="${cx}" y="${cy + 26}" text-anchor="middle">${v != null ? v.toFixed(2) : '—'}</text>
+    <text class="sk-g-cat" x="${cx}" y="${cy + 62}" text-anchor="middle">${skEsc(catLabel)}</text>
+    <text class="sk-g-lim" x="${(lx0 + 6).toFixed(1)}" y="${(ly0 + 34).toFixed(1)}" text-anchor="middle">1.0</text>
+    <text class="sk-g-lim" x="${(lx1 - 6).toFixed(1)}" y="${(ly1 + 34).toFixed(1)}" text-anchor="middle">3.0</text>
+  </svg>`;
+}
+
+// Curva suave sin sobreimpulso (Catmull-Rom acotado entre vecinos).
+function skCurva(pts) {
+  if (pts.length < 2) return pts.length ? `M${pts[0][0]} ${pts[0][1]}` : '';
+  let d = `M${pts[0][0].toFixed(1)} ${pts[0][1].toFixed(1)}`;
+  for (let i = 0; i < pts.length - 1; i++) {
+    const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+    const lo = Math.min(p1[1], p2[1]), hi = Math.max(p1[1], p2[1]);
+    const c1y = Math.min(hi, Math.max(lo, p1[1] + (p2[1] - p0[1]) / 6));
+    const c2y = Math.min(hi, Math.max(lo, p2[1] - (p3[1] - p1[1]) / 6));
+    d += `C${(p1[0] + (p2[0] - p0[0]) / 6).toFixed(1)} ${c1y.toFixed(1)} ${(p2[0] - (p3[0] - p1[0]) / 6).toFixed(1)} ${c2y.toFixed(1)} ${p2[0].toFixed(1)} ${p2[1].toFixed(1)}`;
+  }
+  return d;
+}
+
+// Dibuja la serie completa dentro de `box`. Se vuelve a llamar si cambia el ancho.
+function skDibujarSerie(box, uid, serie, months) {
+  const W = box.clientWidth, H = box.clientHeight;
+  if (W < 40 || H < 40) return;
+  const n = serie.length, vals = serie.filter(v => v != null);
+  if (n < 2 || !vals.length) { box.innerHTML = '<div class="sk-sub">Sin datos históricos.</div>'; return; }
+  const padL = 4, padR = 44, padT = 8, padB = 28;
+  const pw = W - padL - padR, ph = H - padT - padB;
+  let mn = Math.min(...vals), mx = Math.max(...vals);
+  const pad = (mx - mn) * 0.12 || 0.1;
+  const lo = mn - pad, hi = mx + pad;
+  const rng = hi - lo;
+  let step = [0.05, 0.1, 0.2, 0.25, 0.5].find(s => rng / s <= 4) || 0.5;
+  const ticks = [];
+  for (let t = Math.ceil(lo / step) * step; t <= hi + 1e-9; t += step) ticks.push(+t.toFixed(4));
+  const X = i => padL + i * pw / (n - 1), Y = v => padT + (hi - v) * ph / rng;
+  const base = padT + ph;
+  // tramos continuos (los meses sin dato cortan la línea)
+  const tramos = []; let cur = [];
+  serie.forEach((v, i) => { if (v == null) { if (cur.length) tramos.push(cur); cur = []; } else cur.push([X(i), Y(v)]); });
+  if (cur.length) tramos.push(cur);
+  let linea = '', area = '';
+  for (const t of tramos) {
+    const d = skCurva(t);
+    linea += `<path d="${d}" fill="none" stroke="#d9b39d" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>`;
+    if (t.length > 1) area += `<path d="${d}L${t[t.length-1][0].toFixed(1)} ${base}L${t[0][0].toFixed(1)} ${base}Z" fill="url(#g${uid})"/>`;
+  }
+  let grid = '';
+  for (const t of ticks) {
+    const y = Y(t).toFixed(1);
+    grid += `<line x1="${padL}" x2="${padL + pw}" y1="${y}" y2="${y}" stroke="#c5dddd" stroke-opacity="0.18" stroke-width="1"/>`;
+    grid += `<text class="sk-ax" x="${W}" y="${(+y + 4).toFixed(1)}" text-anchor="end">${t.toFixed(2)}</text>`;
+  }
+  // marcas del eje X: cada enero, espaciadas según el ancho disponible
+  const pxAnio = pw / (n / 12), cadaAnios = Math.max(1, Math.ceil(80 / pxAnio));
+  let ejeX = '';
+  const primerAnio = +months[0].slice(0, 4);
+  months.forEach((ym, i) => {
+    if (ym.slice(5) !== '01') return;
+    const a = +ym.slice(0, 4);
+    if ((a - primerAnio) % cadaAnios) return;
+    const x = X(i), ancla = x < 24 ? 'start' : (x > padL + pw - 24 ? 'end' : 'middle');
+    ejeX += `<text class="sk-ax" x="${x.toFixed(1)}" y="${H - 6}" text-anchor="${ancla}">ene ${String(a).slice(2)}</text>`;
   });
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// CAMELS / IFB
-// ════════════════════════════════════════════════════════════════════════════
-function score1(v, tLow, tHigh, dir) {
-  if (v == null) return null;
-  if (dir === 'high') { if (v >= tHigh) return 3; if (v >= tLow) return 2; return 1; }
-  else                { if (v <= tLow)  return 3; if (v <= tHigh) return 2; return 1; }
-}
-
-function avg() {
-  const vals = Array.from(arguments).filter(v => v != null);
-  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
-}
-
-// Percentil (0–100)
-function pctRank(val, arr) {
-  if (val == null || !arr.length) return null;
-  const n = arr.length;
-  const below = arr.filter(v => v < val).length;
-  const equal = arr.filter(v => v === val).length;
-  return ((below + equal * 0.5) / n) * 100;
-}
-
-function getPeerIdx(bi) {
-  const code = DATA.meta.banks[bi];
-  if (AGGREGATES.has(code)) {
-    // Para agregados: todos los bancos individuales
-    return DATA.meta.banks.map((c, i) => AGGREGATES.has(c) ? null : i).filter(i => i !== null && i !== bi);
+  box.innerHTML = `<svg width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="Serie histórica del índice">
+    <defs><linearGradient id="g${uid}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#d9b39d" stop-opacity="0.32"/><stop offset="1" stop-color="#d9b39d" stop-opacity="0"/></linearGradient></defs>
+    ${grid}${area}${linea}${ejeX}
+    <g class="sk-guia" style="display:none"><line y1="${padT}" y2="${base}" stroke="#c5dddd" stroke-opacity="0.5" stroke-width="1"/><circle r="5" fill="#d9b39d" stroke="#163043" stroke-width="2"/></g>
+    <rect class="sk-hit" x="${padL}" y="${padT}" width="${pw}" height="${ph}" fill="transparent"/>
+  </svg><div class="sk-tip"></div>`;
+  // Detalle al pasar el cursor o tocar: valor y mes
+  const svg = box.querySelector('svg'), guia = box.querySelector('.sk-guia'), tip = box.querySelector('.sk-tip');
+  const linGuia = guia.querySelector('line'), pto = guia.querySelector('circle');
+  function mover(ev) {
+    const rc = svg.getBoundingClientRect();
+    let i = Math.round((ev.clientX - rc.left - padL) / pw * (n - 1));
+    i = Math.max(0, Math.min(n - 1, i));
+    let k = i; while (k < n && serie[k] == null) k++;
+    if (k >= n) { k = i; while (k >= 0 && serie[k] == null) k--; }
+    if (k < 0 || serie[k] == null) return;
+    const x = X(k), y = Y(serie[k]);
+    guia.style.display = ''; linGuia.setAttribute('x1', x); linGuia.setAttribute('x2', x);
+    pto.setAttribute('cx', x); pto.setAttribute('cy', y);
+    tip.innerHTML = `<b>${serie[k].toFixed(2)}</b> · ${skMesLargo(months[k])}`;
+    tip.style.display = 'block';
+    const tw = tip.offsetWidth;
+    tip.style.left = Math.max(0, Math.min(W - tw, x - tw / 2)) + 'px';
+    tip.style.top = Math.max(0, y - 36) + 'px';
   }
-  if (PEER_G7.has(code)) return DATA.meta.banks.map((c, i) => PEER_G7.has(c) ? i : null).filter(i => i !== null && i !== bi);
-  if (PEER_MED.has(code)) return DATA.meta.banks.map((c, i) => PEER_MED.has(c) ? i : null).filter(i => i !== null && i !== bi);
-  return DATA.meta.banks.map((c, i) => (!AGGREGATES.has(c) && !PEER_G7.has(c) && !PEER_MED.has(c)) ? i : null).filter(i => i !== null && i !== bi);
+  function ocultar() { guia.style.display = 'none'; tip.style.display = 'none'; }
+  const hit = box.querySelector('.sk-hit');
+  hit.addEventListener('pointermove', mover); hit.addEventListener('pointerdown', mover);
+  hit.addEventListener('pointerleave', ocultar);
 }
 
-function computeLScore(bi, mi) {
-  const code = DATA.meta.banks[bi];
-  // Para el agregado '5' (sistema total): umbral directo
-  if (code === '5') return score1(get('liquidez', bi, mi), 0.359, 1.255, 'high');
-  const peerIdx = getPeerIdx(bi);
-  const li = get('liquidez', bi, mi);
-  const captTrad = getBal('captacion_trad', bi, mi);
-  const cartera  = getBal('cartera_neto', bi, mi);
-  const ltdi = (captTrad != null && cartera != null && cartera > 0) ? captTrad / cartera : null;
-  const captPrev = mi > 0 ? getBal('captacion_trad', bi, mi - 1) : null;
-  const ed = (captTrad != null && captPrev != null && captPrev !== 0) ? (captTrad - captPrev) / Math.abs(captPrev) : null;
-
-  const pLI   = peerIdx.map(i => get('liquidez', i, mi)).filter(v => v != null);
-  const pLTDI = peerIdx.map(i => {
-    const ct = getBal('captacion_trad', i, mi); const cr = getBal('cartera_neto', i, mi);
-    return (ct != null && cr != null && cr > 0) ? ct / cr : null;
-  }).filter(v => v != null);
-  const pED = peerIdx.map(i => {
-    if (mi === 0) return null;
-    const ct = getBal('captacion_trad', i, mi); const cp = getBal('captacion_trad', i, mi - 1);
-    return (ct != null && cp != null && cp !== 0) ? (ct - cp) / Math.abs(cp) : null;
-  }).filter(v => v != null);
-
-  let score = 0, w = 0;
-  const lip = pctRank(li, pLI); if (lip != null) { score += 0.4 * lip; w += 0.4; }
-  const ltdip = pctRank(ltdi, pLTDI); if (ltdip != null) { score += 0.4 * ltdip; w += 0.4; }
-  const edp = pctRank(ed, pED); if (edp != null) { score += 0.2 * edp; w += 0.2; }
-  if (!w) return null;
-  const final = score / w;
-  if (final >= 65) return 3;
-  if (final >= 35) return 2;
-  return 1;
-}
-
-function computeCAMELS(bi, mi) {
-  const C_dim = avg(score1(getDer('capital_activo', bi, mi), 0.084, 0.166, 'high'));
-  const A_dim = avg(
-    score1(get('imor', bi, mi), 0.0085, 0.0347, 'low') * 0.40 / 0.40,
-    score1(get('icor', bi, mi), 0.953,  1.791,  'high') * 0.40 / 0.40,
-    score1(get('tda',  bi, mi), 0.013,  0.057,  'low') * 0.20 / 0.20
-  );
-  // Weighted avg for A
-  const a_imor = score1(get('imor', bi, mi), 0.0085, 0.0347, 'low');
-  const a_icor = score1(get('icor', bi, mi), 0.953,  1.791,  'high');
-  const a_tda  = score1(get('tda',  bi, mi), 0.013,  0.057,  'low');
-  const aVals = [a_imor && a_imor * 0.40, a_icor && a_icor * 0.40, a_tda && a_tda * 0.20].filter(v => v != null);
-  const aW = (a_imor != null ? 0.40 : 0) + (a_icor != null ? 0.40 : 0) + (a_tda != null ? 0.20 : 0);
-  const A_dim2 = aW > 0 ? aVals.reduce((s, v) => s + v, 0) / aW : null;
-
-  const M_dim = avg(
-    score1(getDer('efic_margen', bi, mi), 0.595, 1.383, 'low'),
-    score1(getDer('efic_activo', bi, mi), 0.008, 0.032, 'low')
-  );
-  const E_dim = avg(
-    score1(get('roa', bi, mi), 0.004, 0.018, 'high'),
-    score1(get('roe', bi, mi), 0.028, 0.156, 'high')
-  );
-  const L_dim = computeLScore(bi, mi);
-  const S_dim = score1(get('mif', bi, mi), 0.022, 0.061, 'high');
-
-  const dims = { C: C_dim, A: A_dim2, M: M_dim, E: E_dim, L: L_dim, S: S_dim };
-  const W = { C: 0.25, A: 0.20, M: 0.15, E: 0.20, L: 0.15, S: 0.05 };
-  let ifb = 0, tw = 0;
-  for (const [d, w] of Object.entries(W)) {
-    if (dims[d] != null) { ifb += dims[d] * w; tw += w; }
+// Punto de entrada. o = { kicker, titulo, subtitulo, valor, previo, categoria,
+//                          cortes, serie, meses, etiquetaPrevio }
+function skHero(el, o) {
+  if (!el) return;
+  const dl = (o.valor != null && o.previo != null) ? o.valor - o.previo : null;
+  let deltaHtml = '';
+  if (dl != null) {
+    const r = Math.round(dl * 100) / 100;
+    const flecha = r > 0 ? '↗' : (r < 0 ? '↘' : '→');
+    const txt = (r > 0 ? '+' : (r < 0 ? '−' : '')) + Math.abs(r).toFixed(2);
+    deltaHtml = `<div class="sk-delta">${flecha} ${txt}<span class="sk-delta-t">vs. mes anterior</span></div>`;
   }
-  return { ifb: tw > 0 ? ifb / tw : null, dims };
-}
-
-function ifbCategory(v) {
-  if (v == null) return { label: '—', cls: 'score-null' };
-  if (v >= 2.5) return { label: 'Sólido',   cls: 'ifb-solid' };
-  if (v >= 2.0) return { label: 'Estable',  cls: 'ifb-stable' };
-  if (v >= 1.5) return { label: 'Atención', cls: 'ifb-watch' };
-  return           { label: 'Frágil',   cls: 'ifb-fragil' };
-}
-
-function scoreClass(v) {
-  if (v == null) return 'score-null';
-  if (v >= 2.5) return 'score-3';
-  if (v >= 1.5) return 'score-2';
-  return 'score-1';
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// KPI CARD HELPER
-// ════════════════════════════════════════════════════════════════════════════
-function kpiCard(label, val, serie, color, fmt, prevVal) {
-  const d = (prevVal != null && val != null) ? val - prevVal : null;
-  let dHtml = '';
-  if (d != null) {
-    const sign = d > 0 ? '↑' : (d < 0 ? '↓' : '→');
-    const cls  = d > 0 ? 'delta-up' : (d < 0 ? 'delta-down' : 'delta-neu');
-    dHtml = `<div class="kpi-delta ${cls}">${sign} ${fmt(Math.abs(d))}</div>`;
+  el.innerHTML = `
+    <div class="sk-hero-left">${skGaugeSVG(o.valor, o.cortes, o.categoria)}${deltaHtml}</div>
+    <div class="sk-hero-right">
+      <div class="sk-kicker">${skEsc(o.kicker)}</div>
+      <div class="sk-title">${skEsc(o.titulo)}</div>
+      <div class="sk-sub">${skEsc(o.subtitulo)}</div>
+      <div class="sk-chart"></div>
+    </div>`;
+  const box = el.querySelector('.sk-chart');
+  const uid = el.id || 'hero';
+  const pintar = () => skDibujarSerie(box, uid, o.serie, o.meses);
+  pintar();
+  // El tablero se renderiza también con la pestaña oculta (ancho 0): el
+  // observador repinta cuando la pestaña se muestra o cambia el ancho.
+  if (el._skRO) el._skRO.disconnect();
+  if (typeof ResizeObserver !== 'undefined') {
+    let ult = box.clientWidth;
+    el._skRO = new ResizeObserver(() => { if (box.clientWidth !== ult || !box.querySelector('svg')) { ult = box.clientWidth; pintar(); } });
+    el._skRO.observe(box);
   }
-  return `<div class="kpi-card">
-    <div class="kpi-label">${label}</div>
-    <div class="kpi-value">${val != null ? fmt(val) : '—'}</div>
-    ${dHtml}
-    <div class="kpi-spark">${sparkSVG(serie, color)}</div>
-  </div>`;
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-// TAB IFB
-// ════════════════════════════════════════════════════════════════════════════
+// ── TAB IFB ────────────────────────────────────────────────────────────────
 function renderIFB() {
   const bi = STATE.bank, mi = STATE.month;
   const { ifb, dims } = computeCAMELS(bi, mi);
   const cat = ifbCategory(ifb);
 
-  document.getElementById('ifb-num').textContent = ifb != null ? ifb.toFixed(2) : '—';
-  document.getElementById('ifb-num').className = 'ifb-score-num ' + cat.cls;
-  document.getElementById('ifb-cat').textContent = cat.label;
+  // Mes anterior, para las variaciones (mismo criterio que Vista Ejecutiva:
+  // '+/-' con color delta-up/delta-down, subir es bueno en esta escala 1-3).
+  const { ifb: ifbPrev, dims: dimsPrev } = mi > 0 ? computeCAMELS(bi, mi-1) : { ifb:null, dims:{} };
+  function deltaTxt(cur, prev) {
+    if (cur == null || prev == null) return '';
+    const d = cur - prev;
+    const cls = d >= 0 ? 'delta-up' : 'delta-down';
+    return `<span class="${cls}">${d>=0?'+':''}${d.toFixed(2)}</span>`;
+  }
 
-  const dimMeta = {
-    C: { name: 'Capital', w: '25%' }, A: { name: 'Activos', w: '20%' },
-    M: { name: 'Gestión', w: '15%' }, E: { name: 'Rentabilidad', w: '20%' },
-    L: { name: 'Liquidez', w: '15%' }, S: { name: 'Sensibilidad', w: '5%' }
-  };
+  // CAMELS cards
+  const dimNames = { C:'Capital', A:'Activos', M:'Eficiencia', E:'Rentabilidad', L:'Liquidez', S:'Sensibilidad' };
+  const dimWeights = { C:'25%', A:'20%', M:'15%', E:'20%', L:'15%', S:'5%' };
   let html = '';
-  for (const [d, meta] of Object.entries(dimMeta)) {
-    const s = dims[d]; const si2 = s != null ? Math.round(Math.min(3, Math.max(1, s))) : null;
-    html += `<div class="camels-card" onclick="showCAMELSDetail('${d}')" style="cursor:pointer">
+  for (const [d, name] of Object.entries(dimNames)) {
+    const s = dims[d];
+    const sc = s != null ? s.toFixed(2) : '—';
+    const scInt = s != null ? Math.round(s) : null;
+    html += `<div class="camels-card" onclick="showCAMELSDetail('${d}')" style="cursor:pointer" title="Ver detalle ${name}">
       <div class="c-dim">${d}</div>
-      <div class="c-name">${meta.name}</div>
-      <div class="c-score ${si2 ? 'score-' + si2 : 'score-null'}">${s != null ? s.toFixed(2) : '—'}</div>
-      <div class="c-bar"><div class="c-fill ${si2 ? 'fill-' + si2 : ''}" style="${si2 ? '' : 'width:0'}"></div></div>
-      <div style="font-size:10px;color:var(--slate);margin-top:4px">Peso ${meta.w}</div>
+      <div class="c-name">${name}</div>
+      <div class="c-score ${scInt ? 'score-'+scInt : 'score-null'}">${sc}</div>
+      <div class="c-bar"><div class="c-fill ${scInt ? 'fill-'+scInt : ''}" style="${scInt ? '' : 'width:0'}"></div></div>
+      <div style="font-size:10px;color:var(--slate);margin-top:4px">Peso ${dimWeights[d]}</div>
+      <div class="kpi-delta" style="margin-top:2px">${deltaTxt(s, dimsPrev[d])}</div>
     </div>`;
   }
   document.getElementById('camels-cards').innerHTML = html;
 
-  // Radar
-  const dimsOrder = ['C', 'A', 'M', 'E', 'L', 'S'];
-  const dimLabels  = ['Capital', 'Activos', 'Gestión', 'Rentabilidad', 'Liquidez', 'Sensibilidad'];
-  const si = getSI();
-  const datasets = [{
-    label: bankDisplay(bi), data: dimsOrder.map(d => dims[d]),
-    borderColor: C.DARK, backgroundColor: 'rgba(22,48,67,0.15)'
-  }];
-  if (si !== -1 && si !== bi) {
-    const sis = computeCAMELS(si, mi);
-    datasets.push({
-      label: 'Sistema', data: dimsOrder.map(d => sis.dims[d]),
-      borderColor: C.RUST, backgroundColor: 'rgba(157,77,49,0.10)', borderDash: [4, 2]
-    });
-  }
-  radarChart('chart-ifb-radar', dimLabels, datasets);
+  // Hero: gauge + serie completa del índice (bancos, desde 2014)
+  const bankName = DATA.meta.display[DATA.meta.banks[bi]] || DATA.meta.banks[bi];
+  const esSistema = DATA.meta.banks[bi] === 'SISTEMA';
+  const nAct = DATA.meta.banks.filter((b,i) => b !== 'SISTEMA' && bancoActivo(i, mi)).length;
+  skHero(document.getElementById('sk-hero-ifb'), {
+    kicker: 'Sakbé · Índice de Fragilidad Bancaria',
+    titulo: esSistema ? 'Sistema bancario' : bankName,
+    subtitulo: (esSistema ? 'Sistema · ' + nAct + ' bancos' : 'Banca múltiple') + ' · ' + skMesLargo(DATA.meta.months[mi]),
+    valor: ifb, previo: ifbPrev, categoria: cat.label, cortes: ifbCortes(),
+    serie: DATA.meta.months.map((_, m) => computeCAMELS(bi, m).ifb),
+    meses: DATA.meta.months
+  });
 
-  // Histórico IFB
-  document.getElementById('chart-hist-title').textContent = 'Histórico IFB — ' + bankDisplay(bi);
-  lineChart('chart-ifb-hist', [{
-    label: 'IFB', data: DATA.meta.months.map((_, m) => computeCAMELS(bi, m).ifb),
-    borderColor: C.DARK, backgroundColor: 'rgba(22,48,67,0.08)', fill: true
-  }], { fmt: v => v != null ? v.toFixed(2) : '—', legend: false });
-
-  // ROA/ROE
-  lineChart('chart-ifb-roaroe', [
-    { label: 'ROA', data: getSerie('roa', bi, 'ind'), borderColor: C.DARK },
-    { label: 'ROE', data: getSerie('roe', bi, 'ind'), borderColor: C.RUST }
-  ]);
-
-  // Ranking (solo bancos individuales)
-  const allScores = DATA.meta.banks
-    .map((code, i) => AGGREGATES.has(code) ? null : { i, code, display: DATA.meta.display[code] || code, ifb: computeCAMELS(i, mi).ifb })
-    .filter(Boolean)
-    .sort((a, b) => (a.ifb ?? 99) - (b.ifb ?? 99));
+  // Ranking table
+  const allScores = DATA.meta.banks.map((b,i) => {
+    if (b === 'SISTEMA' || !bancoActivo(i, mi)) return null;
+    const { ifb: sc } = computeCAMELS(i, mi);
+    return { b, display: DATA.meta.display[b] || b, ifb: sc };
+  // low IFB primero = más frágil arriba
+  }).filter(Boolean).sort((a,b) => (a.ifb??99)-(b.ifb??99));
 
   let thtml = `<table class="data-table"><thead><tr>
-    <th>#</th><th>Banco</th><th>Grupo</th>
-    <th class="num">IFB</th><th class="num">C</th><th class="num">A</th>
-    <th class="num">M</th><th class="num">E</th><th class="num">L</th><th class="num">S</th><th>Categoría</th>
+    <th>#</th><th>Banco</th><th class="num">IFB</th><th class="num">Capital</th>
+    <th class="num">Activos</th><th class="num">Eficiencia</th><th class="num">Rentabilidad</th>
+    <th class="num">Liquidez</th><th class="num">Sensibilidad</th><th>Categoría</th>
   </tr></thead><tbody>`;
   allScores.forEach((row, idx) => {
-    const { dims: d2 } = computeCAMELS(row.i, mi);
+    const bi2 = DATA.meta.banks.indexOf(row.b);
+    const { dims: d2 } = computeCAMELS(bi2, mi);
     const c2 = ifbCategory(row.ifb);
-    const grpName = groupName(row.code);
-    const hiBg = row.i === bi ? 'background:var(--light);' : '';
-    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${row.i})">
-      <td><span class="rank-badge">${idx + 1}</span></td>
+    const hiBg = row.b === DATA.meta.banks[bi] ? 'background:var(--light);' : '';
+    // Click en fila navega a Vista Ejecutiva de ese banco
+    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${bi2})">
+      <td><span class="rank-badge">${idx+1}</span></td>
       <td class="bank-name">${row.display}</td>
-      <td><span class="group-badge">${grpName}</span></td>
-      <td class="num ${scoreClass(row.ifb)}">${row.ifb != null ? row.ifb.toFixed(2) : '—'}</td>
-      ${['C','A','M','E','L','S'].map(d => `<td class="num ${scoreClass(d2[d])}">${d2[d] != null ? d2[d].toFixed(1) : '—'}</td>`).join('')}
-      <td><span style="font-weight:600;color:${c2.cls.includes('solid')?'#1f7a4b':c2.cls.includes('stable')?'#3a9e6a':c2.cls.includes('watch')?'#c8820a':'#b83232'}">${c2.label}</span></td>
+      <td class="num ${ifbSemaClass(row.ifb)}">${row.ifb != null ? row.ifb.toFixed(2) : '—'}</td>
+      <td class="num ${d2.C?'score-'+Math.round(d2.C):''}">${d2.C!=null?d2.C.toFixed(2):'—'}</td>
+      <td class="num ${d2.A?'score-'+Math.round(d2.A):''}">${d2.A!=null?d2.A.toFixed(2):'—'}</td>
+      <td class="num ${d2.M?'score-'+Math.round(d2.M):''}">${d2.M!=null?d2.M.toFixed(2):'—'}</td>
+      <td class="num ${d2.E?'score-'+Math.round(d2.E):''}">${d2.E!=null?d2.E.toFixed(2):'—'}</td>
+      <td class="num ${d2.L?'score-'+Math.round(d2.L):''}">${d2.L!=null?d2.L.toFixed(2):'—'}</td>
+      <td class="num ${d2.S?'score-'+Math.round(d2.S):''}">${d2.S!=null?d2.S.toFixed(2):'—'}</td>
+      <td><span class="${c2.cls}" style="font-weight:600">${c2.label}</span></td>
     </tr>`;
   });
   thtml += '</tbody></table>';
   document.getElementById('ifb-ranking-table').innerHTML = thtml;
 }
 
-function groupName(code) {
-  if (PEER_G7.has(code)) return 'G-7';
-  if (PEER_MED.has(code)) return 'Mediano';
-  const meta = DATA.meta.groups?.[code] || '';
-  if (meta === 'hogares') return 'Hogares';
-  if (meta === 'inv_svc') return 'Inv./Svc.';
-  if (meta === 'pequeño') return 'Pequeño';
-  return 'Otro';
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// TAB EJECUTIVO
-// ════════════════════════════════════════════════════════════════════════════
+// ── TAB EJECUTIVO ───────────────────────────────────────────────────────────
 function renderEjecutivo() {
   const bi = STATE.bank, mi = STATE.month;
-  const pmi = mi > 0 ? mi - 1 : null;
+  const prevMi = mi > 0 ? mi - 1 : null;
+  const bankName = DATA.meta.display[DATA.meta.banks[bi]] || DATA.meta.banks[bi];
+
   const { ifb } = computeCAMELS(bi, mi);
-  const prevIfb = pmi != null ? computeCAMELS(bi, pmi).ifb : null;
+  const prevIfb = prevMi != null ? computeCAMELS(bi, prevMi).ifb : null;
 
   const kpis = [
-    { label: 'Activos Totales',    val: getBal('activo',bi,mi),         prev: pmi!=null?getBal('activo',bi,pmi):null,         serie: getSerie('activo',bi,'bal'),       color: C.DARK,  fmt: fmtMXN  },
-    { label: 'Pasivos',            val: getBal('pasivo',bi,mi),          prev: pmi!=null?getBal('pasivo',bi,pmi):null,          serie: getSerie('pasivo',bi,'bal'),        color: C.SLATE, fmt: fmtMXN  },
-    { label: 'Capital Contable',   val: getBal('capital',bi,mi),         prev: pmi!=null?getBal('capital',bi,pmi):null,         serie: getSerie('capital',bi,'bal'),       color: C.SAND,  fmt: fmtMXN  },
-    { label: 'Captación Total',    val: getBal('captacion',bi,mi),       prev: pmi!=null?getBal('captacion',bi,pmi):null,       serie: getSerie('captacion',bi,'bal'),     color: C.DARK,  fmt: fmtMXN  },
-    { label: 'Cartera Neta',       val: getBal('cartera_neto',bi,mi),    prev: pmi!=null?getBal('cartera_neto',bi,pmi):null,    serie: getSerie('cartera_neto',bi,'bal'), color: C.TEAL,  fmt: fmtMXN  },
-    { label: 'Margen Financiero',  val: getBal('margen_fin',bi,mi),      prev: pmi!=null?getBal('margen_fin',bi,pmi):null,      serie: getSerie('margen_fin',bi,'bal'),   color: C.DARK,  fmt: fmtMXN  },
-    { label: 'IMOR',               val: get('imor',bi,mi),               prev: pmi!=null?get('imor',bi,pmi):null,               serie: getSerie('imor',bi,'ind'),          color: C.RUST,  fmt: fmtPct  },
-    { label: 'ICOR (Cobertura)',   val: get('icor',bi,mi),               prev: pmi!=null?get('icor',bi,pmi):null,               serie: getSerie('icor',bi,'ind'),          color: C.TEAL,  fmt: fmtX    },
-    { label: 'Liquidez',           val: get('liquidez',bi,mi),           prev: pmi!=null?get('liquidez',bi,pmi):null,           serie: getSerie('liquidez',bi,'ind'),      color: C.DARK,  fmt: fmtX    },
-    { label: 'ROA',                val: get('roa',bi,mi),                prev: pmi!=null?get('roa',bi,pmi):null,                serie: getSerie('roa',bi,'ind'),           color: C.DARK,  fmt: fmtPct  },
-    { label: 'ROE',                val: get('roe',bi,mi),                prev: pmi!=null?get('roe',bi,pmi):null,                serie: getSerie('roe',bi,'ind'),           color: C.RUST,  fmt: fmtPct  },
-    { label: 'IFB',                val: ifb,                              prev: prevIfb,                                          serie: DATA.meta.months.map((_,m)=>computeCAMELS(bi,m).ifb), color: C.DARK, fmt: v => v!=null?v.toFixed(2):'—' },
+    { label:'Activos Totales',  val: fmtBal(getBal('activo')),        serie: getSerie('activo',bi,'bal'),        color:C_DARK,  fmt:fmtBal, raw:getBal('activo'),        prev:prevMi!=null?getBal('activo',bi,prevMi):null,        isPct:false },
+    { label:'Pasivos Totales',  val: fmtBal(getBal('pasivos')),       serie: getSerie('pasivos',bi,'bal'),       color:C_SLATE, fmt:fmtBal, raw:getBal('pasivos'),       prev:prevMi!=null?getBal('pasivos',bi,prevMi):null,       isPct:false },
+    { label:'Inversiones',      val: fmtBal(getBal('inversiones')),   serie: getSerie('inversiones',bi,'bal'),   color:C_TEAL,  fmt:fmtBal, raw:getBal('inversiones'),   prev:prevMi!=null?getBal('inversiones',bi,prevMi):null,   isPct:false },
+    { label:'Depósitos del público', val: fmtBal(getBal('depositos')),serie: getSerie('depositos',bi,'bal'),    color:C_DARK,  fmt:fmtBal, raw:getBal('depositos'),     prev:prevMi!=null?getBal('depositos',bi,prevMi):null,     isPct:false },
+    { label:'Patrimonio',       val: fmtBal(getBal('patrimonio_bal')),serie: getSerie('patrimonio_bal',bi,'bal'),color:C_SAND,  fmt:fmtBal, raw:getBal('patrimonio_bal'),prev:prevMi!=null?getBal('patrimonio_bal',bi,prevMi):null, isPct:false },
+    { label:'Cartera Bruta',    val: fmtBal(getBal('cartera_bruta')), serie: getSerie('cartera_bruta',bi,'bal'), color:C_DARK,  fmt:fmtBal, raw:getBal('cartera_bruta'), prev:prevMi!=null?getBal('cartera_bruta',bi,prevMi):null,  isPct:false },
+    { label:'Morosidad Total',  val: fmtPct(get('mor_total')),        serie: getSerie('mor_total'),              color:C_RUST,  fmt:fmtPct, raw:get('mor_total'),        prev:prevMi!=null?get('mor_total',bi,prevMi):null,        isPct:true },
+    { label:'Cobertura Prob.',  val: fmtNum(get('cob_prob')),         serie: getSerie('cob_prob'),               color:C_TEAL,  fmt:fmtNum, raw:get('cob_prob'),         prev:prevMi!=null?get('cob_prob',bi,prevMi):null,         isPct:false },
+    { label:'Liquidez',         val: fmtPct(get('liquidez')),         serie: getSerie('liquidez'),               color:C_DARK,  fmt:fmtPct, raw:get('liquidez'),         prev:prevMi!=null?get('liquidez',bi,prevMi):null,         isPct:true },
+    { label:'ROA',              val: fmtPct(get('roa')),              serie: getSerie('roa'),                    color:C_DARK,  fmt:fmtPct, raw:get('roa'),              prev:prevMi!=null?get('roa',bi,prevMi):null,              isPct:true },
+    { label:'ROE',              val: fmtPct(get('roe')),              serie: getSerie('roe'),                    color:C_SLATE, fmt:fmtPct, raw:get('roe'),              prev:prevMi!=null?get('roe',bi,prevMi):null,              isPct:true },
+    // Eficiencia y Solvencia se agregan para dejar la Vista Ejecutiva de bancos
+    // con las mismas 14 cards que la de cooperativas. Eficiencia usa
+    // efic_margen (gastos operacionales / margen financiero), que es además el
+    // titular de la dimensión M del IFB. Solvencia usa el coeficiente PT/APR.
+    { label:'Eficiencia (Gtos/MF)', val: fmtPct(get('efic_margen')),  serie: getSerie('efic_margen'),            color:C_SLATE, fmt:fmtPct, raw:get('efic_margen'),      prev:prevMi!=null?get('efic_margen',bi,prevMi):null,      isPct:true,  goodDir:'down' },
+    { label:'Solvencia',        val: fmtPct(getPT('coef_basilea')),   serie: getSerie('coef_basilea',bi,'pt'),   color:C_DARK,  fmt:fmtPct, raw:getPT('coef_basilea'),   prev:prevMi!=null?getPT('coef_basilea',bi,prevMi):null,   isPct:true },
+    { label:'IFB',              val: ifb!=null?ifb.toFixed(2):'—',    serie: DATA.meta.months.map((_,m)=>computeCAMELS(bi,m).ifb), color:C_RUST, fmt:v=>v?.toFixed(2)??'—', raw:ifb, prev:prevIfb, isPct:false },
   ];
-  document.getElementById('kpi-ejecutivo').innerHTML = kpis.map(k => kpiCard(k.label, k.val, k.serie, k.color, k.fmt, k.prev)).join('');
 
-  const si = getSI();
-  document.getElementById('chart-ej-ifb-title').textContent = 'IFB — ' + bankDisplay(bi) + (si !== bi ? ' vs. Sistema' : '');
-  const ifbSerie = DATA.meta.months.map((_, m) => computeCAMELS(bi, m).ifb);
-  const datasets_ifb = [{ label: bankDisplay(bi), data: ifbSerie, borderColor: C.DARK, backgroundColor: 'rgba(22,48,67,0.08)', fill: true }];
-  if (si !== -1 && si !== bi) {
-    datasets_ifb.push({ label: 'Sistema', data: DATA.meta.months.map((_, m) => computeCAMELS(si, m).ifb), borderColor: C.RUST, borderDash: [4, 2] });
-  }
-  lineChart('chart-ej-ifb', datasets_ifb, { fmt: v => v != null ? v.toFixed(2) : '—' });
+  let html = '';
+  kpis.forEach(k => {
+    if (Array.isArray(k.serie) && !k.serie.some(v => v != null)) return;
+    const d = k.prev != null && k.raw != null ? k.raw - k.prev : null;
+    // goodDir 'down' = subir es malo (morosidad, eficiencia por gasto).
+    // Se mantiene el atajo por etiqueta para no tocar las cards existentes.
+    const dir = k.goodDir || (k.label.includes('Morosidad') ? 'down' : 'up');
+    const better = dir === 'down' ? d<0 : d>0;
+    const dCls = d==null ? 'delta-neu' : (better ? 'delta-up' : 'delta-down');
+    const dTxt = d==null ? '' : (d>=0?'+':'') + (k.isPct ? fmtPct(d) : k.fmt(d));
+    html += `<div class="kpi-card">
+      <div class="kpi-label">${k.label}</div>
+      <div class="kpi-value">${k.val}</div>
+      <div class="kpi-delta ${dCls}">${dTxt || '&nbsp;'}</div>
+      <div class="kpi-spark">${sparkSVG(k.serie, k.color)}</div>
+    </div>`;
+  });
+  document.getElementById('kpi-grid').innerHTML = html;
 
-  lineChart('chart-ej-bal', [
-    { label: 'Activos', data: getSerie('activo', bi, 'bal'), borderColor: C.DARK },
-    { label: 'Cartera', data: getSerie('cartera_neto', bi, 'bal'), borderColor: C.TEAL }
-  ], { fmt: fmtMXN });
+  document.getElementById('chart-hist-title').textContent = 'IFB — ' + bankName;
 
-  const datasets_imor = [{ label: 'IMOR ' + bankDisplay(bi), data: getSerie('imor', bi, 'ind'), borderColor: C.RUST }];
-  if (si !== -1 && si !== bi) datasets_imor.push({ label: 'IMOR Sistema', data: getSerie('imor', si, 'ind'), borderColor: C.SLATE, borderDash: [4, 2] });
-  lineChart('chart-ej-imor', datasets_imor);
+  // ─── Gráficas históricas ──────────────────────────────────────────────────
+  // Ninguna lleva ya la serie de SISTEMA: la comparativa contra el sistema vive
+  // en las pestañas de Cartera, Liquidez y Solvencia. La Vista Ejecutiva es la
+  // ficha del banco seleccionado, sin ruido de referencia.
 
-  lineChart('chart-ej-rent', [
-    { label: 'ROA', data: getSerie('roa', bi, 'ind'), borderColor: C.DARK },
-    { label: 'ROE', data: getSerie('roe', bi, 'ind'), borderColor: C.RUST }
-  ]);
+  const nM = DATA.meta.months.length;
+  const flat = v => Array(nM).fill(v);   // serie constante para las líneas de umbral
+
+  // Cortes de categoría IFB leídos del JSON (config del motor), con el mismo
+  // orden que ifbCortes(): [Sólido, Estable, Atención, Frágil].
+  // El verde es el piso de "Sólido"; el rojo, el piso de "Atención": por debajo
+  // de ese valor el banco cae a "Frágil".
+  const cortes    = ifbCortes();
+  const corteAlto = cortes[0]?.[0] ?? 2.30;
+  const corteBajo = cortes[2]?.[0] ?? 1.70;
+
+  lineChart('chart-eje-ifb', [
+    { label: bankName, data: DATA.meta.months.map((_,m)=>computeCAMELS(bi,m).ifb),
+      borderColor:C_DARK, backgroundColor:'rgba(22,48,67,.08)', fill:true },
+    { label:`Sólido ≥${corteAlto.toFixed(2)}`, data:flat(corteAlto),
+      borderColor:C_GREEN, borderDash:[6,3], pointRadius:0, borderWidth:1.4, fill:false },
+    { label:`Frágil <${corteBajo.toFixed(2)}`, data:flat(corteBajo),
+      borderColor:C_RED,   borderDash:[6,3], pointRadius:0, borderWidth:1.4, fill:false },
+  ], { fmt: v=>v!=null?v.toFixed(2):'—', yMin:1, yMax:3, pointRadius:0 });
+
+  // Balance: los datos vienen en MILES de USD, así que el eje usa fmtBal
+  // (multiplica ×1000). Antes usaba fmtM y el eje quedaba corto por 1.000x.
+  lineChart('chart-eje-bal', [
+    { label:'Total activos',  data:getSerie('activo',bi,'bal'),        borderColor:C_DARK,  fill:false },
+    { label:'Cartera bruta',  data:getSerie('cartera_bruta',bi,'bal'), borderColor:C_SAND,  fill:false },
+    { label:'Depósitos del público', data:getSerie('depositos',bi,'bal'),     borderColor:C_SLATE, borderDash:[4,2], fill:false },
+  ], { fmt:fmtBal, pointRadius:0 });
+
+  lineChart('chart-eje-mor', [
+    { label:'Morosidad total', data:getSerie('mor_total'), borderColor:C_RUST,
+      backgroundColor:'rgba(157,77,49,.1)', fill:true },
+  ], { legend:false, pointRadius:0 });
+
+  // Liquidez y Solvencia con su línea de mínimo. Las series están en fracción
+  // (0,14 = 14%), por eso los umbrales van como 0.14 y 0.09 y no como 14 y 9.
+  lineChart('chart-eje-liq', [
+    { label:'Liquidez', data:getSerie('liquidez'), borderColor:C_TEAL,
+      backgroundColor:'rgba(197,221,221,.25)', fill:true },
+    { label:'Alerta IFB (25%)', data:flat(0.25),
+      borderColor:C_RED, borderDash:[6,3], pointRadius:0, borderWidth:1.5, fill:false },
+  ], { pointRadius:0 });
+
+  lineChart('chart-eje-sol', [
+    { label:'ICAP', data:getSerie('coef_basilea',bi,'pt'), borderColor:C_DARK,
+      backgroundColor:'rgba(22,48,67,.08)', fill:true },
+    { label:'Mín. categoría I (10,5%)', data:flat(0.105),
+      borderColor:C_RED, borderDash:[6,3], pointRadius:0, borderWidth:1.5, fill:false },
+  ], { pointRadius:0 });
+
+  lineChart('chart-eje-rent', [
+    { label:'ROA', data:getSerie('roa'), borderColor:C_DARK, fill:false },
+    { label:'ROE', data:getSerie('roe'), borderColor:C_RUST, fill:false },
+  ], { pointRadius:0 });
+
+  lineChart('chart-eje-ef', [
+    { label:'Gtos. op. / Margen financiero', data:getSerie('efic_margen'),
+      borderColor:C_SLATE, fill:false },
+  ], { legend:false, pointRadius:0 });
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-// TAB CARTERA
-// ════════════════════════════════════════════════════════════════════════════
+// ── TAB CARTERA ──────────────────────────────────────────────────────────────
 function renderCartera() {
   const bi = STATE.bank, mi = STATE.month;
-  const pmi = mi > 0 ? mi - 1 : null;
+  const prevMi = mi > 0 ? mi - 1 : null;
 
+  // Diez cards en dos filas de cinco, en el mismo orden que la pestaña Cartera
+  // del monitor de cooperativas.
+  //
+  // Monto de Cartera es la cartera NETA (bruta menos provisiones, equivale a la
+  // cuenta 14 del balance) y Cartera Bruta la de la hoja COMPOS CART. Con las
+  // Provisiones en medio, las tres cards cuadran: Bruta + Provisiones = Neta.
+  // Antes ambas leían la misma serie y mostraban el mismo número.
   const kpis = [
-    { label: 'IMOR Total',     val: get('imor',bi,mi),         prev: pmi!=null?get('imor',bi,pmi):null,          serie: getSerie('imor',bi,'ind'),         color: C.RUST,  fmt: fmtPct },
-    { label: 'IMOR Comercial', val: get('imor_comercial',bi,mi),prev:pmi!=null?get('imor_comercial',bi,pmi):null, serie: getSerie('imor_comercial',bi,'ind'),color: C.SLATE, fmt: fmtPct },
-    { label: 'IMOR Consumo',   val: get('imor_consumo',bi,mi),  prev:pmi!=null?get('imor_consumo',bi,pmi):null,   serie: getSerie('imor_consumo',bi,'ind'),  color: C.SAND,  fmt: fmtPct },
-    { label: 'IMOR Vivienda',  val: get('imor_vivienda',bi,mi), prev:pmi!=null?get('imor_vivienda',bi,pmi):null,  serie: getSerie('imor_vivienda',bi,'ind'), color: C.TEAL,  fmt: fmtPct },
-    { label: 'IMORA',          val: get('imora',bi,mi),          prev:pmi!=null?get('imora',bi,pmi):null,          serie: getSerie('imora',bi,'ind'),         color: C.RUST,  fmt: fmtPct },
-    { label: 'TDA',            val: get('tda',bi,mi),            prev:pmi!=null?get('tda',bi,pmi):null,            serie: getSerie('tda',bi,'ind'),           color: C.DARK,  fmt: fmtPct },
-    { label: 'ICOR Total',     val: get('icor',bi,mi),           prev:pmi!=null?get('icor',bi,pmi):null,           serie: getSerie('icor',bi,'ind'),          color: C.TEAL,  fmt: fmtX   },
-    { label: 'EPRC/Cartera',   val: get('eprc_ratio',bi,mi),     prev:pmi!=null?get('eprc_ratio',bi,pmi):null,     serie: getSerie('eprc_ratio',bi,'ind'),    color: C.DARK,  fmt: fmtPct },
-    { label: 'Cartera Neta',   val: getBal('cartera_neto',bi,mi),prev:pmi!=null?getBal('cartera_neto',bi,pmi):null,serie: getSerie('cartera_neto',bi,'bal'),  color: C.DARK,  fmt: fmtMXN },
+    { label:'Monto de Cartera',   v:getBal('cart_neta'), prev:prevMi!=null?getBal('cart_neta',bi,prevMi):null, better:'high', fmt:fmtBal, serie:getSerie('cart_neta',bi,'bal'), color:C_DARK },
+    { label:'Morosidad Total',    v:get('mor_total'), prev:prevMi!=null?get('mor_total',bi,prevMi):null, better:'low',  serie:getSerie('mor_total'), color:C_RUST },
+    { label:'Mora Consumo',       v:get('mor_consumo'), prev:prevMi!=null?get('mor_consumo',bi,prevMi):null, better:'low',  serie:getSerie('mor_consumo'), color:C_RUST },
+    { label:'Mora Comercial',    v:get('mor_prod'), prev:prevMi!=null?get('mor_prod',bi,prevMi):null, better:'low',  serie:getSerie('mor_prod'), color:C_RUST },
+    { label:'Mora Vivienda',  v:get('mor_micro'), prev:prevMi!=null?get('mor_micro',bi,prevMi):null, better:'low',  serie:getSerie('mor_micro'), color:C_RUST },
+    { label:'Cobertura Prob.',    v:get('cob_prob'), prev:prevMi!=null?get('cob_prob',bi,prevMi):null, better:'high', fmt:fmtNum, serie:getSerie('cob_prob'), color:C_TEAL },
+    { label:'Activos Productivos',v:get('act_prod_tot'), prev:prevMi!=null?get('act_prod_tot',bi,prevMi):null, better:'high', serie:getSerie('act_prod_tot'), color:C_DARK },
+    { label:'Cartera Bruta',      v:getBal('cartera_bruta'), prev:prevMi!=null?getBal('cartera_bruta',bi,prevMi):null, better:'high', fmt:fmtBal, serie:getSerie('cartera_bruta',bi,'bal'), color:C_DARK },
+    { label:'Intermediación',     v:get('intermediacion'), prev:prevMi!=null?get('intermediacion',bi,prevMi):null, better:'high', serie:getSerie('intermediacion'), color:C_DARK },
+    // Provisiones: la cuenta 1499 es de valuación del activo y viene en negativo.
+    // Se muestra con su signo. better:'low' porque constituir más provisión hace
+    // el saldo más negativo y eso es más cobertura, no deterioro.
+    { label:'Provisiones',        v:getBal('cart_prov'), prev:prevMi!=null?getBal('cart_prov',bi,prevMi):null, better:'low', fmt:fmtBal, serie:getSerie('cart_prov',bi,'bal'), color:C_SLATE },
   ];
-  document.getElementById('kpi-cartera').innerHTML = kpis.map(k => kpiCard(k.label, k.val, k.serie, k.color, k.fmt, k.prev)).join('');
+  let html = '';
+  kpis.forEach(k => {
+    if (Array.isArray(k.serie) && !k.serie.some(v => v != null)) return;
+    const fmt = k.fmt || fmtPct;
+    const val = fmt(k.v);
+    const d = k.prev!=null&&k.v!=null ? k.v-k.prev : null;
+    const up = k.better==='high' ? d>0 : d<0;
+    const dCls = d==null?'delta-neu':(up?'delta-up':'delta-down');
+    const dTxt = d==null ? '' : (d>=0?'+':'')+fmt(d);
+    html += `<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value">${val}</div><div class="kpi-delta ${dCls}">${dTxt||'&nbsp;'}</div><div class="kpi-spark">${sparkSVG(k.serie||[], k.color||C_DARK)}</div></div>`;
+  });
+  document.getElementById('kpi-cartera').innerHTML = html;
 
-  lineChart('chart-cart-imor', [
-    { label: 'Total',     data: getSerie('imor', bi, 'ind'),          borderColor: C.DARK },
-    { label: 'Comercial', data: getSerie('imor_comercial', bi, 'ind'), borderColor: C.RUST },
-    { label: 'Consumo',   data: getSerie('imor_consumo', bi, 'ind'),   borderColor: C.SAND },
-    { label: 'Vivienda',  data: getSerie('imor_vivienda', bi, 'ind'),  borderColor: C.TEAL },
-  ]);
+  // ─── Composición de cartera del período seleccionado ──────────────────────
+  // Los tres tramos suman exactamente la cartera bruta (verificado mes a mes
+  // contra la fila CARTERA BRUTA de la hoja COMPOS CART).
+  donutChart('chart-cart-comp',
+    ['Etapa 1','Etapa 2','Etapa 3'],
+    [getBal('cart_pv'), getBal('cart_cndi'), getBal('cart_vencida')],
+    [C_GREEN, C_SAND, C_RED]);
 
-  const si = getSI();
-  lineChart('chart-cart-icor', [
-    { label: 'ICOR ' + bankDisplay(bi), data: getSerie('icor', bi, 'ind'), borderColor: C.DARK },
-    si !== -1 && si !== bi ? { label: 'ICOR Sistema', data: getSerie('icor', si, 'ind'), borderColor: C.RUST, borderDash: [4, 2] } : null
-  ].filter(Boolean), { fmt: fmtX });
+  // ─── Antigüedad de la cartera de consumo vencida ──────────────────────────
+  // Cinco tramos: el catálogo de la Superintendencia de Bancos corta la cartera
+  // de consumo en 270 días, no en 180 como la SEPS para cooperativas.
+  const AGING = [
+    ['1-30 días',    'aging_c_1_30',    C_GREEN],
+    ['31-90 días',   'aging_c_31_90',   '#c8820a'],
+    ['91-180 días',  'aging_c_91_180',  C_SAND],
+    ['181-270 días', 'aging_c_181_270', C_RUST],
+    ['+270 días',    'aging_c_mas_270', C_RED],
+  ];
+  barChart('chart-cart-aging',
+    AGING.map(a=>a[0]),
+    AGING.map(a=>getBal(a[1])),
+    { horizontal:true, fmt:fmtBal, colors: AGING.map(a=>a[2]) });
+
+  // ─── Evolución de morosidad, últimos 24 meses ─────────────────────────────
+  const n24 = Math.min(24, DATA.meta.months.length);
+  const ini = DATA.meta.months.length - n24;
+  const lbl24 = DATA.meta.months.slice(ini).map(monthLabel);
+  lineChart('chart-cart-mor24', [
+    { label:'Morosidad total',   data:getSerie('mor_total').slice(ini),   borderColor:C_RUST, fill:false },
+    { label:'Morosidad consumo', data:getSerie('mor_consumo').slice(ini), borderColor:C_DARK, fill:false },
+  ], { labels: lbl24, pointRadius:0 });
 
   // Tabla comparativa
-  const rows = DATA.meta.banks
-    .map((code, i) => AGGREGATES.has(code) ? null : {
-      i, code, display: DATA.meta.display[code] || code,
-      imor: get('imor', i, mi), icor: get('icor', i, mi),
-      imora: get('imora', i, mi), tda: get('tda', i, mi)
-    })
-    .filter(Boolean)
-    .sort((a, b) => (b.imor ?? -1) - (a.imor ?? -1));
-
   let thtml = `<table class="data-table"><thead><tr>
-    <th>#</th><th>Banco</th><th class="num">IMOR</th><th class="num">IMORA</th>
-    <th class="num">TDA</th><th class="num">ICOR</th>
+    <th>#</th><th>Banco</th><th class="num">Mora Total</th><th class="num">Mora Consumo</th>
+    <th class="num">Mora Productivo</th><th class="num">Mora Micro</th><th class="num">Cobertura Prob.</th>
   </tr></thead><tbody>`;
-  rows.forEach((row, idx) => {
-    const hiBg = row.i === bi ? 'background:var(--light);' : '';
-    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${row.i})">
-      <td><span class="rank-badge">${idx + 1}</span></td>
-      <td class="bank-name">${row.display}</td>
-      <td class="num">${fmtPct(row.imor)}</td>
-      <td class="num">${fmtPct(row.imora)}</td>
-      <td class="num">${fmtPct(row.tda)}</td>
-      <td class="num">${fmtX(row.icor)}</td>
-    </tr>`;
+  const rows = DATA.meta.banks.map((b,i)=>({b, display:DATA.meta.display[b]||b,
+    mor: DATA.ind.mor_total?.[i]?.[mi]??null, con: DATA.ind.mor_consumo?.[i]?.[mi]??null,
+    prod: DATA.ind.mor_prod?.[i]?.[mi]??null, mic: DATA.ind.mor_micro?.[i]?.[mi]??null,
+    cob: DATA.ind.cob_prob?.[i]?.[mi]??null
+  // mora alta = más problemático → ordenar descendente
+  })).filter(r=>r.b!=='SISTEMA' && bancoActivo(DATA.meta.banks.indexOf(r.b), mi)).sort((a,b2)=>(b2.mor??-1)-(a.mor??-1));
+  rows.forEach((r,idx)=>{
+    const hi = r.b===DATA.meta.banks[bi]?'style="background:var(--light)"':'';
+    thtml+=`<tr ${hi}><td><span class="rank-badge">${idx+1}</span></td><td class="bank-name">${r.display}</td>
+      <td class="num">${fmtPct(r.mor)}</td><td class="num">${fmtPct(r.con)}</td>
+      <td class="num">${fmtPct(r.prod)}</td><td class="num">${fmtPct(r.mic)}</td>
+      <td class="num">${fmtNum(r.cob)}</td></tr>`;
   });
   thtml += '</tbody></table>';
   document.getElementById('table-cartera').innerHTML = thtml;
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-// TAB LIQUIDEZ
-// ════════════════════════════════════════════════════════════════════════════
+// ── TAB LIQUIDEZ ─────────────────────────────────────────────────────────────
 function renderLiquidez() {
   const bi = STATE.bank, mi = STATE.month;
-  const pmi = mi > 0 ? mi - 1 : null;
+  const prevMi = mi > 0 ? mi - 1 : null;
 
-  const kpis = [
-    { label: 'Liquidez (FD/DepCP)', val: get('liquidez',bi,mi),        prev:pmi!=null?get('liquidez',bi,pmi):null,        serie: getSerie('liquidez',bi,'ind'),       color: C.DARK,  fmt: fmtX   },
-    { label: 'Efectivo',            val: getBal('efectivo',bi,mi),       prev:pmi!=null?getBal('efectivo',bi,pmi):null,     serie: getSerie('efectivo',bi,'bal'),       color: C.TEAL,  fmt: fmtMXN },
-    { label: 'Dep. Exig. Inmediata',val: getBal('dep_inmediato',bi,mi), prev:pmi!=null?getBal('dep_inmediato',bi,pmi):null,serie: getSerie('dep_inmediato',bi,'bal'),  color: C.DARK,  fmt: fmtMXN },
-    { label: 'Captación Tradicional',val:getBal('captacion_trad',bi,mi),prev:pmi!=null?getBal('captacion_trad',bi,pmi):null,serie:getSerie('captacion_trad',bi,'bal'), color: C.SLATE, fmt: fmtMXN },
-    { label: 'MIF',                 val: get('mif',bi,mi),               prev:pmi!=null?get('mif',bi,pmi):null,             serie: getSerie('mif',bi,'ind'),            color: C.RUST,  fmt: fmtPct },
-    { label: 'Tasa Activa (anual)', val: get('tasa_activa',bi,mi),       prev:pmi!=null?get('tasa_activa',bi,pmi):null,     serie: getSerie('tasa_activa',bi,'ind'),    color: C.DARK,  fmt: fmtPct },
-    { label: 'Tasa Pasiva',         val: get('tasa_pasiva',bi,mi),       prev:pmi!=null?get('tasa_pasiva',bi,pmi):null,     serie: getSerie('tasa_pasiva',bi,'ind'),    color: C.SAND,  fmt: fmtPct },
-    { label: 'Cobertura Int.',      val: getDer('cov_int',bi,mi),         prev:pmi!=null?getDer('cov_int',bi,pmi):null,      serie: getSerie('cov_int',bi,'der'),        color: C.TEAL,  fmt: fmtX   },
-  ];
-  document.getElementById('kpi-liquidez').innerHTML = kpis.map(k => kpiCard(k.label, k.val, k.serie, k.color, k.fmt, k.prev)).join('');
-
-  const si = getSI();
-  lineChart('chart-liq-ratio', [
-    { label: 'Liquidez ' + bankDisplay(bi), data: getSerie('liquidez', bi, 'ind'), borderColor: C.DARK },
-    si !== -1 && si !== bi ? { label: 'Sistema', data: getSerie('liquidez', si, 'ind'), borderColor: C.RUST, borderDash: [4, 2] } : null
-  ].filter(Boolean), { fmt: fmtX });
-
-  lineChart('chart-liq-mif', [
-    { label: 'MIF ' + bankDisplay(bi), data: getSerie('mif', bi, 'ind'), borderColor: C.DARK },
-    si !== -1 && si !== bi ? { label: 'MIF Sistema', data: getSerie('mif', si, 'ind'), borderColor: C.RUST, borderDash: [4, 2] } : null
-  ].filter(Boolean));
-
-  const rows = DATA.meta.banks
-    .map((code, i) => AGGREGATES.has(code) ? null : {
-      i, code, display: DATA.meta.display[code] || code,
-      liq: get('liquidez', i, mi), mif: get('mif', i, mi),
-      tasa_a: get('tasa_activa', i, mi), tasa_p: get('tasa_pasiva', i, mi)
-    })
-    .filter(Boolean)
-    .sort((a, b) => (a.liq ?? 99) - (b.liq ?? 99));
-
-  let thtml = `<table class="data-table"><thead><tr>
-    <th>#</th><th>Banco</th><th class="num">Liquidez</th>
-    <th class="num">MIF</th><th class="num">Tasa Activa</th><th class="num">Tasa Pasiva</th>
-  </tr></thead><tbody>`;
-  rows.forEach((row, idx) => {
-    const hiBg = row.i === bi ? 'background:var(--light);' : '';
-    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${row.i})">
-      <td><span class="rank-badge">${idx + 1}</span></td>
-      <td class="bank-name">${row.display}</td>
-      <td class="num">${fmtX(row.liq)}</td>
-      <td class="num">${fmtPct(row.mif)}</td>
-      <td class="num">${fmtPct(row.tasa_a)}</td>
-      <td class="num">${fmtPct(row.tasa_p)}</td>
-    </tr>`;
+  // Depósitos a la vista / a plazo como % del total (vista + plazo). No viven
+  // en DATA.ind: cuentas 2101/2103 nuevas en el ETL (agosto 2026), mismo
+  // criterio que el dashboard de cooperativas.
+  const depShareAt = (m) => {
+    const v = getBal('dep_vista', bi, m), p = getBal('dep_plazo', bi, m);
+    const tot = (v!=null && p!=null) ? v+p : null;
+    return { vista: (v!=null && tot) ? v/tot : null, plazo: (p!=null && tot) ? p/tot : null };
+  };
+  const depShareCur  = depShareAt(mi);
+  const depSharePrev = prevMi!=null ? depShareAt(prevMi) : { vista:null, plazo:null };
+  const vistaSerie = getSerie('dep_vista', bi, 'bal');
+  const plazoSerie = getSerie('dep_plazo', bi, 'bal');
+  const vistaShareSerie = vistaSerie.map((v,i) => {
+    const p = plazoSerie[i], tot = (v!=null && p!=null) ? v+p : null;
+    return (v!=null && tot) ? v/tot : null;
   });
-  thtml += '</tbody></table>';
-  document.getElementById('table-liquidez').innerHTML = thtml;
+  const plazoShareSerie = vistaSerie.map((v,i) => {
+    const p = plazoSerie[i], tot = (v!=null && p!=null) ? v+p : null;
+    return (p!=null && tot) ? p/tot : null;
+  });
+
+  // Mismas ocho cards que la pestaña Liquidez de cooperativas, sin Vulner.
+  // Patrimonial ni Intermediación. Intermediación sigue como card en Cartera;
+  // Vulner. Patrimonial ya no tiene card propia, solo queda en la tabla de
+  // ranking de esta pestaña y en el detalle del modal CAMELS.
+  const kpis = [
+    { label:'Depósitos',                v:getBal('depositos'),   prev:prevMi!=null?getBal('depositos',bi,prevMi):null,  fmt:fmtBal, serie:getSerie('depositos',bi,'bal'),   color:C_DARK },
+    { label:'Inversiones',              v:getBal('inversiones'), prev:prevMi!=null?getBal('inversiones',bi,prevMi):null,fmt:fmtBal, serie:getSerie('inversiones',bi,'bal'), color:C_TEAL },
+    { label:'Liquidez CNBV',     v:get('liquidez'),     prev:prevMi!=null?get('liquidez',bi,prevMi):null,     serie:getSerie('liquidez'),     color:C_DARK },
+    { label:'Act. Prod./Pas. Costo',    v:get('act_prod_pas'), prev:prevMi!=null?get('act_prod_pas',bi,prevMi):null, serie:getSerie('act_prod_pas'), color:C_DARK },
+    { label:'Act. Improductivos/Total', v:get('act_impr'),     prev:prevMi!=null?get('act_impr',bi,prevMi):null,     better:'low', serie:getSerie('act_impr'),     color:C_RUST },
+    { label:'Act. Productivos/Total',   v:get('act_prod_tot'), prev:prevMi!=null?get('act_prod_tot',bi,prevMi):null, serie:getSerie('act_prod_tot'), color:C_DARK },
+    { label:'Dep. a la vista / Dep. totales', v:depShareCur.vista, prev:depSharePrev.vista, serie:vistaShareSerie, color:C_DARK },
+    { label:'Dep. a plazo / Dep. totales',    v:depShareCur.plazo, prev:depSharePrev.plazo, serie:plazoShareSerie, color:C_TEAL },
+  ];
+  let html='';
+  kpis.forEach(k=>{
+    if (Array.isArray(k.serie) && !k.serie.some(v => v != null)) return;
+    const fmt = k.fmt || fmtPct;
+    const d = k.prev!=null&&k.v!=null?k.v-k.prev:null;
+    const up = k.better==='low'?d<0:d>0;
+    const dCls = d==null?'delta-neu':(up?'delta-up':'delta-down');
+    html+=`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value">${fmt(k.v)}</div><div class="kpi-delta ${dCls}">${d!=null?(d>=0?'+':'')+fmt(d):'&nbsp;'}</div><div class="kpi-spark">${sparkSVG(k.serie||[], k.color||C_DARK)}</div></div>`;
+  });
+  document.getElementById('kpi-liquidez').innerHTML = html;
+
+  // Mismas tres gráficas que cooperativas, con los mismos colores y formatos.
+  // maintainAspectRatio:false, no true: es la convención de ESTE tablero (ver
+  // comentario junto a .chart-row.one .chart-canvas) — con true, el chart no
+  // respeta el ancho del contenedor y se ve angosto y estirado en alto.
+  // El monto en 'bal' aquí está en MILES (no en unidades como en cooperativas),
+  // así que la conversión a millones divide entre 1e3, no entre 1e6.
+  const labels = MONTHS();
+
+  const liqPctSerie = getSerie('liquidez').map(v=>v!=null?+(v*100).toFixed(3):null);
+  mkChart('chart-liq-ratio', {
+    type:'line', data:{ labels,
+      datasets:[
+        { label:'Liquidez', data:liqPctSerie, borderColor:C_DARK,
+          backgroundColor:'rgba(22,48,67,.08)', fill:true, tension:.3, pointRadius:0 },
+      ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{labels:{font:{size:11}}} },
+      scales:{ x:{ticks:{font:{size:9},maxRotation:45}},
+               y:{ticks:{font:{size:10},callback:v=>v+'%'},min:0} } },
+  });
+
+  // Fondos disponibles vs. Obligaciones y Depósitos vista/plazo: últimos 24
+  // meses, no el histórico completo — mismo recorte que "Evolución de
+  // morosidad" en la pestaña Cartera, para que no queden ilegibles.
+  const n24 = Math.min(24, DATA.meta.months.length);
+  const ini = DATA.meta.months.length - n24;
+  const labels24 = DATA.meta.months.slice(ini).map(monthLabel);
+
+  const fondosM = getSerie('ictl_fondos', bi, 'bal').slice(ini).map(v=>v!=null?+(v/1e3).toFixed(1):null);
+  const obligM  = getSerie('depositos', bi, 'bal').slice(ini).map(v=>v!=null?+(v/1e3).toFixed(1):null);
+  mkChart('chart-liq-fondos', {
+    type:'line', data:{ labels:labels24,
+      datasets:[
+        { label:'Efectivo y equivalentes', data:fondosM, borderColor:C_TEAL, tension:.3, pointRadius:0 },
+        { label:'Depósitos del público', data:obligM, borderColor:C_SLATE, tension:.3, pointRadius:0 },
+      ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{labels:{font:{size:11}}} },
+      scales:{ x:{ticks:{font:{size:9},maxRotation:45}},
+               y:{ticks:{font:{size:10},callback:v=>'$'+v+'M'}} } },
+  });
+
+  const vistaM = vistaSerie.slice(ini).map(v=>v!=null?+(v/1e3).toFixed(1):null);
+  const plazoM = plazoSerie.slice(ini).map(v=>v!=null?+(v/1e3).toFixed(1):null);
+  mkChart('chart-liq-dep', {
+    type:'bar', data:{ labels:labels24,
+      datasets:[
+        { label:'Depósitos a la vista', data:vistaM, backgroundColor:'rgba(22,48,67,.6)', stack:'dep' },
+        { label:'Depósitos a plazo', data:plazoM, backgroundColor:'rgba(197,221,221,.8)', stack:'dep' },
+      ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{labels:{font:{size:11}}} },
+      scales:{ x:{stacked:true, ticks:{font:{size:9},maxRotation:45}},
+               y:{stacked:true, ticks:{font:{size:10},callback:v=>'$'+v+'M'}} } },
+  });
+
+  let thtml=`<table class="data-table"><thead><tr>
+    <th>#</th><th>Banco</th><th class="num">Liquidez</th><th class="num">Act.Prod/Pas.Costo</th>
+    <th class="num">Act.Improductivos</th><th class="num">Vulner.Pat.</th>
+  </tr></thead><tbody>`;
+  DATA.meta.banks.map((b,i)=>({b, display:DATA.meta.display[b]||b,
+    liq:DATA.ind.liquidez?.[i]?.[mi]??null, ap:DATA.ind.act_prod_pas?.[i]?.[mi]??null,
+    ai:DATA.ind.act_impr?.[i]?.[mi]??null, vp:DATA.ind.vulner_pat?.[i]?.[mi]??null
+  // liquidez baja = más problemático → ordenar ascendente
+  })).filter(r=>r.b!=='SISTEMA' && bancoActivo(DATA.meta.banks.indexOf(r.b), mi)).sort((a,b2)=>(a.liq??999)-(b2.liq??999)).forEach((r,idx)=>{
+    const hi=r.b===DATA.meta.banks[bi]?'style="background:var(--light)"':'';
+    thtml+=`<tr ${hi}><td><span class="rank-badge">${idx+1}</span></td><td class="bank-name">${r.display}</td>
+      <td class="num">${fmtPct(r.liq)}</td><td class="num">${fmtNum(r.ap)}</td>
+      <td class="num">${fmtPct(r.ai)}</td><td class="num">${fmtPct(r.vp)}</td></tr>`;
+  });
+  thtml+='</tbody></table>';
+  document.getElementById('table-liquidez').innerHTML=thtml;
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-// TAB CAPITAL
-// ════════════════════════════════════════════════════════════════════════════
-function renderCapital() {
+// ── TAB SOLVENCIA ────────────────────────────────────────────────────────────
+function renderSolvencia() {
   const bi = STATE.bank, mi = STATE.month;
-  const pmi = mi > 0 ? mi - 1 : null;
+  const prevMi = mi > 0 ? mi - 1 : null;
 
+  // PT Requerido no viene reportado en los datos de Bancos (a diferencia de
+  // Cooperativas, donde la SEPS sí lo reporta): se deriva como APR × 9%, el
+  // mismo mínimo LGISF Art. 47 que ya usa la gráfica de Coef. Solvencia.
+  const ptReq = (b=bi, m=mi) => { const apr = getPT('apr', b, m); return apr != null ? apr * 0.09 : null; };
+  const excedente = (b=bi, m=mi) => { const c = getPT('pt_const', b, m), r = ptReq(b, m); return c != null && r != null ? c - r : null; };
+  const ptReqSerie = getSerie('apr', bi, 'pt').map(v => v != null ? v * 0.09 : null);
+  const excSerie = getSerie('pt_const', bi, 'pt').map((v,i) => v != null && ptReqSerie[i] != null ? v - ptReqSerie[i] : null);
+
+  // 8 KPIs: mismo set, orden y colores institucionales que la pestaña
+  // Solvencia de Cooperativas, para leer los dos tableros en paralelo. PT
+  // Requerido y Excedente son nuevas; las otras 6 ya existían en este tablero
+  // (se conservan sus etiquetas propias: "APR" en vez de "APPR", etc. — es la
+  // sigla que usa la Superintendencia de Bancos, distinta a la de la SEPS).
   const kpis = [
-    { label: 'Capital / Activo',   val: getDer('capital_activo',bi,mi), prev:pmi!=null?getDer('capital_activo',bi,pmi):null, serie: getSerie('capital_activo',bi,'der'), color: C.DARK,  fmt: fmtPct  },
-    { label: 'Capital Contable',   val: getBal('capital',bi,mi),         prev:pmi!=null?getBal('capital',bi,pmi):null,        serie: getSerie('capital',bi,'bal'),       color: C.SAND,  fmt: fmtMXN  },
-    { label: 'Activos Totales',    val: getBal('activo',bi,mi),           prev:pmi!=null?getBal('activo',bi,pmi):null,         serie: getSerie('activo',bi,'bal'),        color: C.DARK,  fmt: fmtMXN  },
-    { label: 'Estimación Prev.',   val: getBal('estimacion_prev',bi,mi),  prev:pmi!=null?getBal('estimacion_prev',bi,pmi):null,serie: getSerie('estimacion_prev',bi,'bal'),color: C.RUST, fmt: fmtMXN  },
-    { label: 'Cartera Etapa 3',    val: getBal('cartera_etapa3',bi,mi),   prev:pmi!=null?getBal('cartera_etapa3',bi,pmi):null, serie: getSerie('cartera_etapa3',bi,'bal'), color: C.RUST, fmt: fmtMXN  },
-    { label: 'EPRC / Cartera',     val: get('eprc_ratio',bi,mi),           prev:pmi!=null?get('eprc_ratio',bi,pmi):null,        serie: getSerie('eprc_ratio',bi,'ind'),    color: C.TEAL,  fmt: fmtPct  },
+    { label:'ICAP', v:getPT('coef_basilea'), prev:prevMi!=null?getPT('coef_basilea',bi,prevMi):null, serie:getSerie('coef_basilea',bi,'pt'), color:C_DARK },
+    { label:'Capital básico (CCB)',     v:getPT('ccb'),          prev:prevMi!=null?getPT('ccb',bi,prevMi):null,          serie:getSerie('ccb',bi,'pt'),   color:C_TEAL },
+    { label:'Capital fundamental (CCF)', v:getPT('ccf'),         prev:prevMi!=null?getPT('ccf',bi,prevMi):null,          serie:getSerie('ccf',bi,'pt'), color:C_TEAL },
+    { label:'PT Requerido',             v:ptReq(),                prev:prevMi!=null?ptReq(bi,prevMi):null,               fmt:fmtM, serie:ptReqSerie, color:C_SLATE },
+    { label:'Excedente (PT−PT Req.)',   v:excedente(),             prev:prevMi!=null?excedente(bi,prevMi):null,          fmt:fmtM, serie:excSerie, color:C_SAND },
+    { label:'APR',                      v:getPT('apr'),          prev:null,                                              fmt:fmtM, serie:getSerie('apr',bi,'pt'),     color:C_RUST },
+    { label:'Suf. Patrimonial',         v:get('suf_pat'),        prev:prevMi!=null?get('suf_pat',bi,prevMi):null,        fmt:fmtNum, serie:getSerie('suf_pat'),         color:C_DARK },
+    { label:'Índice Cap. Neto (FK/FI)', v:get('icn'),            prev:prevMi!=null?get('icn',bi,prevMi):null,            serie:getSerie('icn'),                         color:C_TEAL },
   ];
-  document.getElementById('kpi-capital').innerHTML = kpis.map(k => kpiCard(k.label, k.val, k.serie, k.color, k.fmt, k.prev)).join('');
-
-  const si = getSI();
-  lineChart('chart-cap-ratio', [
-    { label: 'Capital/Activo ' + bankDisplay(bi), data: getSerie('capital_activo', bi, 'der'), borderColor: C.DARK },
-    si !== -1 && si !== bi ? { label: 'Sistema', data: getSerie('capital_activo', si, 'der'), borderColor: C.RUST, borderDash: [4, 2] } : null
-  ].filter(Boolean));
-
-  lineChart('chart-cap-abs', [
-    { label: 'Activos', data: getSerie('activo', bi, 'bal'), borderColor: C.DARK },
-    { label: 'Capital', data: getSerie('capital', bi, 'bal'), borderColor: C.SAND }
-  ], { fmt: fmtMXN });
-
-  const rows = DATA.meta.banks
-    .map((code, i) => AGGREGATES.has(code) ? null : {
-      i, code, display: DATA.meta.display[code] || code,
-      ca: getDer('capital_activo', i, mi), capital: getBal('capital', i, mi)
-    })
-    .filter(Boolean)
-    .sort((a, b) => (b.ca ?? -1) - (a.ca ?? -1));
-
-  let thtml = `<table class="data-table"><thead><tr>
-    <th>#</th><th>Banco</th><th class="num">Capital/Activo</th><th class="num">Capital Contable (MXN)</th>
-  </tr></thead><tbody>`;
-  rows.forEach((row, idx) => {
-    const hiBg = row.i === bi ? 'background:var(--light);' : '';
-    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${row.i})">
-      <td><span class="rank-badge">${idx + 1}</span></td>
-      <td class="bank-name">${row.display}</td>
-      <td class="num">${fmtPct(row.ca)}</td>
-      <td class="num">${fmtMXN(row.capital)}</td>
-    </tr>`;
+  let html='';
+  kpis.forEach(k=>{
+    if (Array.isArray(k.serie) && !k.serie.some(v => v != null)) return;
+    const fmt=k.fmt||fmtPct;
+    const d=k.prev!=null&&k.v!=null?k.v-k.prev:null;
+    const dCls=d==null?'delta-neu':(d>0?'delta-up':'delta-down');
+    html+=`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value">${fmt(k.v)}</div><div class="kpi-delta ${dCls}">${d!=null?(d>=0?'+':'')+fmt(d):'&nbsp;'}</div><div class="kpi-spark">${sparkSVG(k.serie||[], k.color||C_DARK)}</div></div>`;
   });
-  thtml += '</tbody></table>';
-  document.getElementById('table-capital').innerHTML = thtml;
-}
+  document.getElementById('kpi-solvencia').innerHTML=html;
 
-// ════════════════════════════════════════════════════════════════════════════
-// TAB RENTABILIDAD
-// ════════════════════════════════════════════════════════════════════════════
-function renderRentabilidad() {
-  const bi = STATE.bank, mi = STATE.month;
-  const pmi = mi > 0 ? mi - 1 : null;
+  const si = DATA.meta.banks.indexOf('SISTEMA');
 
-  const kpis = [
-    { label: 'ROA',              val: get('roa',bi,mi),            prev:pmi!=null?get('roa',bi,pmi):null,             serie: getSerie('roa',bi,'ind'),          color: C.DARK,  fmt: fmtPct },
-    { label: 'ROE',              val: get('roe',bi,mi),            prev:pmi!=null?get('roe',bi,pmi):null,             serie: getSerie('roe',bi,'ind'),          color: C.RUST,  fmt: fmtPct },
-    { label: 'Resultado Neto',   val: getBal('resultado_neto',bi,mi),prev:pmi!=null?getBal('resultado_neto',bi,pmi):null,serie:getSerie('resultado_neto',bi,'bal'),color:C.DARK, fmt: fmtMXN },
-    { label: 'Margen Financiero',val: getBal('margen_fin',bi,mi),   prev:pmi!=null?getBal('margen_fin',bi,pmi):null,   serie:getSerie('margen_fin',bi,'bal'),    color: C.TEAL,  fmt: fmtMXN },
-    { label: 'Margen Ajustado',  val: getBal('margen_aj',bi,mi),    prev:pmi!=null?getBal('margen_aj',bi,pmi):null,    serie:getSerie('margen_aj',bi,'bal'),     color: C.SAND,  fmt: fmtMXN },
-    { label: 'Gastos Adm.',      val: getBal('gastos_adm',bi,mi),   prev:pmi!=null?getBal('gastos_adm',bi,pmi):null,   serie:getSerie('gastos_adm',bi,'bal'),    color: C.SLATE, fmt: fmtMXN },
-    { label: 'Efic. (G/Margen)', val: getDer('efic_margen',bi,mi),  prev:pmi!=null?getDer('efic_margen',bi,pmi):null,  serie:getSerie('efic_margen',bi,'der'),   color: C.RUST,  fmt: fmtPct },
-    { label: 'Efic. (G/Activo)', val: getDer('efic_activo',bi,mi),  prev:pmi!=null?getDer('efic_activo',bi,pmi):null,  serie:getSerie('efic_activo',bi,'der'),   color: C.DARK,  fmt: fmtPct },
-  ];
-  document.getElementById('kpi-rent').innerHTML = kpis.map(k => kpiCard(k.label, k.val, k.serie, k.color, k.fmt, k.prev)).join('');
+  // Bar chart: ranking de todos los bancos en el periodo seleccionado, con la
+  // raya del mínimo 9% AL FRENTE de las barras (mismo fix de order que
+  // cooperativas: Chart.js dibuja dataset[0] al frente por defecto cuando el
+  // order es igual, así que la barra tapaba la raya en los bancos por encima
+  // del mínimo — order más alto se dibuja primero y queda atrás).
+  const rows = DATA.meta.banks.map((b,i)=>({ b, display:DATA.meta.display[b]||b,
+    sol:getPT('coef_basilea',i,mi) }))
+    .filter(r=>r.b!=='SISTEMA' && bancoActivo(DATA.meta.banks.indexOf(r.b), mi) && r.sol!=null)
+    .sort((a,b2)=>a.sol-b2.sol);
 
-  // Waterfall
-  document.getElementById('wf-title').textContent = 'Composición del Margen — ' + bankDisplay(bi) + ' · ' + monthLabel(DATA.meta.months[mi]);
-  renderWaterfall(bi, mi);
+  // maintainAspectRatio:false: convención de este tablero (ver nota en
+  // renderLiquidez) — con true el chart no respeta el ancho del contenedor.
+  mkChart('chart-sol-bar', {
+    type:'bar',
+    data:{ labels: rows.map(r=>r.display.split(' ').slice(0,3).join(' ')),
+      datasets:[
+        { label:'ICAP', data:rows.map(r=>+(r.sol*100).toFixed(2)),
+          backgroundColor: rows.map(r=>r.sol<0.105?C_RED:r.sol<0.12?'#c8820a':C_TEAL),
+          order:2 },
+        { label:'Mínimo 10,5%', data:rows.map(()=>10.5),
+          type:'line', borderColor:C_RUST, pointRadius:0, borderDash:[4,2], borderWidth:1.5,
+          order:1 },
+      ]},
+    options:{ responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{labels:{font:{size:11}}} },
+      scales:{ x:{ticks:{font:{size:8},maxRotation:90}},
+               y:{ticks:{font:{size:10},callback:v=>v+'%'}, min:0} } },
+  });
 
-  const si = getSI();
-  lineChart('chart-rent-roa', [
-    { label: 'ROA ' + bankDisplay(bi), data: getSerie('roa', bi, 'ind'), borderColor: C.DARK },
-    si !== -1 && si !== bi ? { label: 'ROA Sistema', data: getSerie('roa', si, 'ind'), borderColor: C.RUST, borderDash: [4, 2] } : null
-  ].filter(Boolean));
-
-  lineChart('chart-rent-efic', [
-    { label: 'G/Margen', data: getSerie('efic_margen', bi, 'der'), borderColor: C.DARK },
-    { label: 'G/Activo', data: getSerie('efic_activo', bi, 'der'), borderColor: C.RUST }
+  // Tendencia del índice principal, banco vs sistema. Se conserva tal cual
+  // estaba (no se toca su color de referencia 9%, que es previo a este
+  // cambio); solo se le quitó la gráfica hermana del ICN histórico, que ahora
+  // vive en su card con sparkline igual que en cooperativas.
+  lineChart('chart-sol-coef', [
+    { label:'ICAP', data:getSerie('coef_basilea',bi,'pt'), borderColor:C_DARK, fill:false, pointRadius:0 },
+    ...(si!==-1?[{label:'Sistema',data:getSerie('coef_basilea',si,'pt'),borderColor:C_RUST,fill:false,pointRadius:0}]:[]),
+    { label:'Mínimo 10,5%', data:DATA.meta.months.map(()=>0.105), borderColor:'#b83232', borderDash:[6,3], fill:false, pointRadius:0 }
   ]);
 
-  const rows = DATA.meta.banks
-    .map((code, i) => AGGREGATES.has(code) ? null : {
-      i, code, display: DATA.meta.display[code] || code,
-      roa: get('roa', i, mi), roe: get('roe', i, mi), efic: getDer('efic_margen', i, mi)
-    })
-    .filter(Boolean)
-    .sort((a, b) => (b.roa ?? -99) - (a.roa ?? -99));
-
-  let thtml = `<table class="data-table"><thead><tr>
-    <th>#</th><th>Banco</th><th class="num">ROA</th><th class="num">ROE</th><th class="num">Efic. G/Margen</th>
+  // ── Tabla: SIN CAMBIOS (se deja la de Bancos, no se copia la de Cooperativas) ──
+  let thtml=`<table class="data-table"><thead><tr>
+    <th>#</th><th>Banco</th><th class="num">ICAP</th><th class="num">CCB</th>
+    <th class="num">CCF</th><th class="num">Categoría I</th><th class="num"></th>
   </tr></thead><tbody>`;
-  rows.forEach((row, idx) => {
-    const hiBg = row.i === bi ? 'background:var(--light);' : '';
-    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${row.i})">
-      <td><span class="rank-badge">${idx + 1}</span></td>
-      <td class="bank-name">${row.display}</td>
-      <td class="num">${fmtPct(row.roa)}</td>
-      <td class="num">${fmtPct(row.roe)}</td>
-      <td class="num">${fmtPct(row.efic)}</td>
-    </tr>`;
+  DATA.meta.banks.map((b,i)=>({b,display:DATA.meta.display[b]||b,
+    cb:DATA.pt.coef_basilea?.[i]?.[mi]??null, pa:DATA.pt.ccb?.[i]?.[mi]??null,
+    pt:DATA.pt.ccf?.[i]?.[mi]??null, apr:DATA.pt.bajo_minimo_cat1?.[i]?.[mi]??null,
+    icn:DATA.ind.icn?.[i]?.[mi]??null
+  // coef solvencia bajo = más problemático → ordenar ascendente
+  })).filter(r=>r.b!=='SISTEMA' && bancoActivo(DATA.meta.banks.indexOf(r.b), mi)).sort((a,b2)=>(a.cb??999)-(b2.cb??999)).forEach((r,idx)=>{
+    const hi=r.b===DATA.meta.banks[bi]?'style="background:var(--light)"':'';
+    const cbOk = r.cb!=null&&r.apr!==1;
+    thtml+=`<tr ${hi}><td><span class="rank-badge">${idx+1}</span></td><td class="bank-name">${r.display}</td>
+      <td class="num" style="color:${cbOk?'var(--green)':'var(--red)'};font-weight:600">${fmtPct(r.cb)}</td>
+      <td class="num">${fmtPct(r.pa)}</td><td class="num">${fmtPct(r.pt)}</td>
+      <td class="num">${r.apr==null?'—':(r.apr===1?'Fuera':'Cumple')}</td><td class="num"></td></tr>`;
   });
-  thtml += '</tbody></table>';
-  document.getElementById('table-rentabilidad').innerHTML = thtml;
+  thtml+='</tbody></table>';
+  document.getElementById('table-solvencia').innerHTML=thtml;
 }
 
-function renderWaterfall(bi, mi) {
-  const ingInt = getBal('ingresos_int', bi, mi);
-  const gtoInt = getBal('gastos_int',   bi, mi);
-  const margen = getBal('margen_fin',   bi, mi);
-  const marAj  = getBal('margen_aj',    bi, mi);
-  const gasAdm = getBal('gastos_adm',   bi, mi);
-  const result = getBal('resultado_neto',bi, mi);
-  const canvas = document.getElementById('chart-waterfall');
-  if (!ingInt || !gtoInt || !margen || !gasAdm || !result) { canvas.style.display = 'none'; return; }
-  canvas.style.display = '';
+// ── WATERFALL: Composición del Resultado ─────────────────────────────────────
+function renderWaterfall() {
+  if (!DATA) return;
+  const bi = STATE.bank, mi = STATE.month;
+  const bankName = DATA.meta.display[DATA.meta.banks[bi]] || DATA.meta.banks[bi];
+  const period   = DATA.meta.months[mi] || '';
 
-  const provPL = margen - (marAj || margen);
-  const otros  = result - ((marAj || margen) - gasAdm);
-  const labels = ['Ingresos Int.', 'Gastos Int.', 'Provisiones', 'Gastos Adm.', 'Otros/Imp.', 'Resultado'];
-  const base   = [0, ingInt - gtoInt, ingInt - gtoInt - provPL, (marAj||margen), (marAj||margen) - gasAdm, 0];
-  const vals   = [ingInt, gtoInt, provPL, gasAdm, otros, result];
-  const colors = [C.TEAL, C.RUST, C.RUST, C.RUST, otros >= 0 ? C.TEAL : C.RUST, result >= 0 ? C.GREEN : C.RUST];
+  document.getElementById('wf-title').textContent =
+    `Composición del Resultado — ${bankName} · ${period}`;
 
   destroyChart('chart-waterfall');
-  const ctx = canvas.getContext('2d');
-  CHARTS['chart-waterfall'] = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels,
-      datasets: [
-        { data: base, backgroundColor: 'transparent', borderColor: 'transparent' },
-        { data: vals, backgroundColor: colors, borderRadius: 3 }
-      ]
-    },
-    options: {
-      responsive: true, maintainAspectRatio: false,
-      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.datasetIndex === 1 ? fmtMXN(c.raw) : '' } } },
-      scales: { x: { stacked: true, ticks: { font: { size: 11 } } }, y: { stacked: true, ticks: { font: { size: 10 }, callback: fmtMXN } } }
-    }
-  });
-}
 
-// ════════════════════════════════════════════════════════════════════════════
-// TAB BENCHMARK
-// ════════════════════════════════════════════════════════════════════════════
-function renderBenchmark() {
-  const mi = STATE.month;
-  const sortKey = document.getElementById('bench-sort').value;
+  let ing  = getBal('pyg_ingresos',    bi, mi);
+  let ic   = getBal('pyg_int_causados', bi, mi);
+  let prov = getBal('pyg_provisiones',  bi, mi);
+  let gop  = getBal('pyg_gastos_op',    bi, mi);
+  let res  = getBal('resultado',        bi, mi);
 
-  function getVal(i) {
-    switch (sortKey) {
-      case 'ifb':          return computeCAMELS(i, mi).ifb;
-      case 'imor':         return get('imor', i, mi);
-      case 'icor':         return get('icor', i, mi);
-      case 'roa':          return get('roa', i, mi);
-      case 'roe':          return get('roe', i, mi);
-      case 'liquidez':     return get('liquidez', i, mi);
-      case 'efic_margen':  return getDer('efic_margen', i, mi);
-      case 'capital_activo': return getDer('capital_activo', i, mi);
-      case 'activo':       return getBal('activo', i, mi);
-      default: return null;
-    }
+  const canvas = document.getElementById('chart-waterfall');
+  if (ing == null || ic == null || prov == null || gop == null || res == null) {
+    canvas.style.display = 'none';
+    return;
   }
+  canvas.style.display = '';
 
-  const fmtMap = { ifb: v => fmtNum(v), imor: fmtPct, icor: fmtX, roa: fmtPct, roe: fmtPct,
-                   liquidez: fmtX, efic_margen: fmtPct, capital_activo: fmtPct, activo: fmtMXN };
-  const fmt = fmtMap[sortKey] || fmtNum;
-  const lowBetter = ['imor', 'efic_margen'].includes(sortKey);
+  // BAL viene en miles USD (igual que las KPI cards vía fmtBal, ver arriba
+  // "BAL/PT vienen en miles USD → multiplicar ×1000") → escalar a USD real
+  // antes de construir el waterfall. Sin este ×1000, fmtWf mostraba 1000x
+  // menos de lo real: Ingresos del sistema aparecía en "4.6M" en vez de
+  // "4.6B", Resultado en "544K" en vez de "544M".
+  ing *= 1000; ic *= 1000; prov *= 1000; gop *= 1000; res *= 1000;
 
-  const rows = DATA.meta.banks
-    .map((code, i) => AGGREGATES.has(code) ? null : { i, code, display: DATA.meta.display[code] || code, val: getVal(i), ifb: computeCAMELS(i, mi).ifb })
-    .filter(Boolean)
-    .sort((a, b) => lowBetter ? (a.val ?? 99) - (b.val ?? 99) : (b.val ?? -99) - (a.val ?? -99));
+  // Niveles acumulados
+  const r1    = ing - ic;           // tras costo financiero
+  const r2    = r1  - prov;         // tras provisiones
+  const r3    = r2  - gop;          // tras gastos operativos
+  const otros = res - r3;           // residual (otros gastos netos + impuestos)
 
-  const maxVal = Math.max(...rows.map(r => Math.abs(r.val ?? 0)));
+  // [lo, hi] para cada barra flotante
+  const bars = [
+    { lbl:'Ingresos',          lo:0,  hi:ing,  neg:false, anchor:true  },
+    { lbl:'Costo Financiero',  lo:r1, hi:ing,  neg:true,  anchor:false },
+    { lbl:'Provisiones',       lo:r2, hi:r1,   neg:true,  anchor:false },
+    { lbl:'Gastos Operativos', lo:r3, hi:r2,   neg:true,  anchor:false },
+    { lbl:'Otros e Imptos.',   lo:otros>=0?r3:res, hi:otros>=0?res:r3, neg:otros<0, anchor:false },
+    { lbl:'Resultado',         lo:0,  hi:res,  neg:res<0, anchor:true  },
+  ];
 
-  let thtml = `<table class="data-table"><thead><tr>
-    <th>#</th><th>Banco</th><th>Grupo</th><th class="num">${sortKey.toUpperCase()}</th>
-    <th style="width:200px">Posición relativa</th><th class="num">IFB</th>
-  </tr></thead><tbody>`;
-  rows.forEach((row, idx) => {
-    const pct = maxVal ? Math.abs(row.val ?? 0) / maxVal * 100 : 0;
-    const tercio = idx < rows.length / 3 ? (lowBetter ? C.GREEN : C.RUST)
-                 : idx < rows.length * 2 / 3 ? C.YELLOW : (lowBetter ? C.RUST : C.GREEN);
-    const cat = ifbCategory(row.ifb);
-    thtml += `<tr>
-      <td><span class="rank-badge">${idx + 1}</span></td>
-      <td class="bank-name">${row.display}</td>
-      <td><span class="group-badge">${groupName(row.code)}</span></td>
-      <td class="num">${fmt(row.val)}</td>
-      <td><div style="background:var(--border);border-radius:3px;height:8px">
-        <div style="background:${tercio};width:${pct.toFixed(1)}%;height:100%;border-radius:3px"></div>
-      </div></td>
-      <td class="num ${scoreClass(row.ifb)}">${row.ifb != null ? row.ifb.toFixed(2) : '—'}</td>
-    </tr>`;
-  });
-  thtml += '</tbody></table>';
-  document.getElementById('bench-table').innerHTML = thtml;
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// TAB ICTL
-// ════════════════════════════════════════════════════════════════════════════
-function renderICTL() {
-  const bi = STATE.bank, mi = STATE.month;
-  const thr = DATA.meta.ictl_thresholds;
-
-  function scoreInd(val, verde, amarillo, dir) {
-    if (val == null) return null;
-    if (dir === 'high') {
-      if (val >= verde)   return 100;
-      if (val >= amarillo) return 50 + 50 * (val - amarillo) / (verde - amarillo);
-      return Math.max(0, 50 * val / amarillo);
-    } else {
-      if (val <= verde)   return 100;
-      if (val <= amarillo) return Math.max(0, 100 - 50 * (val - verde) / (amarillo - verde));
-      return Math.max(0, 50 - 50 * (val - amarillo) / amarillo);
-    }
-  }
-
-  const ilon  = getDer('ictl_ilon',  bi, mi);
-  const icint = getDer('ictl_icint', bi, mi);
-  const itl   = getDer('ictl_itl',   bi, mi);
-
-  const s_ilon  = scoreInd(ilon,  thr.ilon.verde,  thr.ilon.amarillo,  thr.ilon.dir);
-  const s_icint = scoreInd(icint, thr.icint.verde, thr.icint.amarillo, thr.icint.dir);
-  const s_itl   = scoreInd(itl,   thr.itl.verde,   thr.itl.amarillo,   thr.itl.dir);
-
-  let ictl = null, tw = 0;
-  if (s_ilon != null || s_icint != null || s_itl != null) {
-    ictl = 0;
-    if (s_ilon  != null) { ictl += s_ilon  * thr.ilon.peso;  tw += thr.ilon.peso; }
-    if (s_icint != null) { ictl += s_icint * thr.icint.peso; tw += thr.icint.peso; }
-    if (s_itl   != null) { ictl += s_itl   * thr.itl.peso;   tw += thr.itl.peso; }
-    ictl = tw > 0 ? ictl / tw : null;
-  }
-
-  const ictlClass = ictl == null ? 'ictl-0' : ictl > 80 ? 'ictl-80' : ictl > 60 ? 'ictl-60' : ictl > 40 ? 'ictl-40' : 'ictl-0';
-  const ictlLevel = ictl == null ? '—' : ictl > 80 ? 'Tensión Baja' : ictl > 60 ? 'Tensión Moderada' : ictl > 40 ? 'Tensión Alta' : 'Tensión Crítica';
-
-  // Histórico ICTL
-  const ictlHist = DATA.meta.months.map((_, m) => {
-    const a = getDer('ictl_ilon', bi, m); const b2 = getDer('ictl_icint', bi, m); const c2 = getDer('ictl_itl', bi, m);
-    const sa = scoreInd(a, thr.ilon.verde, thr.ilon.amarillo, thr.ilon.dir);
-    const sb = scoreInd(b2, thr.icint.verde, thr.icint.amarillo, thr.icint.dir);
-    const sc = scoreInd(c2, thr.itl.verde, thr.itl.amarillo, thr.itl.dir);
-    let s = null, w2 = 0;
-    if (sa != null || sb != null || sc != null) {
-      s = 0;
-      if (sa != null) { s += sa * thr.ilon.peso;  w2 += thr.ilon.peso; }
-      if (sb != null) { s += sb * thr.icint.peso; w2 += thr.icint.peso; }
-      if (sc != null) { s += sc * thr.itl.peso;   w2 += thr.itl.peso; }
-      s = w2 > 0 ? s / w2 : null;
-    }
-    return s;
-  });
-
-  function compCard(id, label, val, score, verde, amarillo, dir, fmt) {
-    const scoreColor = score == null ? C.SLATE : score >= 75 ? C.GREEN : score >= 50 ? C.YELLOW : C.RUST;
-    const pct = score != null ? score.toFixed(0) + '%' : '—';
-    return `<div class="ictl-comp">
-      <div class="ic-label">${label}</div>
-      <div class="ic-val">${fmt(val)}</div>
-      <div class="ic-score" style="color:${scoreColor}">Score: ${pct}</div>
-      <div class="ictl-bar"><div class="ictl-bar-fill" style="width:${score!=null?score.toFixed(0):0}%;background:${scoreColor}"></div></div>
-      <div style="font-size:10px;color:var(--slate);margin-top:6px">Verde ≥ ${fmt(verde)} · Amarillo ≥ ${fmt(amarillo)}</div>
-    </div>`;
-  }
-
-  const html = `
-    <div class="ictl-score-row">
-      <div class="ictl-num-box">
-        <div class="ictl-num ${ictlClass}">${ictl != null ? ictl.toFixed(1) : '—'}</div>
-        <div style="font-size:12px;font-weight:600;margin-top:6px">${ictlLevel}</div>
-        <div style="font-size:11px;color:var(--slate);margin-top:4px">ICTL · ${bankDisplay(bi)}</div>
-      </div>
-      <div>
-        <div style="font-size:12px;color:var(--slate);margin-bottom:8px">
-          Índice de Criticidad de Tensión de Liquidez — 3 componentes disponibles (sin cartera ≤30d).
-          Escala 0–100 · &gt;80 = bajo · 60–79 = moderado · 40–59 = alto · &lt;40 = crítico
-        </div>
-        <div class="ictl-components">
-          ${compCard('ilon',  'ILON — Efectivo / Dep. Inm.',      ilon,  s_ilon,  thr.ilon.verde,  thr.ilon.amarillo,  thr.ilon.dir,  fmtX)}
-          ${compCard('icint', 'ICInt — Ing. Int. / Gto. Int.',   icint, s_icint, thr.icint.verde, thr.icint.amarillo, thr.icint.dir, fmtX)}
-          ${compCard('itl',   'ITL — Dep. Inm. / Efectivo (inv.)',itl,   s_itl,   thr.itl.verde,   thr.itl.amarillo,   thr.itl.dir,   fmtX)}
-        </div>
-      </div>
-    </div>
-    <div class="chart-wrap">
-      <div class="chart-title">Histórico ICTL — ${bankDisplay(bi)}</div>
-      <div class="chart-canvas"><canvas id="chart-ictl-hist" height="200"></canvas></div>
-    </div>
-    <div class="chart-wrap">
-      <div class="chart-title">ICTL — Ranking · Período seleccionado</div>
-      <div id="ictl-ranking"></div>
-    </div>`;
-  document.getElementById('ictl-content').innerHTML = html;
-
-  lineChart('chart-ictl-hist', [{
-    label: 'ICTL', data: ictlHist, borderColor: C.DARK, backgroundColor: 'rgba(22,48,67,0.08)', fill: true
-  }], { fmt: v => v != null ? v.toFixed(1) : '—', legend: false });
-
-  // Ranking ICTL
-  const ictlRows = DATA.meta.banks.map((code, i) => {
-    if (AGGREGATES.has(code)) return null;
-    const a = getDer('ictl_ilon', i, mi); const b2 = getDer('ictl_icint', i, mi); const c2 = getDer('ictl_itl', i, mi);
-    const sa = scoreInd(a, thr.ilon.verde, thr.ilon.amarillo, thr.ilon.dir);
-    const sb = scoreInd(b2, thr.icint.verde, thr.icint.amarillo, thr.icint.dir);
-    const sc = scoreInd(c2, thr.itl.verde, thr.itl.amarillo, thr.itl.dir);
-    let s = null, w2 = 0;
-    if (sa != null || sb != null || sc != null) {
-      s = 0;
-      if (sa != null) { s += sa * thr.ilon.peso;  w2 += thr.ilon.peso; }
-      if (sb != null) { s += sb * thr.icint.peso; w2 += thr.icint.peso; }
-      if (sc != null) { s += sc * thr.itl.peso;   w2 += thr.itl.peso; }
-      s = w2 > 0 ? s / w2 : null;
-    }
-    return { i, code, display: DATA.meta.display[code] || code, ictl: s };
-  }).filter(Boolean).sort((a, b) => (a.ictl ?? 99) - (b.ictl ?? 99));
-
-  let thtml = `<table class="data-table"><thead><tr>
-    <th>#</th><th>Banco</th><th class="num">ICTL</th><th>Nivel</th>
-  </tr></thead><tbody>`;
-  ictlRows.forEach((row, idx) => {
-    const lv = row.ictl == null ? '—' : row.ictl > 80 ? 'Bajo' : row.ictl > 60 ? 'Moderado' : row.ictl > 40 ? 'Alto' : 'Crítico';
-    const cl = row.ictl == null ? '' : row.ictl > 80 ? 'score-3' : row.ictl > 60 ? 'score-2' : 'score-1';
-    thtml += `<tr><td><span class="rank-badge">${idx + 1}</span></td>
-      <td class="bank-name">${row.display}</td>
-      <td class="num ${cl}">${row.ictl != null ? row.ictl.toFixed(1) : '—'}</td>
-      <td>${lv}</td></tr>`;
-  });
-  thtml += '</tbody></table>';
-  document.getElementById('ictl-ranking').innerHTML = thtml;
-}
-
-// ════════════════════════════════════════════════════════════════════════════
-// CAMELS MODAL
-// ════════════════════════════════════════════════════════════════════════════
-function showCAMELSDetail(dim) {
-  const bi = STATE.bank, mi = STATE.month;
-  const { dims } = computeCAMELS(bi, mi);
-  const score = dims[dim];
-
-  const dimMeta = {
-    C: { name: 'Capital', w: '25%', inds: [
-      { label: 'Capital Contable / Activo', val: getDer('capital_activo',bi,mi), fmt: fmtPct, tL: '8.4%', tH: '16.6%', dir: '↑' }
-    ]},
-    A: { name: 'Activos', w: '20%', inds: [
-      { label: 'IMOR (Morosidad Total)', val: get('imor',bi,mi), fmt: fmtPct, tL: '0.85%', tH: '3.47%', dir: '↓', w: '40%' },
-      { label: 'ICOR (Cobertura)',       val: get('icor',bi,mi), fmt: fmtX,   tL: '0.95x', tH: '1.79x', dir: '↑', w: '40%' },
-      { label: 'TDA (Tasa Deterioro)',   val: get('tda',bi,mi),  fmt: fmtPct, tL: '1.3%',  tH: '5.7%',  dir: '↓', w: '20%' }
-    ]},
-    M: { name: 'Gestión', w: '15%', inds: [
-      { label: 'Gastos Adm. / Margen Fin.', val: getDer('efic_margen',bi,mi), fmt: fmtPct, tL: '59.5%', tH: '138.3%', dir: '↓' },
-      { label: 'Gastos Adm. / Activo',      val: getDer('efic_activo',bi,mi), fmt: fmtPct, tL: '0.8%',  tH: '3.2%',   dir: '↓' }
-    ]},
-    E: { name: 'Rentabilidad', w: '20%', inds: [
-      { label: 'ROA', val: get('roa',bi,mi), fmt: fmtPct, tL: '0.4%',  tH: '1.8%',  dir: '↑' },
-      { label: 'ROE', val: get('roe',bi,mi), fmt: fmtPct, tL: '2.8%',  tH: '15.6%', dir: '↑' }
-    ]},
-    L: { name: 'Liquidez', w: '15%', inds: [
-      { label: 'Liquidez FD/DepCP (score peer)', val: get('liquidez',bi,mi), fmt: fmtX, tL: '0.36x', tH: '1.26x', dir: '↑' }
-    ]},
-    S: { name: 'Sensibilidad', w: '5%', inds: [
-      { label: 'MIF (Margen de Intermediación)', val: get('mif',bi,mi), fmt: fmtPct, tL: '2.2%', tH: '6.1%', dir: '↑' }
-    ]}
+  const fmtWf = v => {
+    const a = Math.abs(v);
+    const s = v < 0 ? '-' : '';
+    if (a >= 1e9) return s + (a/1e9).toFixed(2) + 'B';
+    if (a >= 1e6) return s + (a/1e6).toFixed(1) + 'M';
+    if (a >= 1e3) return s + (a/1e3).toFixed(0) + 'K';
+    return v.toFixed(0);
   };
 
-  const meta = dimMeta[dim];
-  document.getElementById('camels-modal-dim').textContent = dim;
-  document.getElementById('camels-modal-name').textContent = meta.name;
-  document.getElementById('camels-modal-weight').textContent = 'Peso: ' + meta.w;
+  const colors = bars.map(b =>
+    b.anchor ? (b.neg ? C_RUST : C_DARK) : (b.neg ? C_RUST : C_TEAL)
+  );
 
-  let body = '';
-  meta.inds.forEach(ind => {
-    body += `<div class="modal-ind-row">
-      <div><span style="font-weight:600">${ind.label}</span><br>
-        <span style="font-size:11px;color:var(--slate)">Ref: tLow ${ind.tL} · tHigh ${ind.tH} · ${ind.dir === '↑' ? 'mayor=mejor' : 'menor=mejor'}</span>
-        ${ind.w ? `<span style="font-size:11px;color:var(--slate)"> · peso ${ind.w}</span>` : ''}
-      </div>
-      <div style="font-size:18px;font-weight:700">${ind.fmt(ind.val)}</div>
-    </div>`;
+  // Plugin inline para etiquetas de valor (no requiere plugin externo)
+  const labelsPlugin = {
+    id: 'wfLabels',
+    afterDatasetsDraw(chart) {
+      try {
+        const { ctx: c, scales: { x, y } } = chart;
+        const ds = chart.data.datasets[0].data;
+        c.save();
+        c.font = 'bold 11px system-ui,sans-serif';
+        c.textAlign = 'center';
+        c.fillStyle = '#333';
+        ds.forEach(([lo, hi], i) => {
+          const delta  = hi - lo;
+          const xPos   = x.getPixelForIndex(i);
+          const topPx  = y.getPixelForValue(Math.max(lo, hi)) - 6;
+          const sign   = bars[i].anchor ? '' : (delta >= 0 ? '+' : '');
+          c.fillText(sign + fmtWf(delta), xPos, topPx);
+        });
+        c.restore();
+      } catch(e) { /* silencioso */ }
+    }
+  };
+
+  CHARTS['chart-waterfall'] = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: bars.map(b => b.lbl),
+      datasets: [{
+        data:            bars.map(b => [b.lo, b.hi]),
+        backgroundColor: colors,
+        borderColor:     colors,
+        borderWidth:     0,
+        borderRadius:    2,
+        barPercentage:   0.65,
+        categoryPercentage: 0.75,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            title: ctx => ctx[0].label,
+            label: ctx => {
+              const [lo, hi] = ctx.raw;
+              const delta = hi - lo;
+              const sign = bars[ctx.dataIndex].anchor ? '' : (delta >= 0 ? '+' : '');
+              return ' ' + sign + fmtWf(delta);
+            }
+          }
+        }
+      },
+      scales: {
+        x: { grid:{ display:false }, ticks:{ font:{size:11}, color:'#555' } },
+        y: { grid:{ color:'#eee'  }, ticks:{ font:{size:10}, callback: v => fmtWf(v) } }
+      },
+      animation: { duration: 250 }
+    },
+    plugins: [labelsPlugin]
   });
-  document.getElementById('camels-modal-body').innerHTML = body;
-
-  const scoreEl = document.getElementById('camels-modal-score');
-  const si2 = score != null ? Math.round(Math.min(3, Math.max(1, score))) : null;
-  scoreEl.textContent = score != null ? score.toFixed(2) : '—';
-  scoreEl.className = 'modal-total-score ' + (si2 ? 'score-' + si2 : 'score-null');
-  document.getElementById('camels-modal-overlay').classList.add('open');
 }
 
-function closeModal() { document.getElementById('camels-modal-overlay').classList.remove('open'); }
+// ── TAB RENTABILIDAD ─────────────────────────────────────────────────────────
+function renderRentabilidad() {
+  const bi = STATE.bank, mi = STATE.month;
+  const prevMi = mi > 0 ? mi - 1 : null;
+  const kpis = [
+    { label:'Resultado del Ejercicio', v:getBal('resultado'), prev:prevMi!=null?getBal('resultado',bi,prevMi):null, fmt:fmtBal, serie:getSerie('resultado',bi,'bal'), color:C_DARK },
+    { label:'ROA',                  v:get('roa'),        prev:prevMi!=null?get('roa',bi,prevMi):null,        serie:getSerie('roa'),        color:C_DARK },
+    { label:'ROE',                  v:get('roe'),        prev:prevMi!=null?get('roe',bi,prevMi):null,        serie:getSerie('roe'),        color:C_DARK },
+    { label:'Margen Interm./Activo',v:get('margen_act'), prev:prevMi!=null?get('margen_act',bi,prevMi):null, serie:getSerie('margen_act'), color:C_DARK },
+    { label:'Gastos Op./Activo',    v:get('efic_activo'),prev:prevMi!=null?get('efic_activo',bi,prevMi):null, better:'low', serie:getSerie('efic_activo'), color:C_RUST },
+    { label:'Gastos Op./Margen',    v:get('efic_margen'),prev:prevMi!=null?get('efic_margen',bi,prevMi):null, better:'low', serie:getSerie('efic_margen'), color:C_RUST },
+    { label:'Margen Interm./Pat.',  v:get('margen_pat'), prev:prevMi!=null?get('margen_pat',bi,prevMi):null,  serie:getSerie('margen_pat'), color:C_DARK },
+  ];
+  let html='';
+  kpis.forEach(k=>{
+    if (Array.isArray(k.serie) && !k.serie.some(v => v != null)) return;
+    const fmt=k.fmt||fmtPct;
+    const d=k.prev!=null&&k.v!=null?k.v-k.prev:null;
+    const up=k.better==='low'?d<0:d>0;
+    const dCls=d==null?'delta-neu':(up?'delta-up':'delta-down');
+    html+=`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value">${fmt(k.v)}</div><div class="kpi-delta ${dCls}">${d!=null?(d>=0?'+':'')+fmt(d):'&nbsp;'}</div><div class="kpi-spark">${sparkSVG(k.serie||[], k.color||C_DARK)}</div></div>`;
+  });
+  document.getElementById('kpi-rent').innerHTML=html;
 
-// ════════════════════════════════════════════════════════════════════════════
-// NAVEGACIÓN
-// ════════════════════════════════════════════════════════════════════════════
-function switchTab(tab) {
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('pane-' + tab).classList.add('active');
-  event.target.classList.add('active');
-  if (tab === 'ictl') renderICTL();
+  renderWaterfall();
+
+  const si=DATA.meta.banks.indexOf('SISTEMA');
+  lineChart('chart-rent-roa',[
+    {label:'ROA',data:getSerie('roa'),borderColor:C_DARK,fill:false,pointRadius:0},
+    {label:'ROE',data:getSerie('roe'),borderColor:C_RUST,fill:false,pointRadius:0},
+    ...(si!==-1?[{label:'ROA Sistema',data:getSerie('roa',si),borderColor:C_SLATE,borderDash:[4,2],fill:false,pointRadius:0}]:[])
+  ]);
+  lineChart('chart-rent-efic',[
+    {label:'Gastos/Margen',data:getSerie('efic_margen'),borderColor:C_DARK,fill:false,pointRadius:0},
+    {label:'Gastos/Activo',data:getSerie('efic_activo'),borderColor:C_SAND,fill:false,pointRadius:0},
+  ]);
+
+  let thtml=`<table class="data-table"><thead><tr>
+    <th>#</th><th>Banco</th><th class="num">Resultado</th><th class="num">ROA</th><th class="num">ROE</th>
+    <th class="num">Margen/Activo</th><th class="num">Gastos/Activo</th><th class="num">Gastos/Margen</th>
+  </tr></thead><tbody>`;
+  DATA.meta.banks.map((b,i)=>({b,display:DATA.meta.display[b]||b,
+    res:DATA.bal.resultado?.[i]?.[mi]??null,
+    roa:DATA.ind.roa?.[i]?.[mi]??null, roe:DATA.ind.roe?.[i]?.[mi]??null,
+    ma:DATA.ind.margen_act?.[i]?.[mi]??null, ga:DATA.ind.efic_activo?.[i]?.[mi]??null,
+    gm:DATA.ind.efic_margen?.[i]?.[mi]??null
+  // ROA bajo = más problemático → ordenar ascendente
+  })).filter(r=>r.b!=='SISTEMA' && bancoActivo(DATA.meta.banks.indexOf(r.b), mi)).sort((a,b2)=>(a.roa??999)-(b2.roa??999)).forEach((r,idx)=>{
+    const hi=r.b===DATA.meta.banks[bi]?'style="background:var(--light)"':'';
+    const resColor = r.res==null?'inherit':r.res>=0?'var(--green)':'var(--red)';
+    thtml+=`<tr ${hi}><td><span class="rank-badge">${idx+1}</span></td><td class="bank-name">${r.display}</td>
+      <td class="num" style="color:${resColor};font-weight:600">${fmtBal(r.res)}</td>
+      <td class="num" style="color:${r.roa>0.005?'var(--green)':r.roa<0?'var(--red)':'inherit'}">${fmtPct(r.roa)}</td>
+      <td class="num">${fmtPct(r.roe)}</td><td class="num">${fmtPct(r.ma)}</td>
+      <td class="num">${fmtPct(r.ga)}</td><td class="num">${fmtPct(r.gm)}</td></tr>`;
+  });
+  thtml+='</tbody></table>';
+  document.getElementById('table-rentabilidad').innerHTML=thtml;
 }
 
-function setView(tipo) {
-  STATE.view = tipo;
-  document.getElementById('btn-sistema').classList.toggle('active', tipo === 'sistema');
-  document.getElementById('btn-banco').classList.toggle('active', tipo === 'banco');
-  populateBankSel(tipo);
+// ── TAB BENCHMARK ─────────────────────────────────────────────────────────────
+// Réplica exacta de la pestaña Benchmarking del monitor de cooperativas:
+// 4 gráficas de distribución (p25/p50/p75) con el banco seleccionado como
+// línea punteada, + 4 tablas top-10. Sin segmentación (no aplica a bancos):
+// la "distribución del sector" es todo el sistema, excluyendo el agregado
+// SISTEMA. Ver percSeries/bankSeries abajo, equivalentes a percSeries/
+// coopSeries del dashboard de cooperativas.
+function percentile(arr, p) {
+  const s = [...arr].sort((a,b) => a-b);
+  const idx = (p/100)*(s.length-1);
+  const lo = Math.floor(idx), hi = Math.ceil(idx);
+  return s[lo] + (s[hi]-s[lo])*(idx-lo);
 }
 
-function populateBankSel(tipo) {
-  const sel = document.getElementById('bank-sel');
-  sel.innerHTML = '';
+function renderBenchmark() {
+  if (!DATA) return;
+  const mi = STATE.month;
+  const bi = STATE.bank;
   const banks = DATA.meta.banks;
+  const months = DATA.meta.months;
+  const siIdx = banks.indexOf('SISTEMA');
+  const selectedBi = (bi !== siIdx) ? bi : null;   // vista Sistema → sin línea resaltada
 
-  if (tipo === 'sistema') {
-    // Agregados primero
-    const aggregateOrder = ['5', '59', '60', '61', '62', '63', '64'];
-    aggregateOrder.forEach(code => {
-      const i = banks.indexOf(code);
-      if (i !== -1) {
-        const opt = document.createElement('option');
-        opt.value = i; opt.textContent = DATA.meta.display[code] || code;
-        sel.appendChild(opt);
-      }
+  // Bancos reales, excluyendo el agregado SISTEMA (no aplica segmentación en bancos)
+  const idxs = [];
+  for (let i=0; i<banks.length; i++) if (banks[i] !== 'SISTEMA') idxs.push(i);
+
+  const allMis = months.map((_,i)=>i);
+  const lbs = allMis.map(i=>monthLabel(months[i]));
+
+  function percSeries(sec, key, p) {
+    return allMis.map(mi2=>{
+      const vals = idxs.filter(i => bancoActivo(i, mi2)).map(i => DATA[sec][key]?.[i]?.[mi2]).filter(v=>v!=null&&!isNaN(v));
+      return vals.length>=3 ? +(percentile(vals,p)*100).toFixed(3) : null;
     });
-  } else {
-    // Solo bancos individuales, ordenados alfabéticamente por display
-    banks.map((code, i) => ({ code, i, display: DATA.meta.display[code] || code }))
-      .filter(b => !AGGREGATES.has(b.code))
-      .sort((a, b) => a.display.localeCompare(b.display, 'es'))
-      .forEach(b => {
-        const opt = document.createElement('option'); opt.value = b.i; opt.textContent = b.display; sel.appendChild(opt);
-      });
   }
-  // Restore selection if possible
-  if (STATE.bank != null) {
-    const opt = sel.querySelector(`option[value="${STATE.bank}"]`);
-    if (opt) sel.value = STATE.bank;
-    else { sel.selectedIndex = 0; STATE.bank = +sel.value; }
+
+  function bankSeries(sec, key) {
+    if (selectedBi==null) return null;
+    return allMis.map(mi2=>(DATA[sec][key]?.[selectedBi]?.[mi2]??null)).map(v=>v!=null?+(v*100).toFixed(3):null);
   }
+
+  function bmChart(id, sec, key) {
+    const p25 = percSeries(sec,key,25);
+    const p50 = percSeries(sec,key,50);
+    const p75 = percSeries(sec,key,75);
+    const cs  = bankSeries(sec,key);
+    const datasets = [
+      { label:'P75', data:p75, borderColor:'rgba(197,221,221,.6)', fill:'+1',
+        backgroundColor:'rgba(197,221,221,.15)', tension:.3, pointRadius:0, borderWidth:1 },
+      { label:'P50 (mediana)', data:p50, borderColor:C_DARK, tension:.3,
+        pointRadius:0, borderWidth:1.5 },
+      { label:'P25', data:p25, borderColor:'rgba(197,221,221,.6)', fill:'-1',
+        backgroundColor:'rgba(197,221,221,.15)', tension:.3, pointRadius:0, borderWidth:1 },
+    ];
+    if (cs) datasets.push({ label:DATA.meta.display[banks[selectedBi]]||banks[selectedBi], data:cs,
+      borderColor:C_RUST, tension:.3, pointRadius:0, borderWidth:2, borderDash:[4,2] });
+    mkChart(id, { type:'line', data:{labels:lbs, datasets},
+      options:{ responsive:true, maintainAspectRatio:false,
+        plugins:{legend:{labels:{font:{size:10}}}},
+        scales:{ x:{ticks:{font:{size:9},maxRotation:45}},
+                 y:{ticks:{font:{size:10},callback:v=>v+'%'}} } } });
+  }
+
+  bmChart('bm-chart-mor', 'ind', 'mor_total');
+  bmChart('bm-chart-sol', 'pt',  'coef_basilea');
+  bmChart('bm-chart-liq', 'ind', 'liquidez');
+  bmChart('bm-chart-roa', 'ind', 'roa');
+
+  // Rankings — solo bancos reales (excluye SISTEMA) del mes seleccionado
+  const vals = idxs.filter(i=>bancoActivo(i, mi)).map(i=>({
+    display: DATA.meta.display[banks[i]]||banks[i], i,
+    sol: DATA.pt.coef_basilea?.[i]?.[mi],
+    mor: DATA.ind.mor_total?.[i]?.[mi],
+    roa: DATA.ind.roa?.[i]?.[mi],
+    act: DATA.bal.activo?.[i]?.[mi],
+  }));
+
+  function rankTable(id, rows, fmt, title) {
+    let h = `<table class="data-table"><thead><tr><th>#</th><th>Banco</th><th class="num">${title}</th></tr></thead><tbody>`;
+    rows.slice(0,10).forEach((r,idx)=>{
+      const hl = selectedBi===r.i ? 'style="background:var(--light)"' : '';
+      h += `<tr ${hl}><td><span class="rank-badge">${idx+1}</span></td><td class="bank-name">${r.display}</td><td class="num">${fmt(r)}</td></tr>`;
+    });
+    h += '</tbody></table>';
+    document.getElementById(id).innerHTML = h;
+  }
+
+  rankTable('tbl-rank-sol', [...vals].filter(r=>r.sol!=null).sort((a,b)=>b.sol-a.sol),
+    r=>fmtPct(r.sol), 'Solvencia');
+  rankTable('tbl-rank-mor', [...vals].filter(r=>r.mor!=null).sort((a,b)=>a.mor-b.mor),
+    r=>fmtPct(r.mor), 'Morosidad');
+  rankTable('tbl-rank-roa', [...vals].filter(r=>r.roa!=null).sort((a,b)=>b.roa-a.roa),
+    r=>fmtPct(r.roa), 'ROA');
+  rankTable('tbl-rank-act', [...vals].filter(r=>r.act!=null).sort((a,b)=>b.act-a.act),
+    r=>fmtBal(r.act), 'Total activos');
 }
 
+// ── Navegación ─────────────────────────────────────────────────────────────
+function switchTab(id) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  event.target.classList.add('active');
+  if (id === 'ialt' && DATA) renderIALT();
+}
+
+// Navegación programática (sin evento click)
+function switchTabById(id) {
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('pane-'+id).classList.add('active');
+  const btn = document.querySelector(`.tab-btn[onclick*="'${id}'"]`);
+  if (btn) btn.classList.add('active');
+  if (id === 'ialt' && DATA) renderIALT();
+}
+
+// Seleccionar un banco desde la tabla de ranking IFB y navegar a Vista Ejecutiva
 function selectBank(bi) {
-  const code = DATA.meta.banks[bi];
-  const tipo = AGGREGATES.has(code) ? 'sistema' : 'banco';
-  if (tipo !== STATE.view) setView(tipo);
   STATE.bank = bi;
-  document.getElementById('bank-sel').value = bi;
-  switchTab('ejecutivo');
+  const bankSel = document.getElementById('bank-sel');
+  bankSel.value = bi;
+  updateViewBtns();
   renderAll();
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-// RENDER ALL
-// ════════════════════════════════════════════════════════════════════════════
-function renderAll() {
-  renderIFB();
-  renderEjecutivo();
-  renderCartera();
-  renderLiquidez();
-  renderCapital();
-  renderRentabilidad();
-  renderBenchmark();
-  const ictlPane = document.getElementById('pane-ictl');
-  if (ictlPane.classList.contains('active')) renderICTL();
+// ── Vista Sistema / Banco ──────────────────────────────────────────────────
+function setView(tipo) {
+  if (!DATA) return;
+  const siIdx = DATA.meta.banks.indexOf('SISTEMA');
+  if (tipo === 'sistema') {
+    if (STATE.bank !== siIdx) STATE.lastBank = STATE.bank;
+    STATE.bank = siIdx !== -1 ? siIdx : 0;
+  } else {
+    // tipo === 'banco'
+    if (STATE.lastBank != null && STATE.lastBank !== siIdx) {
+      STATE.bank = STATE.lastBank;
+    } else {
+      const first = DATA.meta.banks.findIndex(b => b !== 'SISTEMA');
+      STATE.bank = first !== -1 ? first : 0;
+    }
+  }
+  document.getElementById('bank-sel').value = STATE.bank;
+  updateViewBtns();
+  renderAll();
 }
 
-// ════════════════════════════════════════════════════════════════════════════
-// INIT
-// ════════════════════════════════════════════════════════════════════════════
-async function init() {
-  document.getElementById('header-subtitle').textContent = 'Cargando datos...';
-  try {
-    const res = await fetch('./data/bancos_mx.json');
-    DATA = await res.json();
+function updateViewBtns() {
+  if (!DATA) return;
+  const siIdx = DATA.meta.banks.indexOf('SISTEMA');
+  const isSis = STATE.bank === siIdx;
+  document.getElementById('btn-sistema').classList.toggle('active', isSis);
+  document.getElementById('btn-banco').classList.toggle('active', !isSis);
+}
 
-    const months = DATA.meta.months;
-    const generated = DATA.meta.generated;
+// ── Modal detalle CAMELS ───────────────────────────────────────────────────
+function showCAMELSDetail(dim) {
+  const bi = STATE.bank, mi = STATE.month;
+  const bankKey = DATA.meta.banks[bi];
+  const { dims } = computeCAMELS(bi, mi);
+  const score = dims[dim];
 
-    // Período selector
-    const pSel = document.getElementById('period-sel');
-    months.forEach((m, i) => {
-      const opt = document.createElement('option'); opt.value = i; opt.textContent = monthLabel(m); pSel.appendChild(opt);
-    });
-    pSel.selectedIndex = months.length - 1;
-    STATE.month = months.length - 1;
+  const dimNames    = { C:'Capital', A:'Activos', M:'Eficiencia', E:'Rentabilidad', L:'Liquidez', S:'Sensibilidad' };
+  const dimWeightMap = { C:'25%', A:'20%', M:'15%', E:'20%', L:'15%', S:'5%' };
 
-    // Banco selector: sistema por defecto
-    populateBankSel('sistema');
-    STATE.bank = 0; // Total Sistema ('5') suele quedar primero
-
-    // Header
-    document.getElementById('header-subtitle').textContent = `${months[0]} → ${months[months.length - 1]} · ${DATA.meta.banks.filter(c => !AGGREGATES.has(c)).length} bancos · Fuente: CNBV`;
-    document.getElementById('header-generated').textContent = 'Generado: ' + generated;
-    document.getElementById('meta-info').textContent = `${months.length} períodos · Saldo puntual (130)`;
-
-    renderAll();
-  } catch (e) {
-    document.getElementById('header-subtitle').textContent = 'Error cargando datos: ' + e.message;
-    console.error(e);
+  // Indicadores por dimensión. Los umbrales y pesos NO se declaran aquí: se
+  // leen de DATA.ifb.config.indicadores, que exporta scoring.py. Aquí solo
+  // queda la presentación: qué etiqueta mostrar y con qué formato.
+  const FMT_IND = { cob_prob: fmtNum, dep_cartera: fmtNum };  // el resto va en porcentaje
+  const LBL_IND = {                                // acentos para pantalla
+    cob_prob: 'Cobertura Problemática',
+    icn: 'Índice Cap. Neto (FK/FI)',
+    liq_ampliada: 'Liquidez ampliada (FD + inv. líquidas) / Dep. CP',
+    dep_cartera: 'Depósitos / Cartera bruta',
+  };
+  const cfgInd = DATA.ifb?.config?.indicadores || {};
+  const DIM_IND = {};
+  for (const d of ['C','A','M','E','L','S']) {
+    DIM_IND[d] = (cfgInd[d] || []).map(x => ({
+      label: LBL_IND[x.clave] || x.etiqueta,
+      key: x.clave, src: x.fuente,
+      fmt: FMT_IND[x.clave] || fmtPct,
+      tLow: x.t_bajo, tHigh: x.t_alto, dir: x.direccion, iw: x.peso_interno,
+    }));
   }
+
+  const scClass = s => s != null ? 'score-'+Math.round(Math.min(Math.max(s,1),3)) : 'score-null';
+  const scLabel = s => s == null ? '—' : s.toFixed(2);
+  const bankName = DATA.meta.display[bankKey] || bankKey;
+  const isSis = bankKey === 'SISTEMA';
+
+  let bodyHtml = '', noteHtml = '';
+
+  if (dim === 'S' && isSis) {
+    bodyHtml = `<table class="modal-ind-table">
+      <thead><tr><th>Indicador</th><th class="r">Valor</th><th class="r">Score</th><th class="r">Peso en S</th></tr></thead>
+      <tbody>
+        <tr><td>Vulnerabilidad Patrimonial</td><td class="r">—</td><td class="r"><span class="score-2">2.00</span></td><td class="r">100%</td></tr>
+      </tbody></table>`;
+    noteHtml = `<div class="modal-note">Para SISTEMA se aplica score moderado fijo (2). La vulnerabilidad patrimonial sistémica no es comparable directamente con bancos individuales.</div>`;
+
+  } else {
+    const inds = DIM_IND[dim] || [];
+    let rows = '';
+    inds.forEach(ind => {
+      const val = (ind.src==='pt' ? DATA.pt : DATA.ind)[ind.key]?.[bi]?.[mi] ?? null;
+      const s = score1(val, ind.tLow, ind.tHigh, ind.dir);
+      const wPct = Math.round(ind.iw * 100) + '%';
+      rows += `<tr>
+        <td>${ind.label}</td>
+        <td class="r">${val!=null ? ind.fmt(val) : '—'}</td>
+        <td class="r"><span class="${scClass(s)}">${scLabel(s)}</span></td>
+        <td class="r">${wPct}</td>
+      </tr>`;
+    });
+    bodyHtml = `<table class="modal-ind-table">
+      <thead><tr><th>Indicador</th><th class="r">Valor</th><th class="r">Score</th><th class="r">Peso en ${dim}</th></tr></thead>
+      <tbody>${rows}</tbody></table>`;
+  }
+
+  // Escala del score: los umbrales de abajo son los extremos de una recta, no
+  // bandas. Vale la pena decirlo o el lector interpreta un 2,47 como "amarillo".
+  if (!(dim === 'S' && isSis)) {
+    noteHtml += `<div class="modal-note">El score de cada indicador es <b>continuo entre 1,0 y 3,0</b>: vale 1,0 en el umbral mínimo, 3,0 en el óptimo y se interpola linealmente en medio. Fuera de ese rango se recorta, así que superar el óptimo no suma puntos adicionales.</div>`;
+  }
+
+  // Umbrales de referencia (nota al pie para C, A, M y E). Se arman desde
+  // DATA.ifb.config.indicadores, la misma fuente de la tabla de arriba. Hasta la
+  // v2.3 (15-nov-2026) estaban escritos a mano aquí y quedaron desfasados del motor.
+  // "mínimo" y "óptimo" son los dos extremos de la recta de interpolación.
+  const fmtU = (x, key) => {
+    if (x == null) return '—';
+    if (key === 'cob_prob') return String(+x.toFixed(2)).replace('.', ',') + 'x';
+    if (key === 'dep_cartera') return x.toFixed(2).replace('.', ',');
+    return String(+(x * 100).toFixed(2)).replace('.', ',') + '%';
+  };
+  const CORTO = { coef_basilea:'ICAP', icn:'ICN', act_impr:'Activos impr.',
+                  mor_total:'Morosidad', cob_prob:'Cobertura', efic_margen:'Gastos/Margen',
+                  efic_activo:'Gastos/Activo', roa:'ROA', roe:'ROE' };
+  if (['C','A','M','E'].includes(dim)) {
+    const partes = (cfgInd[dim] || []).map(x => {
+      const alto = x.direccion === 'alto' || x.direccion === 'high';
+      const min = alto ? x.t_bajo : x.t_alto, opt = alto ? x.t_alto : x.t_bajo;
+      const ley = x.clave === 'coef_basilea' ? ' (mínimo categoría I)' : '';
+      return `${CORTO[x.clave] || x.etiqueta}: mín. ${fmtU(min, x.clave)}${ley} / óptimo ${fmtU(opt, x.clave)}`;
+    });
+    if (partes.length) noteHtml += `<div class="modal-note">${partes.join('. ')}.</div>`;
+  }
+  if (dim === 'L') {
+    const [l1, l2] = cfgInd.L || [];
+    const fx = DATA.ifb?.config?.l1_factores || {};
+    const pf = k => Math.round((fx[k] ?? 0) * 100) + '%';
+    if (l1 && l2) noteHtml += `<div class="modal-note">Liquidez ampliada: mín. ${fmtPct1(l1.t_bajo)} / óptimo ${fmtPct1(l1.t_alto)}. Depósitos/Cartera: mín. ${fmtNum(l2.t_bajo)} / óptimo ${fmtNum(l2.t_alto)}. En L1 cuentan los fondos disponibles al ${pf('fondos_disponibles')}, las inversiones a valor razonable y disponibles para la venta del Estado al ${pf('inv_vr_estado')} y del sector privado al ${pf('inv_vr_privado')}. Las mantenidas hasta el vencimiento y las de disponibilidad restringida no cuentan. Si falta Depósitos/Cartera, Liquidez ampliada pesa el 100% de L.</div>`;
+  }
+
+  document.getElementById('camels-modal-dim').textContent = dim;
+  document.getElementById('camels-modal-name').textContent = dimNames[dim];
+  document.getElementById('camels-modal-weight').textContent = `Peso en IFB: ${dimWeightMap[dim]} · ${bankName}`;
+  document.getElementById('camels-modal-body').innerHTML = bodyHtml + noteHtml;
+
+  const scoreEl = document.getElementById('camels-modal-score');
+  scoreEl.textContent = score != null ? score.toFixed(2) : '—';
+  scoreEl.className = 'modal-total-score ' + scClass(score);
+
+  // Colorear la letra con el score de la dimensión
+  const dimLetterEl = document.getElementById('camels-modal-dim');
+  dimLetterEl.className = 'modal-dim-letter ' + scClass(score);
+
+  document.getElementById('camels-modal-overlay').classList.add('open');
+}
+
+function closeCAMELSModal() {
+  document.getElementById('camels-modal-overlay').classList.remove('open');
+}
+
+// ── Inicialización ─────────────────────────────────────────────────────────
+async function init() {
+  try {
+    // cache:'no-cache' fuerza revalidación contra el servidor en cada carga.
+    // Sin esto, GitHub Pages sirve el JSON con max-age=600 y el service worker
+    // devuelve la copia vieja del caché HTTP aunque el usuario recargue: el
+    // salto de caché de una recarga forzada no llega a las peticiones que
+    // salen desde el SW. Es una petición condicional, así que cuando el
+    // archivo no cambió el servidor responde 304 y no se vuelve a bajar.
+    const r = await fetch('data/bancos_mx_v2_scored.json', { cache: 'no-cache' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    DATA = await r.json();
+  } catch(e) {
+    document.getElementById('loading').innerHTML = `<div style="color:var(--red);font-size:15px">Error cargando datos: ${e.message}</div>`;
+    return;
+  }
+
+  document.getElementById('loading').style.display='none';
+  // Los tabs se muestran vía CSS (.tab-pane.active { display: block })
+
+  // Subtitle
+  const months = DATA.meta.months;
+  document.getElementById('header-subtitle').textContent =
+    `${months.length} meses · ${monthLabel(months[0])} – ${monthLabel(months[months.length-1])} · ${DATA.meta.banks.filter((b,i)=>b!=='SISTEMA' && bancoActivo(i, months.length-1)).length} bancos`;
+  document.getElementById('gen-date').textContent = 'Generado: ' + DATA.meta.generated;
+
+  // Bank selector — Sistema primero, luego bancos individuales en orden alfabético
+  const bankSel = document.getElementById('bank-sel');
+  const siIdx = DATA.meta.banks.indexOf('SISTEMA');
+  if (siIdx !== -1) {
+    const opt = document.createElement('option');
+    opt.value = siIdx;
+    opt.textContent = 'Sistema (todos los bancos)';
+    bankSel.appendChild(opt);
+  }
+  // Ordenar alfabéticamente por display name antes de agregar al selector
+  const bankEntries = DATA.meta.banks
+    .map((b, i) => ({ b, i, label: (DATA.meta.display[b] || b) + etiquetaCierre(b) }))
+    .filter(e => e.b !== 'SISTEMA')
+    .sort((a, z) => a.label.localeCompare(z.label, 'es'));
+  bankEntries.forEach(({ b, i, label }) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = label;
+    bankSel.appendChild(opt);
+  });
+  STATE.bank = siIdx !== -1 ? siIdx : 0;
+  bankSel.value = STATE.bank;
+  updateViewBtns();
+  bankSel.addEventListener('change', () => {
+    const newBank = +bankSel.value;
+    const siIdx2 = DATA.meta.banks.indexOf('SISTEMA');
+    if (newBank !== siIdx2) STATE.lastBank = newBank;
+    STATE.bank = newBank;
+    updateViewBtns();
+    renderAll();
+  });
+
+  // Period selector — dropdown con todos los meses
+  const periodSel = document.getElementById('period-sel');
+  months.forEach((m, i) => {
+    const opt = document.createElement('option');
+    opt.value = i;
+    opt.textContent = monthLabel(m);
+    periodSel.appendChild(opt);
+  });
+  periodSel.value = months.length - 1;
+  STATE.month = months.length - 1;
+  periodSel.addEventListener('change', () => {
+    STATE.month = +periodSel.value;
+    renderAll();
+  });
+
+  // Meta
+  document.getElementById('meta-info').textContent =
+    `JSON generado: ${DATA.meta.generated} · ${months.length} períodos`;
+
+  // Ocultar loading, mostrar tabs
+  document.getElementById('pane-ifb').classList.add('active');
+
+  renderAll();
 }
 
 init();
+
+// ═══════════════════════════════════════════════════════════════════════════
+// TAB IALT — ÍNDICE DE ALERTA TEMPRANA DE LIQUIDEZ
+// ═══════════════════════════════════════════════════════════════════════════
+//
+// Sustituye al SGLE/ICTL. Todo el cálculo vive en src/scoring.py y llega
+// precalculado en DATA.ialt. Aquí NO se recalcula nada: solo se lee y se pinta.
+//
+// Escala 0–100, score DE RIESGO: alto = peor (al revés que el ICTL viejo).
+// Bandas: Verde <45 · Amarillo 45–59 · Naranja 60–74 · Rojo ≥75
+//
+// Cada señal combina 60% percentil contra la CDF histórica de su grupo de
+// pares (sistémico / mediano / pequeño, por participación en depósitos) y
+// 40% desviación contra su propia historia de 12 meses.
+//
+// Dos pisos absolutos topan la banda en Amarillo: Basilea bajo 9% (mínimo
+// regulatorio) o índice de liquidez de la SB bajo 14%.
+
+const IALT_SENALES = [
+  { k:'fuga_dep_6m',    nombre:'Fuga de depósitos (6m)', peso:30,
+    fmt:v => (v>=0?'+':'') + (v*100).toFixed(1) + '%',
+    desc:'Variación de los depósitos del público a 6 meses, en pesos corrientes. Una caída es la señal más temprana de retiro de fondeo.' },
+  { k:'cobertura_caja', nombre:'Cobertura de caja',      peso:25,
+    fmt:v => (v*100).toFixed(1) + '%',
+    desc:'Efectivo y equivalentes sobre depósitos del público. Cuánto de los depósitos está respaldado en caja.' },
+  { k:'morosidad',      nombre:'Morosidad total',        peso:20,
+    fmt:v => (v*100).toFixed(2) + '%',
+    desc:'IMOR de la CNBV: cartera en etapa 3 sobre cartera total. La mora deteriora el flujo antes que el balance.' },
+  { k:'moro_delta_6m',  nombre:'Variación de mora (6m)', peso:15,
+    fmt:v => (v>=0?'+':'') + (v*100).toFixed(2) + ' pp',
+    desc:'Cambio de la morosidad en 6 meses. Capta el deterioro en marcha, no el nivel acumulado.' },
+  { k:'solvencia',      nombre:'Solvencia (ICAP)',    peso:10,
+    fmt:v => (v*100).toFixed(2) + '%',
+    desc:'ICAP: capital neto sobre activos ponderados sujetos a riesgo total. El colchón que absorbe pérdidas antes de tocar la liquidez.' },
+];
+
+// Semáforo de riesgo: score alto = malo
+function ialtColor(v) {
+  if (v == null) return '#aaa';
+  if (v >= 75) return '#9d3810';
+  if (v >= 60) return '#c06020';
+  if (v >= 45) return '#b8860b';
+  return '#2a7a4a';
+}
+function ialtBanda(v) {
+  if (v == null) return { banda:'Sin dato', color:'#aaa', accion:'No hay datos suficientes para calificar el periodo.' };
+  if (v >= 75) return { banda:'Rojo', color:'#9d3810',
+    accion:'Alerta alta. Revisar de inmediato la estructura de fondeo, los vencimientos del trimestre y el plan de contingencia de liquidez.' };
+  if (v >= 60) return { banda:'Naranja', color:'#c06020',
+    accion:'Vigilancia activa. Confirmar la señal con la capa de tendencia y revisar la concentración de depositantes.' };
+  if (v >= 45) return { banda:'Amarillo', color:'#b8860b',
+    accion:'Seguimiento ordinario. La entidad está por encima de la mediana de riesgo de su grupo; observar la dirección del indicador.' };
+  return { banda:'Verde', color:'#2a7a4a',
+    accion:'Monitoreo mensual estándar. Sin señales de tensión frente a su grupo de pares ni frente a su propia historia.' };
+}
+const IALT_GRUPO_LBL = { Sistema:'Sistema', Excluido:'Fuera del IALT (captación menor al 20% del pasivo)' };
+
+function ialtGet(key, bi, mi) {
+  const m = DATA.ialt?.[key];
+  return (m && m[bi] != null) ? m[bi][mi] : null;
+}
+
+// La capa 2 del IALT es PERSISTENCIA, no pendiente. La capa de tendencia del
+// ICTL (S3, S6, aceleración, persistencia de dirección) se midió contra los
+// datos el 2026-08-05 y resultó invertida: la correlación entre la pendiente
+// de los 6 meses pasados y la de los 6 siguientes es −0.534, y dentro de cada
+// tramo de nivel los bancos marcados como "deteriorando" eran los que después
+// mejoraban más. El IALT ya lleva la tendencia dentro (45% del peso son
+// cambios a 6 meses, y las 5 señales comparan contra su propia mediana móvil),
+// así que la pendiente del compuesto solo capta reversión a la media.
+//
+// Todo esto viene precalculado en DATA.ialt.persistencia. Aquí solo se lee.
+
+function persistLookup(racha) {
+  const p = DATA.ialt?.persistencia;
+  if (!p || racha == null) return null;
+  for (const [lo, hi, lbl] of (p.buckets || [])) {
+    if (racha >= lo && racha <= hi) return { lbl, ...(p.tasas_escalamiento?.[lbl] || {}) };
+  }
+  return null;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// CAPA 3: REFERENCIA ESTACIONAL
+//
+// El IALT tiene un ciclo anual incorporado que no es señal de riesgo. La causa
+// está en la señal de fuga de depósitos: mide la variación a 6 meses, y en
+// junio la base de comparación es diciembre, el pico anual de depósitos por
+// décimo tercer sueldo y cierre fiscal. Todo junio arranca comparándose contra
+// el mes más alto del año, y todo diciembre contra el más bajo.
+//
+// Medido sobre los 23 bancos y 12 años de historia, la mediana del score de
+// fuga es 37 en diciembre y 61 en junio; el compuesto arrastra el ciclo con
+// mediana 41 en diciembre y 55 en junio. El IALT del SISTEMA sube de mayo a
+// junio en 9 de 11 años.
+//
+// Esto NO corrige el índice: el cálculo publicado queda intacto. Solo da al
+// analista la referencia para distinguir el movimiento estacional del real.
+// Todo se deriva aquí de la serie ya precalculada; no se toca el JSON.
+// ─────────────────────────────────────────────────────────────────────────────
+function mediana(arr) {
+  const v = arr.filter(x => x != null).sort((a,b) => a-b);
+  if (!v.length) return null;
+  const h = Math.floor(v.length/2);
+  return v.length % 2 ? v[h] : (v[h-1]+v[h])/2;
+}
+
+function ialtEstacional(serie, months, mi) {
+  const mmActual = months[mi].slice(5,7);
+
+  // Nivel típico del banco en este mes calendario, excluyendo el mes evaluado
+  const niveles = [];
+  // Cambio típico del mes anterior a este mes calendario, excluyendo el par actual
+  const deltas  = [];
+  for (let k = 0; k < months.length; k++) {
+    if (months[k].slice(5,7) !== mmActual || serie[k] == null) continue;
+    if (k !== mi) niveles.push(serie[k]);
+    if (k > 0 && serie[k-1] != null && k !== mi) deltas.push(serie[k] - serie[k-1]);
+  }
+
+  const deltaObs = (mi > 0 && serie[mi] != null && serie[mi-1] != null)
+    ? serie[mi] - serie[mi-1] : null;
+  const deltaTip = mediana(deltas);
+
+  // Perfil de 12 meses para pintar sobre el gráfico: mediana del banco en cada
+  // mes calendario. Es una línea de referencia, no un pronóstico.
+  const perfil = months.map(m => {
+    const mm = m.slice(5,7);
+    const obs = [];
+    for (let k = 0; k < months.length; k++) {
+      if (months[k].slice(5,7) === mm && serie[k] != null) obs.push(serie[k]);
+    }
+    return obs.length >= 4 ? mediana(obs) : null;
+  });
+
+  return {
+    nivelTip: mediana(niveles),
+    nAnios: niveles.length,
+    deltaObs, deltaTip,
+    nDeltas: deltas.length,
+    // Cuántos años el índice subió en esta transición de mes
+    subidas: deltas.filter(d => d > 0).length,
+    perfil,
+  };
+}
+
+function renderIALT() {
+  if (!document.getElementById('pane-ialt').classList.contains('active')) return;
+
+  const bi = STATE.bank, mi = STATE.month;
+  const bankName = DATA.meta.display?.[DATA.meta.banks[bi]] || DATA.meta.banks[bi];
+  const monthLbl = DATA.meta.months[mi];
+  const el = document.getElementById('ialt-content');
+
+  if (!DATA.ialt) {
+    el.innerHTML = '<p style="padding:24px;color:#888">El archivo de datos no incluye la sección IALT. Correr <code>src/scoring.py</code> sobre <code>bancos.json</code>.</p>';
+    return;
+  }
+
+  const val   = ialtGet('IALT', bi, mi);
+  const bruto = ialtGet('IALT_sin_piso', bi, mi);
+  const piso  = ialtGet('piso', bi, mi);
+  const grupo = ialtGet('grupo', bi, mi);
+
+  if (val == null) {
+    el.innerHTML = `<p style="padding:24px;color:#888">Sin IALT para ${bankName} en ${monthLbl}. El compuesto solo se emite cuando las cinco señales tienen dato.</p>`;
+    return;
+  }
+
+  const lvl = ialtBanda(val);
+  const serie = DATA.meta.months.map((_,m) => ialtGet('IALT', bi, m));
+
+  // Mes anterior, para la variación del score y de cada señal (score de
+  // riesgo: subir es malo).
+  const valPrev = mi > 0 ? ialtGet('IALT', bi, mi-1) : null;
+  const ialtDeltaHtml = (() => {
+    if (val == null || valPrev == null) return '';
+    const d = val - valPrev;
+    const cls = d <= 0 ? 'delta-up' : 'delta-down';
+    const sign = d > 0 ? '▲' : '▼';
+    return `<span class="${cls}">${sign} ${Math.abs(d).toFixed(1)}</span>`;
+  })();
+
+  // Capa 3: referencia estacional (derivada de la serie, no altera el índice)
+  const EST = ialtEstacional(serie, DATA.meta.months, mi);
+
+  // Capa 2: persistencia (precalculada en scoring.py)
+  const PER = DATA.ialt.persistencia || {};
+  const pIn = (k) => PER[k]?.[bi]?.[mi] ?? null;
+  const rachaBanda = pIn('racha_banda');
+  const rachaAdv   = pIn('racha_adversa');
+  const adv12      = pIn('adversos_12m');
+  const peor12     = pIn('peor_12m');
+  const tasa       = persistLookup(rachaAdv);
+
+  // ── Helpers de pintado ──
+  function barH(v, color, h=8) {
+    const pct = Math.min(100,Math.max(0,v??0)).toFixed(1);
+    return `<div style="background:#e0e0e0;border-radius:4px;height:${h}px;margin-top:5px">
+      <div style="background:${color};width:${pct}%;height:${h}px;border-radius:4px"></div></div>`;
+  }
+  function dot(s) {
+    return `<span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:${ialtColor(s)};margin-right:6px;vertical-align:middle"></span>`;
+  }
+
+  // ── Tabla de las 5 señales ──
+  let senalRows = '';
+  IALT_SENALES.forEach(sig => {
+    const v  = ialtGet('val_'   + sig.k, bi, mi);
+    const sc = ialtGet('score_' + sig.k, bi, mi);
+    const pares = ialtGet('pares_' + sig.k, bi, mi);
+    const hist  = ialtGet('hist_'  + sig.k, bi, mi);
+    const scPrev = mi > 0 ? ialtGet('score_' + sig.k, bi, mi-1) : null;
+    const c = ialtColor(sc);
+    senalRows += `<tr>
+      <td style="padding:8px 12px;font-weight:600;white-space:nowrap" title="Peso ${sig.peso}%">${dot(sc)}${sig.nombre}</td>
+      <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums">${v!=null?sig.fmt(v):'—'}</td>
+      <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;color:#666">${pares!=null?pares.toFixed(0):'—'}</td>
+      <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;color:#666">${hist!=null?hist.toFixed(0):'—'}</td>
+      <td style="padding:8px 12px;text-align:right">
+        <span style="font-weight:700;color:${c}">${sc!=null?sc.toFixed(1):'—'}</span>
+        <span style="font-size:10px;color:#aaa"> /100</span>
+        ${barH(sc,c,5)}
+      </td>
+      <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;color:#888">${scPrev!=null?scPrev.toFixed(1):'—'}<span style="font-size:10px;color:#aaa"> /100</span></td>
+      <td class="col-desc" style="padding:8px 12px;font-size:11px;color:#666;max-width:240px">${sig.desc}</td>
+    </tr>`;
+  });
+
+  // ── Capa 2: persistencia ──
+  function persRow(name, v, lectura, color, desc) {
+    return `<tr>
+      <td style="padding:8px 12px;font-weight:600">${name}</td>
+      <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700">${v!=null?v:'—'}</td>
+      <td style="padding:8px 12px;text-align:right;font-weight:600;color:${color||'inherit'}">${lectura}</td>
+      <td style="padding:8px 12px;font-size:11px;color:#666">${desc}</td>
+    </tr>`;
+  }
+  function advSig(r) {
+    if (r == null) return ['—','inherit'];
+    if (r === 0)   return ['Sin racha adversa','#2a7a4a'];
+    if (r <= 2)    return ['Episodio reciente','#b8860b'];
+    if (r <= 5)    return ['Racha sostenida','#c06020'];
+    return ['Racha prolongada','#9d3810'];
+  }
+  function adv12Sig(n) {
+    if (n == null) return ['—','inherit'];
+    if (n === 0)   return ['Año limpio','#2a7a4a'];
+    if (n <= 3)    return ['Episodios aislados','#b8860b'];
+    if (n <= 7)    return ['Recurrente','#c06020'];
+    return ['Crónico','#9d3810'];
+  }
+  const [advT,advC]   = advSig(rachaAdv);
+  const [a12T,a12C]   = adv12Sig(adv12);
+
+  // ── Ranking: mayor riesgo arriba ──
+  const rank = DATA.meta.banks.map((b,i) => {
+    if (b === 'SISTEMA' || !bancoActivo(i, mi)) return null;
+    const v2 = ialtGet('IALT', i, mi);
+    if (v2 == null) return null;
+    return { i, display: DATA.meta.display?.[b] || b, v:v2,
+             grupo: ialtGet('grupo', i, mi), piso: ialtGet('piso', i, mi),
+             cob: ialtGet('val_cobertura_caja', i, mi),
+             fuga: ialtGet('val_fuga_dep_6m', i, mi) };
+  }).filter(Boolean).sort((a,b) => b.v - a.v);
+
+  let rankRows = '';
+  rank.forEach((r, idx) => {
+    const lv2 = ialtBanda(r.v);
+    const hiBg = r.i === bi ? 'background:var(--light);' : '';
+    const pisoTag = r.piso ? `<span title="Piso absoluto activo: ${r.piso}" style="font-size:9px;font-weight:700;color:#9d3810;border:1px solid #9d381055;border-radius:3px;padding:1px 4px;margin-left:6px">PISO</span>` : '';
+    rankRows += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${r.i})">
+      <td><span class="rank-badge">${idx+1}</span></td>
+      <td class="bank-name">${r.display}${pisoTag}</td>
+      <td style="font-size:11px;color:#888">${IALT_GRUPO_LBL[r.grupo]||r.grupo||'—'}</td>
+      <td class="num" style="font-weight:700;color:${lv2.color}">${r.v.toFixed(1)}</td>
+      <td class="num">${r.fuga!=null?((r.fuga>=0?'+':'')+(r.fuga*100).toFixed(1)+'%'):'—'}</td>
+      <td class="num">${r.cob!=null?(r.cob*100).toFixed(1)+'%':'—'}</td>
+      <td><span style="font-weight:600;color:${lv2.color}">${lv2.banda}</span></td>
+    </tr>`;
+  });
+
+  // ── Aviso de piso absoluto ──
+  const pisoTxt = {
+    solvencia: `Fuera de los mínimos de la categoría I (ICAP 10,5%, CCB 8,5%, CCF 7%).`,
+    liquidez:  `Índice de liquidez de la SB por debajo del 14%.`,
+    ambos:     `Fuera de los mínimos de la categoría I.`,
+  };
+  const avisoPiso = piso ? `
+    <div style="background:#9d381012;border-left:3px solid #9d3810;border-radius:6px;padding:12px 16px;margin-bottom:20px">
+      <div style="font-size:11px;font-weight:700;color:#9d3810;text-transform:uppercase;letter-spacing:.06em;margin-bottom:3px">Piso absoluto activo</div>
+      <div style="font-size:12px;color:#555">${pisoTxt[piso]||piso} El percentil daba ${bruto!=null?bruto.toFixed(1):'—'}; la calificación no puede quedar en Verde mientras el mínimo se incumpla.</div>
+    </div>` : '';
+
+  // ── Capa 3: bloque de referencia estacional ──
+  const MES_NOM = ['','enero','febrero','marzo','abril','mayo','junio','julio',
+                   'agosto','septiembre','octubre','noviembre','diciembre'];
+  const mesNom = (s) => MES_NOM[parseInt(s.slice(5,7),10)];
+
+  let bloqueEstacional = '';
+  if (EST.deltaTip != null && EST.deltaObs != null && EST.nDeltas >= 4) {
+    const exceso = EST.deltaObs - EST.deltaTip;      // cuánto se aparta de lo típico
+    const sgn = (x) => (x >= 0 ? '+' : '') + x.toFixed(1);
+
+    // El color sigue al exceso sobre lo estacional, no al movimiento bruto
+    let cEx, lecturaEx;
+    if (Math.abs(exceso) < 2) {
+      cEx = '#2a7a4a';
+      lecturaEx = `El movimiento del mes es prácticamente el estacional. En ${mesNom(DATA.meta.months[mi])} este índice se mueve ${sgn(EST.deltaTip)} puntos en un año típico, y este año se movió ${sgn(EST.deltaObs)}. No hay señal nueva en el cambio.`;
+    } else if (exceso > 0) {
+      cEx = exceso > 5 ? '#9d3810' : '#c06020';
+      lecturaEx = `El movimiento supera lo estacional en ${exceso.toFixed(1)} puntos. En ${mesNom(DATA.meta.months[mi])} el índice sube ${sgn(EST.deltaTip)} en un año típico; este año subió ${sgn(EST.deltaObs)}. El exceso sí merece revisión.`;
+    } else {
+      cEx = '#2a7a4a';
+      lecturaEx = `El movimiento queda ${Math.abs(exceso).toFixed(1)} puntos por debajo de lo estacional. En ${mesNom(DATA.meta.months[mi])} el índice se mueve ${sgn(EST.deltaTip)} en un año típico y este año se movió ${sgn(EST.deltaObs)}.`;
+    }
+
+    const dNivel = (EST.nivelTip != null) ? val - EST.nivelTip : null;
+    const cNivel = dNivel == null ? 'inherit'
+                 : dNivel > 5 ? '#c06020' : dNivel < -5 ? '#2a7a4a' : '#666';
+
+    bloqueEstacional = `
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:10px">Referencia estacional</div>
+    <div class="table-wrap" style="margin-bottom:8px">
+      <table class="data-table">
+        <thead><tr>
+          <th>Métrica</th><th class="num">Este año</th><th class="num">Año típico</th>
+          <th class="num">Diferencia</th><th>Qué significa</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td style="padding:8px 12px;font-weight:600">Cambio del mes anterior</td>
+            <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700">${sgn(EST.deltaObs)}</td>
+            <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;color:#666">${sgn(EST.deltaTip)}</td>
+            <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:${cEx}">${sgn(exceso)}</td>
+            <td style="padding:8px 12px;font-size:11px;color:#666">Mediana del cambio hacia ${mesNom(DATA.meta.months[mi])} en ${EST.nDeltas} años. Subió en ${EST.subidas} de ${EST.nDeltas}.</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 12px;font-weight:600">Nivel del índice</td>
+            <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700">${val.toFixed(1)}</td>
+            <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;color:#666">${EST.nivelTip != null ? EST.nivelTip.toFixed(1) : '—'}</td>
+            <td style="padding:8px 12px;text-align:right;font-variant-numeric:tabular-nums;font-weight:700;color:${cNivel}">${dNivel != null ? sgn(dNivel) : '—'}</td>
+            <td style="padding:8px 12px;font-size:11px;color:#666">Mediana del propio banco en ${mesNom(DATA.meta.months[mi])} sobre ${EST.nAnios} años. Compara contra el mismo mes, no contra el mes pasado.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div style="font-size:11px;color:#999;margin-bottom:20px">
+      <strong style="color:${cEx}">${lecturaEx}</strong>
+      <br>El IALT tiene un ciclo anual que no es riesgo: la señal de fuga de depósitos mide la variación a 6 meses y arrastra el calendario del fondeo, con diciembre alto por aguinaldo y cierres de año. En México la mediana del IALT del sistema es 47 en diciembre y 57 en septiembre, y de mayo a junio sube en 8 de 12 años. Esta capa no corrige el índice publicado, solo separa el ciclo del movimiento propio. Ver la metodología del IALT México, sección 11.
+    </div>`;
+  }
+
+  el.innerHTML = `
+    <div class="section-title" style="font-size:18px;font-weight:700;margin-bottom:4px">IALT — Índice de Alerta Temprana de Liquidez</div>
+    <div style="font-size:12px;color:#888;margin-bottom:20px">${bankName} · ${monthLbl} · grupo de pares: ${IALT_GRUPO_LBL[grupo]||grupo||'—'}${DATA.ialt.config?.generado ? ` · datos calculados el ${DATA.ialt.config.generado}` : ''}</div>
+
+    <div style="background:${lvl.color}18;border:2px solid ${lvl.color}50;border-radius:12px;padding:20px 24px;margin-bottom:20px;display:flex;gap:24px;align-items:center;flex-wrap:wrap">
+      <div style="text-align:center;min-width:110px">
+        <div style="font-size:11px;font-weight:700;color:${lvl.color};text-transform:uppercase;letter-spacing:.09em">IALT</div>
+        <div style="font-size:56px;font-weight:800;color:${lvl.color};line-height:1.05">${val.toFixed(1)}</div>
+        <div style="font-size:10px;color:#999">de 100 · más alto es peor</div>
+        <div style="margin-top:4px">${ialtDeltaHtml}${ialtDeltaHtml ? '<span style="color:var(--slate);font-size:10px;margin-left:5px">vs mes anterior</span>' : ''}</div>
+      </div>
+      <div style="flex:1;min-width:200px">
+        <div style="font-size:19px;font-weight:700;color:${lvl.color};margin-bottom:4px">${lvl.banda}</div>
+        <div style="font-size:12px;color:#666;margin-bottom:14px">${lvl.accion}</div>
+        <div style="background:#ddd;border-radius:6px;height:10px">
+          <div style="background:${lvl.color};width:${Math.min(100,val).toFixed(1)}%;height:10px;border-radius:6px"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:9px;color:#aaa;margin-top:3px">
+          <span>0 · sin tensión</span><span>45</span><span>60</span><span>75</span><span>100 · alerta alta</span>
+        </div>
+      </div>
+    </div>
+
+    ${avisoPiso}
+
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:10px">Señales del IALT</div>
+    <div class="table-wrap" style="margin-bottom:8px">
+      <table class="data-table">
+        <thead><tr>
+          <th>Señal</th>
+          <th class="num">Valor</th>
+          <th class="num" title="Percentil contra la CDF histórica del grupo de pares">Pares</th>
+          <th class="num" title="Desviación contra la propia historia de 12 meses">Historia</th>
+          <th class="num" style="min-width:90px">Score /100</th>
+          <th class="num" title="Score de esta señal en el mes anterior">Score ant. /100</th>
+          <th class="col-desc">Qué mide</th>
+        </tr></thead>
+        <tbody>${senalRows}</tbody>
+      </table>
+    </div>
+    <div style="font-size:11px;color:#999;margin-bottom:20px">
+      Score de cada señal = 60% columna Pares + 40% columna Historia. Cuando no hay 6 meses de historia propia, el componente de pares cubre el hueco.
+    </div>
+
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:10px">Persistencia</div>
+    <div class="table-wrap" style="margin-bottom:8px">
+      <table class="data-table">
+        <thead><tr>
+          <th>Métrica</th><th class="num">Meses</th><th class="num">Lectura</th><th>Qué significa</th>
+        </tr></thead>
+        <tbody>
+          ${persRow('En la banda actual', rachaBanda, lvl.banda, lvl.color,
+            'Meses consecutivos en ' + lvl.banda + '. Una banda recién alcanzada pesa distinto que una sostenida.')}
+          ${persRow('En Naranja o peor, seguidos', rachaAdv, advT, advC,
+            'Racha adversa en curso. Es la métrica que más discrimina: la probabilidad de seguir en Naranja o peor dentro de 6 meses sube con la racha.')}
+          ${persRow('En Naranja o peor, últimos 12', adv12, a12T, a12C,
+            'Cuenta episodios aunque no sean consecutivos. Distingue al banco que entra y sale del que tuvo un mal trimestre.')}
+          ${persRow('Peor banda del año', null, peor12 || '—', ialtColor({Verde:20,Amarillo:50,Naranja:65,Rojo:85}[peor12] ?? null),
+            'Techo alcanzado en los últimos 12 meses. Un banco hoy en Verde que tocó Rojo en el año no es lo mismo que uno que nunca salió de Verde.')}
+        </tbody>
+      </table>
+    </div>
+    <div style="font-size:11px;color:#999;margin-bottom:20px">
+      ${tasa && tasa.tasa != null
+        ? `Con una racha adversa de ${tasa.lbl} mes(es), históricamente el ${tasa.tasa}% de los bancos seguía en Naranja o peor ${PER.horizonte_tasas||6} meses después (${tasa.n} casos). La tasa se recalcula en cada corrida sobre la historia completa.`
+        : 'Las tasas de escalamiento se calculan sobre la historia completa en cada corrida del scoring.'}
+      <br>La pendiente del IALT no se usa como señal: el índice revierte a la media y su pendiente pasada anticipa lo contrario de lo que parece. Ver la metodología del IALT México, sección 10.
+    </div>
+
+    ${bloqueEstacional}
+
+    <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px;margin-bottom:24px">
+      <div style="font-weight:600;font-size:13px;margin-bottom:12px">Evolución histórica del IALT — ${bankName}</div>
+      <canvas id="ialt-chart-b"></canvas>
+      <div style="font-size:10px;color:#aaa;margin-top:8px">La línea punteada es el nivel típico del banco en cada mes calendario. Cuando la serie sigue la punteada, el movimiento es estacional.</div>
+    </div>
+
+    <div style="font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#888;margin-bottom:10px">Ranking IALT — sistema bancario · mayor alerta arriba</div>
+    <div class="table-wrap" style="margin-bottom:24px">
+      <table class="data-table">
+        <thead><tr>
+          <th>#</th><th>Banco</th><th>Grupo</th><th class="num">IALT</th>
+          <th class="num">Dep. 6m</th><th class="num">Caja/Dep.</th><th>Banda</th>
+        </tr></thead>
+        <tbody>${rankRows}</tbody>
+      </table>
+    </div>
+  `;
+
+  if (CHARTS['ialt-chart-b']) CHARTS['ialt-chart-b'].destroy();
+  CHARTS['ialt-chart-b'] = new Chart(document.getElementById('ialt-chart-b'), {
+    type: 'line',
+    data: {
+      labels: DATA.meta.months,
+      datasets: [{
+        label:'IALT', data: serie,
+        borderColor: lvl.color, backgroundColor: lvl.color+'22',
+        fill:true, tension:0.3, pointRadius:0, borderWidth:2, spanGaps:false,
+      },
+      // Referencia estacional: nivel típico del banco en cada mes calendario.
+      // Es contexto para leer el gráfico, no un pronóstico ni parte del índice.
+      {
+        label:'Nivel típico del mes', data: EST.perfil,
+        borderColor:'#9aa0a6', borderDash:[4,4], borderWidth:1.5,
+        fill:false, tension:0.3, pointRadius:0, spanGaps:true,
+      }],
+    },
+    options: {
+      responsive:true, maintainAspectRatio:true,
+      plugins:{ legend:{ display:true, labels:{ font:{size:10}, boxWidth:22, usePointStyle:false } } },
+      scales:{
+        x:{ ticks:{ font:{size:9}, maxRotation:45 } },
+        y:{ min:0, max:100, ticks:{ font:{size:10} } },
+      },
+    },
+  });
+}
+</script>
+<script>
+/* Registro del service worker (PWA) */
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', function () {
+    navigator.serviceWorker.register('sw.js').catch(function (e) {
+      console.warn('SW no registrado:', e);
+    });
+  });
+}
 </script>
 </body>
 </html>

@@ -128,7 +128,8 @@ def _df(data, sec, key):
 def _jm(df, nd=None):
     if nd is not None:
         df = df.round(nd)
-    return [[None if pd.isna(v) else float(v) for v in row] for row in df.to_numpy()]
+    # NaN e infinitos (p. ej. depositos en cero) se guardan como null: JSON no admite Infinity
+    return [[None if (pd.isna(v) or np.isinf(v)) else float(v) for v in row] for row in df.to_numpy()]
 
 def _jl(df):
     return [[None if (v is None or (isinstance(v, float) and pd.isna(v))) else str(v) for v in row]
@@ -414,7 +415,7 @@ def main(inp, out):
     data["ialt"] = compute_ialt(data)
     data["ifb"] = compute_ifb(data)
     with open(out, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
+        json.dump(data, f, ensure_ascii=False, separators=(",", ":"), allow_nan=False)
     print("Listo:", out)
 
 

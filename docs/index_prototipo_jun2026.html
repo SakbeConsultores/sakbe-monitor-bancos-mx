@@ -1,0 +1,1434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monitor Banca Múltiple México — Sakbé Consultores</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root {
+  --dark:   #163043;
+  --light:  #DCEFF2;
+  --teal:   #C5DDDD;
+  --slate:  #525E64;
+  --sand:   #D9B39D;
+  --rust:   #9D4D31;
+  --white:  #ffffff;
+  --bg:     #f4f7f9;
+  --border: #d0dde3;
+  --green:  #2a7a4b;
+  --yellow: #c8820a;
+  --red:    #b83232;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--dark); font-size: 14px; }
+
+/* Header */
+#header { background: var(--dark); color: var(--white); padding: 14px 24px; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 2px 8px rgba(0,0,0,0.25); }
+#header h1 { font-size: 17px; font-weight: 600; letter-spacing: 0.2px; }
+#header .subtitle { font-size: 11px; color: var(--teal); margin-top: 2px; }
+#header .brand { font-size: 11px; color: var(--sand); letter-spacing: 1px; text-transform: uppercase; }
+
+/* Controles */
+#controls { background: var(--white); border-bottom: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+.ctrl-group { display: flex; align-items: center; gap: 8px; }
+.ctrl-group label { font-size: 12px; color: var(--slate); font-weight: 600; white-space: nowrap; }
+select { border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--dark); font-size: 13px; padding: 5px 8px; }
+select:focus { outline: none; border-color: var(--dark); }
+#meta-info { margin-left: auto; font-size: 11px; color: var(--slate); }
+.view-btn { padding: 5px 14px; font-size: 12px; font-weight: 600; border: 1px solid var(--border); border-radius: 4px; background: var(--bg); color: var(--slate); cursor: pointer; }
+.view-btn.active { background: var(--dark); color: var(--white); border-color: var(--dark); }
+
+/* Tabs */
+#tabs { background: var(--white); border-bottom: 2px solid var(--border); display: flex; padding: 0 24px; gap: 0; overflow-x: auto; }
+.tab-btn { padding: 10px 18px; font-size: 13px; font-weight: 500; color: var(--slate); cursor: pointer; border: none; background: none; border-bottom: 3px solid transparent; margin-bottom: -2px; white-space: nowrap; }
+.tab-btn:hover { color: var(--dark); }
+.tab-btn.active { color: var(--dark); border-bottom-color: var(--rust); font-weight: 600; }
+
+/* Contenido */
+#content { padding: 20px 24px; max-width: 1400px; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* KPI Cards */
+.kpi-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.kpi-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px; position: relative; overflow: hidden; }
+.kpi-card .kpi-label { font-size: 11px; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+.kpi-card .kpi-value { font-size: 22px; font-weight: 700; color: var(--dark); }
+.kpi-card .kpi-delta { font-size: 11px; margin-top: 3px; }
+.kpi-card .kpi-spark { margin-top: 8px; width: 100%; height: 30px; }
+.delta-up { color: var(--green); }
+.delta-down { color: var(--red); }
+.delta-neu { color: var(--slate); }
+
+/* IFB Score */
+.ifb-score-box { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px 24px; display: flex; align-items: center; gap: 24px; margin-bottom: 16px; }
+.ifb-score-num { font-size: 56px; font-weight: 800; line-height: 1; }
+.ifb-solid  { color: #1f7a4b; }
+.ifb-stable { color: #3a9e6a; }
+.ifb-watch  { color: #c8820a; }
+.ifb-fragil { color: #b83232; }
+.ifb-label  { font-size: 13px; font-weight: 600; margin-top: 4px; }
+.ifb-meta   { font-size: 11px; color: var(--slate); margin-top: 2px; }
+
+.camels-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 10px; margin: 16px 0; }
+.camels-card { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 12px; text-align: center; }
+.camels-card .c-dim { font-size: 20px; font-weight: 800; color: var(--dark); }
+.camels-card .c-name { font-size: 10px; color: var(--slate); text-transform: uppercase; letter-spacing: 0.5px; margin: 2px 0; }
+.camels-card .c-score { font-size: 26px; font-weight: 700; }
+.camels-card .c-bar { height: 4px; border-radius: 2px; margin-top: 6px; background: var(--border); }
+.camels-card .c-fill { height: 100%; border-radius: 2px; }
+.score-3 { color: #1f7a4b; } .fill-3 { background: #1f7a4b; width: 100%; }
+.score-2 { color: #c8820a; } .fill-2 { background: #c8820a; width: 66%; }
+.score-1 { color: #b83232; } .fill-1 { background: #b83232; width: 33%; }
+.score-null { color: var(--border); }
+
+/* Tablas */
+.data-table { width: 100%; border-collapse: collapse; font-size: 13px; background: var(--white); border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
+.data-table th { background: var(--dark); color: var(--white); padding: 9px 12px; text-align: left; font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; }
+.data-table th.num, .data-table td.num { text-align: right; }
+.data-table td { padding: 8px 12px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.data-table tr:last-child td { border-bottom: none; }
+.data-table tr:hover td { background: var(--light); }
+.data-table .bank-name { font-weight: 600; }
+.rank-badge { display: inline-block; background: var(--teal); color: var(--dark); font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 10px; }
+.group-badge { display: inline-block; font-size: 10px; padding: 2px 6px; border-radius: 3px; background: var(--light); color: var(--slate); margin-left: 4px; }
+
+/* Charts */
+.chart-wrap { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+.chart-title { font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 12px; }
+.chart-canvas { position: relative; }
+.chart-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.chart-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+
+/* Semáforo */
+.sema { display: inline-block; width: 10px; height: 10px; border-radius: 50%; }
+.sema-3 { background: #2a7a4b; } .sema-2 { background: #c8820a; } .sema-1 { background: #b83232; }
+
+/* ICTL */
+.ictl-score-row { display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: center; margin-bottom: 20px; }
+.ictl-num-box { background: var(--white); border: 1px solid var(--border); border-radius: 10px; padding: 20px; text-align: center; }
+.ictl-num { font-size: 56px; font-weight: 800; line-height: 1; }
+.ictl-80 { color: #1f7a4b; } .ictl-60 { color: #3a9e6a; } .ictl-40 { color: #c8820a; } .ictl-0 { color: #b83232; }
+.ictl-components { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.ictl-comp { background: var(--white); border: 1px solid var(--border); border-radius: 8px; padding: 14px; text-align: center; }
+.ictl-comp .ic-label { font-size: 11px; color: var(--slate); text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+.ictl-comp .ic-val { font-size: 22px; font-weight: 700; color: var(--dark); }
+.ictl-comp .ic-score { font-size: 12px; margin-top: 4px; }
+.ictl-bar { height: 8px; border-radius: 4px; background: var(--border); margin-top: 8px; }
+.ictl-bar-fill { height: 100%; border-radius: 4px; transition: width 0.3s; }
+
+/* Modal */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; align-items:center; justify-content:center; }
+.modal-overlay.open { display:flex; }
+.modal-box { background:var(--white); border-radius:12px; padding:28px; max-width:540px; width:90%; position:relative; max-height:80vh; overflow-y:auto; }
+.modal-close { position:absolute; top:12px; right:16px; font-size:20px; cursor:pointer; color:var(--slate); background:none; border:none; }
+.modal-dim-letter { font-size:40px; font-weight:800; color:var(--dark); line-height:1; }
+.modal-dim-name { font-size:16px; font-weight:700; color:var(--dark); }
+.modal-dim-weight { font-size:11px; color:var(--slate); }
+.modal-ind-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--border); font-size:13px; }
+.modal-ind-row:last-child { border-bottom:none; }
+.modal-total-box { background:var(--light); border-radius:8px; padding:14px; text-align:center; margin-top:16px; }
+.modal-total-label { font-size:12px; font-weight:600; color:var(--slate); text-transform:uppercase; letter-spacing:.5px; }
+.modal-total-score { font-size:30px; font-weight:800; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <div class="brand">Sakbé Consultores</div>
+    <h1>Monitor Banca Múltiple México</h1>
+    <div class="subtitle" id="header-subtitle">Cargando datos...</div>
+  </div>
+  <div style="font-size:11px;color:var(--teal);text-align:right">
+    Fuente: CNBV · Sector 40<br>
+    <span id="header-generated"></span>
+  </div>
+</div>
+
+<div id="controls">
+  <div class="ctrl-group">
+    <button class="view-btn active" id="btn-sistema" onclick="setView('sistema')">Sistema / Grupo</button>
+    <button class="view-btn" id="btn-banco" onclick="setView('banco')">Banco Individual</button>
+  </div>
+  <div class="ctrl-group">
+    <label>Entidad</label>
+    <select id="bank-sel" onchange="STATE.bank=+this.value; renderAll()"></select>
+  </div>
+  <div class="ctrl-group">
+    <label>Período</label>
+    <select id="period-sel" onchange="STATE.month=+this.value; renderAll()"></select>
+  </div>
+  <div id="meta-info"></div>
+</div>
+
+<div id="tabs">
+  <button class="tab-btn active" onclick="switchTab('ifb')">IFB</button>
+  <button class="tab-btn" onclick="switchTab('ejecutivo')">Vista Ejecutiva</button>
+  <button class="tab-btn" onclick="switchTab('cartera')">Cartera</button>
+  <button class="tab-btn" onclick="switchTab('liquidez')">Liquidez</button>
+  <button class="tab-btn" onclick="switchTab('capital')">Capital</button>
+  <button class="tab-btn" onclick="switchTab('rentabilidad')">Rentabilidad</button>
+  <button class="tab-btn" onclick="switchTab('benchmark')">Benchmarking</button>
+  <button class="tab-btn" onclick="switchTab('ictl')">ICTL</button>
+</div>
+
+<div id="content">
+
+  <!-- TAB IFB -->
+  <div class="tab-pane active" id="pane-ifb">
+    <div class="ifb-score-box">
+      <div>
+        <div class="ifb-score-num" id="ifb-num">—</div>
+        <div class="ifb-label" id="ifb-cat">—</div>
+        <div class="ifb-meta">Índice de Fragilidad Bancaria (IFB)</div>
+      </div>
+      <div style="flex:1;min-width:260px;height:240px"><canvas id="chart-ifb-radar"></canvas></div>
+    </div>
+    <div class="camels-grid" id="camels-cards"></div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title" id="chart-hist-title">Histórico IFB</div>
+        <div class="chart-canvas"><canvas id="chart-ifb-hist" height="200"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">ROA y ROE — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-ifb-roaroe" height="200"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">IFB — Ranking · Período seleccionado <span style="font-size:11px;color:var(--slate);font-weight:400">(frágil → sólido)</span></div>
+      <div id="ifb-ranking-table"></div>
+    </div>
+  </div>
+
+  <!-- TAB EJECUTIVO -->
+  <div class="tab-pane" id="pane-ejecutivo">
+    <div class="kpi-grid" id="kpi-ejecutivo"></div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title" id="chart-ej-ifb-title">Histórico IFB</div>
+        <div class="chart-canvas"><canvas id="chart-ej-ifb" height="200"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Activos y Cartera — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-ej-bal" height="200"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">IMOR — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-ej-imor" height="200"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">ROA y ROE — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-ej-rent" height="200"></canvas></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB CARTERA -->
+  <div class="tab-pane" id="pane-cartera">
+    <div class="kpi-grid" id="kpi-cartera"></div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">IMOR por tipo de cartera — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-cart-imor" height="220"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Índice de Cobertura (ICOR) — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-cart-icor" height="220"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Calidad de cartera — Todos los bancos · Período seleccionado</div>
+      <div id="table-cartera"></div>
+    </div>
+  </div>
+
+  <!-- TAB LIQUIDEZ -->
+  <div class="tab-pane" id="pane-liquidez">
+    <div class="kpi-grid" id="kpi-liquidez"></div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">Liquidez (FD/Depósitos CP) — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-liq-ratio" height="220"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Margen de Intermediación Financiera — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-liq-mif" height="220"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Liquidez — Todos los bancos · Período seleccionado</div>
+      <div id="table-liquidez"></div>
+    </div>
+  </div>
+
+  <!-- TAB CAPITAL -->
+  <div class="tab-pane" id="pane-capital">
+    <div class="kpi-grid" id="kpi-capital"></div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">Capital Contable / Activo — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-cap-ratio" height="220"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Capital Contable y Activo Total — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-cap-abs" height="220"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Capital — Todos los bancos · Período seleccionado</div>
+      <div id="table-capital"></div>
+    </div>
+  </div>
+
+  <!-- TAB RENTABILIDAD -->
+  <div class="tab-pane" id="pane-rentabilidad">
+    <div class="kpi-grid" id="kpi-rent"></div>
+    <div class="chart-wrap">
+      <div class="chart-title" id="wf-title">Composición del Margen — Período seleccionado</div>
+      <div class="chart-canvas" style="height:200px"><canvas id="chart-waterfall"></canvas></div>
+    </div>
+    <div class="chart-row">
+      <div class="chart-wrap">
+        <div class="chart-title">ROA y ROE — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-rent-roa" height="220"></canvas></div>
+      </div>
+      <div class="chart-wrap">
+        <div class="chart-title">Eficiencia Operativa — Histórico</div>
+        <div class="chart-canvas"><canvas id="chart-rent-efic" height="220"></canvas></div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Rentabilidad — Todos los bancos · Período seleccionado</div>
+      <div id="table-rentabilidad"></div>
+    </div>
+  </div>
+
+  <!-- TAB BENCHMARK -->
+  <div class="tab-pane" id="pane-benchmark">
+    <div class="ctrl-group" style="margin-bottom:14px">
+      <label>Ordenar por</label>
+      <select id="bench-sort" onchange="renderBenchmark()">
+        <option value="ifb">IFB (Índice de Fragilidad)</option>
+        <option value="imor">IMOR (Morosidad Total)</option>
+        <option value="icor">ICOR (Cobertura)</option>
+        <option value="roa">ROA</option>
+        <option value="roe">ROE</option>
+        <option value="liquidez">Liquidez</option>
+        <option value="efic_margen">Eficiencia (Gastos/Margen)</option>
+        <option value="capital_activo">Capital/Activo</option>
+        <option value="activo">Activos Totales</option>
+      </select>
+    </div>
+    <div id="bench-table"></div>
+  </div>
+
+  <!-- TAB ICTL -->
+  <div class="tab-pane" id="pane-ictl">
+    <div id="ictl-content"></div>
+  </div>
+
+</div>
+
+<!-- Modal CAMELS -->
+<div class="modal-overlay" id="camels-modal-overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div style="display:flex;align-items:flex-start;gap:12px;margin-bottom:16px">
+      <div class="modal-dim-letter" id="camels-modal-dim">C</div>
+      <div>
+        <div class="modal-dim-name" id="camels-modal-name">Capital</div>
+        <div class="modal-dim-weight" id="camels-modal-weight"></div>
+      </div>
+    </div>
+    <div id="camels-modal-body"></div>
+    <div class="modal-total-box">
+      <div class="modal-total-label">Score dimensión</div>
+      <div class="modal-total-score score-null" id="camels-modal-score">—</div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════════════════════════════════════════════════
+// ESTADO GLOBAL
+// ════════════════════════════════════════════════════════════════════════════
+let DATA = null;
+let CHARTS = {};
+let STATE = { bank: 0, month: 0, lastBank: null, view: 'sistema' };
+
+const AGGREGATES = new Set(['5','59','60','61','62','63','64']);
+const PEER_G7    = new Set(['040002','040012','040014','040021','040036','040044','040072']);
+const PEER_MED   = new Set(['040030','040037','040042','040058','040113','040132','040156','040112','040136','040143','040145']);
+
+// ════════════════════════════════════════════════════════════════════════════
+// UTILIDADES
+// ════════════════════════════════════════════════════════════════════════════
+const fmtPct  = v => v == null ? '—' : (v * 100).toFixed(2) + '%';
+const fmtPct1 = v => v == null ? '—' : (v * 100).toFixed(1) + '%';
+const fmtNum  = v => v == null ? '—' : v.toFixed(2);
+const fmtX    = v => v == null ? '—' : v.toFixed(2) + 'x';
+
+// Pesos en MXN (sin multiplicar — los balances ya vienen en pesos)
+function fmtMXN(v) {
+  if (v == null) return '—';
+  const a = Math.abs(v);
+  if (a >= 1e12) return (v < 0 ? '-' : '') + (a / 1e12).toFixed(2) + 'T';
+  if (a >= 1e9)  return (v < 0 ? '-' : '') + (a / 1e9).toFixed(1)  + 'B';
+  if (a >= 1e6)  return (v < 0 ? '-' : '') + (a / 1e6).toFixed(1)  + 'M';
+  if (a >= 1e3)  return (v < 0 ? '-' : '') + (a / 1e3).toFixed(0)  + 'K';
+  return v.toFixed(0);
+}
+
+function monthLabel(m) {
+  const [y, mo] = m.split('-');
+  const n = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+  return n[+mo - 1] + ' ' + y;
+}
+
+function get(key, bi, mi) {
+  bi = bi ?? STATE.bank; mi = mi ?? STATE.month;
+  return DATA.ind[key]?.[bi]?.[mi] ?? null;
+}
+function getDer(key, bi, mi) {
+  bi = bi ?? STATE.bank; mi = mi ?? STATE.month;
+  return DATA.der[key]?.[bi]?.[mi] ?? null;
+}
+function getBal(key, bi, mi) {
+  bi = bi ?? STATE.bank; mi = mi ?? STATE.month;
+  return DATA.bal[key]?.[bi]?.[mi] ?? null;
+}
+function getSerie(key, bi, type) {
+  bi = bi ?? STATE.bank; type = type ?? 'ind';
+  const src = type === 'ind' ? DATA.ind : type === 'der' ? DATA.der : DATA.bal;
+  return src[key]?.[bi] ?? [];
+}
+
+// Sistema = entidad '5'
+function getSI() { return DATA.meta.banks.indexOf('5'); }
+
+function bankDisplay(bi) {
+  const code = DATA.meta.banks[bi];
+  return DATA.meta.display[code] || code;
+}
+
+function delta(cur, prev, pct) {
+  if (cur == null || prev == null || prev === 0) return null;
+  return pct ? (cur - prev) / Math.abs(prev) : cur - prev;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// SPARKLINES
+// ════════════════════════════════════════════════════════════════════════════
+function sparkSVG(data, color, h) {
+  h = h || 30; color = color || '#163043';
+  const vals = data.filter(v => v != null);
+  if (!vals.length) return `<svg width="100%" height="${h}"></svg>`;
+  const mn = Math.min(...vals), mx = Math.max(...vals), rng = mx - mn || 1, n = data.length;
+  const pts = data.map((v, i) => ({
+    x: n === 1 ? 50 : (i / (n - 1)) * 100,
+    y: v == null ? null : h - ((v - mn) / rng) * (h - 4) - 2
+  })).filter(p => p.y != null);
+  if (!pts.length) return `<svg width="100%" height="${h}"></svg>`;
+  const d = pts.map((p, i) => (i ? 'L' : 'M') + p.x.toFixed(1) + ' ' + p.y.toFixed(1)).join(' ');
+  const lp = pts[pts.length - 1];
+  return `<svg viewBox="0 0 100 ${h}" width="100%" height="${h}" preserveAspectRatio="none">
+    <path d="${d}" fill="none" stroke="${color}" stroke-width="1.8" stroke-linecap="round"/>
+    <circle cx="${lp.x.toFixed(1)}" cy="${lp.y.toFixed(1)}" r="2" fill="${color}"/>
+  </svg>`;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// CHARTS
+// ════════════════════════════════════════════════════════════════════════════
+const MONTHS = () => DATA.meta.months.map(monthLabel);
+const C = { DARK:'#163043', RUST:'#9D4D31', TEAL:'#C5DDDD', SAND:'#D9B39D', SLATE:'#525E64',
+             GREEN:'#2a7a4b', YELLOW:'#c8820a', RED:'#b83232' };
+
+function destroyChart(id) { if (CHARTS[id]) { CHARTS[id].destroy(); delete CHARTS[id]; } }
+
+function lineChart(id, datasets, opts) {
+  opts = opts || {};
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  CHARTS[id] = new Chart(ctx, {
+    type: 'line',
+    data: { labels: MONTHS(), datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: opts.legend !== false, position: 'top', labels: { font: { size: 11 }, boxWidth: 10 } },
+        tooltip: { callbacks: { label: c => (opts.fmt || fmtPct)(c.raw) } }
+      },
+      scales: {
+        x: { ticks: { font: { size: 10 }, maxTicksLimit: 18 }, grid: { color: '#eee' } },
+        y: { ticks: { font: { size: 10 }, callback: opts.fmt || fmtPct }, grid: { color: '#eee' } }
+      },
+      elements: { point: { radius: 1 }, line: { tension: 0.3 } }
+    }
+  });
+}
+
+function radarChart(id, labels, datasets) {
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  CHARTS[id] = new Chart(ctx, {
+    type: 'radar',
+    data: { labels, datasets },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      scales: { r: { min: 0, max: 3, ticks: { stepSize: 1, font: { size: 9 } }, pointLabels: { font: { size: 11 } } } },
+      plugins: { legend: { display: true, labels: { font: { size: 10 }, boxWidth: 10 } } },
+      elements: { point: { radius: 3 } }
+    }
+  });
+}
+
+function barChart(id, labels, values, opts) {
+  opts = opts || {};
+  destroyChart(id);
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  const colors = values.map(v => v == null ? '#eee' : (opts.colorFn ? opts.colorFn(v) : C.DARK));
+  CHARTS[id] = new Chart(ctx, {
+    type: 'bar',
+    data: { labels, datasets: [{ data: values, backgroundColor: colors, borderRadius: 3 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      indexAxis: opts.horizontal ? 'y' : 'x',
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => (opts.fmt || fmtPct)(c.raw) } } },
+      scales: {
+        x: { ticks: { font: { size: 10 } }, grid: { color: '#eee' } },
+        y: { ticks: { font: { size: 10 }, callback: opts.fmt || fmtPct }, grid: { color: '#eee' } }
+      }
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// CAMELS / IFB
+// ════════════════════════════════════════════════════════════════════════════
+function score1(v, tLow, tHigh, dir) {
+  if (v == null) return null;
+  if (dir === 'high') { if (v >= tHigh) return 3; if (v >= tLow) return 2; return 1; }
+  else                { if (v <= tLow)  return 3; if (v <= tHigh) return 2; return 1; }
+}
+
+function avg() {
+  const vals = Array.from(arguments).filter(v => v != null);
+  return vals.length ? vals.reduce((a, b) => a + b, 0) / vals.length : null;
+}
+
+// Percentil (0–100)
+function pctRank(val, arr) {
+  if (val == null || !arr.length) return null;
+  const n = arr.length;
+  const below = arr.filter(v => v < val).length;
+  const equal = arr.filter(v => v === val).length;
+  return ((below + equal * 0.5) / n) * 100;
+}
+
+function getPeerIdx(bi) {
+  const code = DATA.meta.banks[bi];
+  if (AGGREGATES.has(code)) {
+    // Para agregados: todos los bancos individuales
+    return DATA.meta.banks.map((c, i) => AGGREGATES.has(c) ? null : i).filter(i => i !== null && i !== bi);
+  }
+  if (PEER_G7.has(code)) return DATA.meta.banks.map((c, i) => PEER_G7.has(c) ? i : null).filter(i => i !== null && i !== bi);
+  if (PEER_MED.has(code)) return DATA.meta.banks.map((c, i) => PEER_MED.has(c) ? i : null).filter(i => i !== null && i !== bi);
+  return DATA.meta.banks.map((c, i) => (!AGGREGATES.has(c) && !PEER_G7.has(c) && !PEER_MED.has(c)) ? i : null).filter(i => i !== null && i !== bi);
+}
+
+function computeLScore(bi, mi) {
+  const code = DATA.meta.banks[bi];
+  // Para el agregado '5' (sistema total): umbral directo
+  if (code === '5') return score1(get('liquidez', bi, mi), 0.359, 1.255, 'high');
+  const peerIdx = getPeerIdx(bi);
+  const li = get('liquidez', bi, mi);
+  const captTrad = getBal('captacion_trad', bi, mi);
+  const cartera  = getBal('cartera_neto', bi, mi);
+  const ltdi = (captTrad != null && cartera != null && cartera > 0) ? captTrad / cartera : null;
+  const captPrev = mi > 0 ? getBal('captacion_trad', bi, mi - 1) : null;
+  const ed = (captTrad != null && captPrev != null && captPrev !== 0) ? (captTrad - captPrev) / Math.abs(captPrev) : null;
+
+  const pLI   = peerIdx.map(i => get('liquidez', i, mi)).filter(v => v != null);
+  const pLTDI = peerIdx.map(i => {
+    const ct = getBal('captacion_trad', i, mi); const cr = getBal('cartera_neto', i, mi);
+    return (ct != null && cr != null && cr > 0) ? ct / cr : null;
+  }).filter(v => v != null);
+  const pED = peerIdx.map(i => {
+    if (mi === 0) return null;
+    const ct = getBal('captacion_trad', i, mi); const cp = getBal('captacion_trad', i, mi - 1);
+    return (ct != null && cp != null && cp !== 0) ? (ct - cp) / Math.abs(cp) : null;
+  }).filter(v => v != null);
+
+  let score = 0, w = 0;
+  const lip = pctRank(li, pLI); if (lip != null) { score += 0.4 * lip; w += 0.4; }
+  const ltdip = pctRank(ltdi, pLTDI); if (ltdip != null) { score += 0.4 * ltdip; w += 0.4; }
+  const edp = pctRank(ed, pED); if (edp != null) { score += 0.2 * edp; w += 0.2; }
+  if (!w) return null;
+  const final = score / w;
+  if (final >= 65) return 3;
+  if (final >= 35) return 2;
+  return 1;
+}
+
+function computeCAMELS(bi, mi) {
+  const C_dim = avg(score1(getDer('capital_activo', bi, mi), 0.084, 0.166, 'high'));
+  const A_dim = avg(
+    score1(get('imor', bi, mi), 0.0085, 0.0347, 'low') * 0.40 / 0.40,
+    score1(get('icor', bi, mi), 0.953,  1.791,  'high') * 0.40 / 0.40,
+    score1(get('tda',  bi, mi), 0.013,  0.057,  'low') * 0.20 / 0.20
+  );
+  // Weighted avg for A
+  const a_imor = score1(get('imor', bi, mi), 0.0085, 0.0347, 'low');
+  const a_icor = score1(get('icor', bi, mi), 0.953,  1.791,  'high');
+  const a_tda  = score1(get('tda',  bi, mi), 0.013,  0.057,  'low');
+  const aVals = [a_imor && a_imor * 0.40, a_icor && a_icor * 0.40, a_tda && a_tda * 0.20].filter(v => v != null);
+  const aW = (a_imor != null ? 0.40 : 0) + (a_icor != null ? 0.40 : 0) + (a_tda != null ? 0.20 : 0);
+  const A_dim2 = aW > 0 ? aVals.reduce((s, v) => s + v, 0) / aW : null;
+
+  const M_dim = avg(
+    score1(getDer('efic_margen', bi, mi), 0.595, 1.383, 'low'),
+    score1(getDer('efic_activo', bi, mi), 0.008, 0.032, 'low')
+  );
+  const E_dim = avg(
+    score1(get('roa', bi, mi), 0.004, 0.018, 'high'),
+    score1(get('roe', bi, mi), 0.028, 0.156, 'high')
+  );
+  const L_dim = computeLScore(bi, mi);
+  const S_dim = score1(get('mif', bi, mi), 0.022, 0.061, 'high');
+
+  const dims = { C: C_dim, A: A_dim2, M: M_dim, E: E_dim, L: L_dim, S: S_dim };
+  const W = { C: 0.25, A: 0.20, M: 0.15, E: 0.20, L: 0.15, S: 0.05 };
+  let ifb = 0, tw = 0;
+  for (const [d, w] of Object.entries(W)) {
+    if (dims[d] != null) { ifb += dims[d] * w; tw += w; }
+  }
+  return { ifb: tw > 0 ? ifb / tw : null, dims };
+}
+
+function ifbCategory(v) {
+  if (v == null) return { label: '—', cls: 'score-null' };
+  if (v >= 2.5) return { label: 'Sólido',   cls: 'ifb-solid' };
+  if (v >= 2.0) return { label: 'Estable',  cls: 'ifb-stable' };
+  if (v >= 1.5) return { label: 'Atención', cls: 'ifb-watch' };
+  return           { label: 'Frágil',   cls: 'ifb-fragil' };
+}
+
+function scoreClass(v) {
+  if (v == null) return 'score-null';
+  if (v >= 2.5) return 'score-3';
+  if (v >= 1.5) return 'score-2';
+  return 'score-1';
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// KPI CARD HELPER
+// ════════════════════════════════════════════════════════════════════════════
+function kpiCard(label, val, serie, color, fmt, prevVal) {
+  const d = (prevVal != null && val != null) ? val - prevVal : null;
+  let dHtml = '';
+  if (d != null) {
+    const sign = d > 0 ? '↑' : (d < 0 ? '↓' : '→');
+    const cls  = d > 0 ? 'delta-up' : (d < 0 ? 'delta-down' : 'delta-neu');
+    dHtml = `<div class="kpi-delta ${cls}">${sign} ${fmt(Math.abs(d))}</div>`;
+  }
+  return `<div class="kpi-card">
+    <div class="kpi-label">${label}</div>
+    <div class="kpi-value">${val != null ? fmt(val) : '—'}</div>
+    ${dHtml}
+    <div class="kpi-spark">${sparkSVG(serie, color)}</div>
+  </div>`;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// TAB IFB
+// ════════════════════════════════════════════════════════════════════════════
+function renderIFB() {
+  const bi = STATE.bank, mi = STATE.month;
+  const { ifb, dims } = computeCAMELS(bi, mi);
+  const cat = ifbCategory(ifb);
+
+  document.getElementById('ifb-num').textContent = ifb != null ? ifb.toFixed(2) : '—';
+  document.getElementById('ifb-num').className = 'ifb-score-num ' + cat.cls;
+  document.getElementById('ifb-cat').textContent = cat.label;
+
+  const dimMeta = {
+    C: { name: 'Capital', w: '25%' }, A: { name: 'Activos', w: '20%' },
+    M: { name: 'Gestión', w: '15%' }, E: { name: 'Rentabilidad', w: '20%' },
+    L: { name: 'Liquidez', w: '15%' }, S: { name: 'Sensibilidad', w: '5%' }
+  };
+  let html = '';
+  for (const [d, meta] of Object.entries(dimMeta)) {
+    const s = dims[d]; const si2 = s != null ? Math.round(Math.min(3, Math.max(1, s))) : null;
+    html += `<div class="camels-card" onclick="showCAMELSDetail('${d}')" style="cursor:pointer">
+      <div class="c-dim">${d}</div>
+      <div class="c-name">${meta.name}</div>
+      <div class="c-score ${si2 ? 'score-' + si2 : 'score-null'}">${s != null ? s.toFixed(2) : '—'}</div>
+      <div class="c-bar"><div class="c-fill ${si2 ? 'fill-' + si2 : ''}" style="${si2 ? '' : 'width:0'}"></div></div>
+      <div style="font-size:10px;color:var(--slate);margin-top:4px">Peso ${meta.w}</div>
+    </div>`;
+  }
+  document.getElementById('camels-cards').innerHTML = html;
+
+  // Radar
+  const dimsOrder = ['C', 'A', 'M', 'E', 'L', 'S'];
+  const dimLabels  = ['Capital', 'Activos', 'Gestión', 'Rentabilidad', 'Liquidez', 'Sensibilidad'];
+  const si = getSI();
+  const datasets = [{
+    label: bankDisplay(bi), data: dimsOrder.map(d => dims[d]),
+    borderColor: C.DARK, backgroundColor: 'rgba(22,48,67,0.15)'
+  }];
+  if (si !== -1 && si !== bi) {
+    const sis = computeCAMELS(si, mi);
+    datasets.push({
+      label: 'Sistema', data: dimsOrder.map(d => sis.dims[d]),
+      borderColor: C.RUST, backgroundColor: 'rgba(157,77,49,0.10)', borderDash: [4, 2]
+    });
+  }
+  radarChart('chart-ifb-radar', dimLabels, datasets);
+
+  // Histórico IFB
+  document.getElementById('chart-hist-title').textContent = 'Histórico IFB — ' + bankDisplay(bi);
+  lineChart('chart-ifb-hist', [{
+    label: 'IFB', data: DATA.meta.months.map((_, m) => computeCAMELS(bi, m).ifb),
+    borderColor: C.DARK, backgroundColor: 'rgba(22,48,67,0.08)', fill: true
+  }], { fmt: v => v != null ? v.toFixed(2) : '—', legend: false });
+
+  // ROA/ROE
+  lineChart('chart-ifb-roaroe', [
+    { label: 'ROA', data: getSerie('roa', bi, 'ind'), borderColor: C.DARK },
+    { label: 'ROE', data: getSerie('roe', bi, 'ind'), borderColor: C.RUST }
+  ]);
+
+  // Ranking (solo bancos individuales)
+  const allScores = DATA.meta.banks
+    .map((code, i) => AGGREGATES.has(code) ? null : { i, code, display: DATA.meta.display[code] || code, ifb: computeCAMELS(i, mi).ifb })
+    .filter(Boolean)
+    .sort((a, b) => (a.ifb ?? 99) - (b.ifb ?? 99));
+
+  let thtml = `<table class="data-table"><thead><tr>
+    <th>#</th><th>Banco</th><th>Grupo</th>
+    <th class="num">IFB</th><th class="num">C</th><th class="num">A</th>
+    <th class="num">M</th><th class="num">E</th><th class="num">L</th><th class="num">S</th><th>Categoría</th>
+  </tr></thead><tbody>`;
+  allScores.forEach((row, idx) => {
+    const { dims: d2 } = computeCAMELS(row.i, mi);
+    const c2 = ifbCategory(row.ifb);
+    const grpName = groupName(row.code);
+    const hiBg = row.i === bi ? 'background:var(--light);' : '';
+    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${row.i})">
+      <td><span class="rank-badge">${idx + 1}</span></td>
+      <td class="bank-name">${row.display}</td>
+      <td><span class="group-badge">${grpName}</span></td>
+      <td class="num ${scoreClass(row.ifb)}">${row.ifb != null ? row.ifb.toFixed(2) : '—'}</td>
+      ${['C','A','M','E','L','S'].map(d => `<td class="num ${scoreClass(d2[d])}">${d2[d] != null ? d2[d].toFixed(1) : '—'}</td>`).join('')}
+      <td><span style="font-weight:600;color:${c2.cls.includes('solid')?'#1f7a4b':c2.cls.includes('stable')?'#3a9e6a':c2.cls.includes('watch')?'#c8820a':'#b83232'}">${c2.label}</span></td>
+    </tr>`;
+  });
+  thtml += '</tbody></table>';
+  document.getElementById('ifb-ranking-table').innerHTML = thtml;
+}
+
+function groupName(code) {
+  if (PEER_G7.has(code)) return 'G-7';
+  if (PEER_MED.has(code)) return 'Mediano';
+  const meta = DATA.meta.groups?.[code] || '';
+  if (meta === 'hogares') return 'Hogares';
+  if (meta === 'inv_svc') return 'Inv./Svc.';
+  if (meta === 'pequeño') return 'Pequeño';
+  return 'Otro';
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// TAB EJECUTIVO
+// ════════════════════════════════════════════════════════════════════════════
+function renderEjecutivo() {
+  const bi = STATE.bank, mi = STATE.month;
+  const pmi = mi > 0 ? mi - 1 : null;
+  const { ifb } = computeCAMELS(bi, mi);
+  const prevIfb = pmi != null ? computeCAMELS(bi, pmi).ifb : null;
+
+  const kpis = [
+    { label: 'Activos Totales',    val: getBal('activo',bi,mi),         prev: pmi!=null?getBal('activo',bi,pmi):null,         serie: getSerie('activo',bi,'bal'),       color: C.DARK,  fmt: fmtMXN  },
+    { label: 'Pasivos',            val: getBal('pasivo',bi,mi),          prev: pmi!=null?getBal('pasivo',bi,pmi):null,          serie: getSerie('pasivo',bi,'bal'),        color: C.SLATE, fmt: fmtMXN  },
+    { label: 'Capital Contable',   val: getBal('capital',bi,mi),         prev: pmi!=null?getBal('capital',bi,pmi):null,         serie: getSerie('capital',bi,'bal'),       color: C.SAND,  fmt: fmtMXN  },
+    { label: 'Captación Total',    val: getBal('captacion',bi,mi),       prev: pmi!=null?getBal('captacion',bi,pmi):null,       serie: getSerie('captacion',bi,'bal'),     color: C.DARK,  fmt: fmtMXN  },
+    { label: 'Cartera Neta',       val: getBal('cartera_neto',bi,mi),    prev: pmi!=null?getBal('cartera_neto',bi,pmi):null,    serie: getSerie('cartera_neto',bi,'bal'), color: C.TEAL,  fmt: fmtMXN  },
+    { label: 'Margen Financiero',  val: getBal('margen_fin',bi,mi),      prev: pmi!=null?getBal('margen_fin',bi,pmi):null,      serie: getSerie('margen_fin',bi,'bal'),   color: C.DARK,  fmt: fmtMXN  },
+    { label: 'IMOR',               val: get('imor',bi,mi),               prev: pmi!=null?get('imor',bi,pmi):null,               serie: getSerie('imor',bi,'ind'),          color: C.RUST,  fmt: fmtPct  },
+    { label: 'ICOR (Cobertura)',   val: get('icor',bi,mi),               prev: pmi!=null?get('icor',bi,pmi):null,               serie: getSerie('icor',bi,'ind'),          color: C.TEAL,  fmt: fmtX    },
+    { label: 'Liquidez',           val: get('liquidez',bi,mi),           prev: pmi!=null?get('liquidez',bi,pmi):null,           serie: getSerie('liquidez',bi,'ind'),      color: C.DARK,  fmt: fmtX    },
+    { label: 'ROA',                val: get('roa',bi,mi),                prev: pmi!=null?get('roa',bi,pmi):null,                serie: getSerie('roa',bi,'ind'),           color: C.DARK,  fmt: fmtPct  },
+    { label: 'ROE',                val: get('roe',bi,mi),                prev: pmi!=null?get('roe',bi,pmi):null,                serie: getSerie('roe',bi,'ind'),           color: C.RUST,  fmt: fmtPct  },
+    { label: 'IFB',                val: ifb,                              prev: prevIfb,                                          serie: DATA.meta.months.map((_,m)=>computeCAMELS(bi,m).ifb), color: C.DARK, fmt: v => v!=null?v.toFixed(2):'—' },
+  ];
+  document.getElementById('kpi-ejecutivo').innerHTML = kpis.map(k => kpiCard(k.label, k.val, k.serie, k.color, k.fmt, k.prev)).join('');
+
+  const si = getSI();
+  document.getElementById('chart-ej-ifb-title').textContent = 'IFB — ' + bankDisplay(bi) + (si !== bi ? ' vs. Sistema' : '');
+  const ifbSerie = DATA.meta.months.map((_, m) => computeCAMELS(bi, m).ifb);
+  const datasets_ifb = [{ label: bankDisplay(bi), data: ifbSerie, borderColor: C.DARK, backgroundColor: 'rgba(22,48,67,0.08)', fill: true }];
+  if (si !== -1 && si !== bi) {
+    datasets_ifb.push({ label: 'Sistema', data: DATA.meta.months.map((_, m) => computeCAMELS(si, m).ifb), borderColor: C.RUST, borderDash: [4, 2] });
+  }
+  lineChart('chart-ej-ifb', datasets_ifb, { fmt: v => v != null ? v.toFixed(2) : '—' });
+
+  lineChart('chart-ej-bal', [
+    { label: 'Activos', data: getSerie('activo', bi, 'bal'), borderColor: C.DARK },
+    { label: 'Cartera', data: getSerie('cartera_neto', bi, 'bal'), borderColor: C.TEAL }
+  ], { fmt: fmtMXN });
+
+  const datasets_imor = [{ label: 'IMOR ' + bankDisplay(bi), data: getSerie('imor', bi, 'ind'), borderColor: C.RUST }];
+  if (si !== -1 && si !== bi) datasets_imor.push({ label: 'IMOR Sistema', data: getSerie('imor', si, 'ind'), borderColor: C.SLATE, borderDash: [4, 2] });
+  lineChart('chart-ej-imor', datasets_imor);
+
+  lineChart('chart-ej-rent', [
+    { label: 'ROA', data: getSerie('roa', bi, 'ind'), borderColor: C.DARK },
+    { label: 'ROE', data: getSerie('roe', bi, 'ind'), borderColor: C.RUST }
+  ]);
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// TAB CARTERA
+// ════════════════════════════════════════════════════════════════════════════
+function renderCartera() {
+  const bi = STATE.bank, mi = STATE.month;
+  const pmi = mi > 0 ? mi - 1 : null;
+
+  const kpis = [
+    { label: 'IMOR Total',     val: get('imor',bi,mi),         prev: pmi!=null?get('imor',bi,pmi):null,          serie: getSerie('imor',bi,'ind'),         color: C.RUST,  fmt: fmtPct },
+    { label: 'IMOR Comercial', val: get('imor_comercial',bi,mi),prev:pmi!=null?get('imor_comercial',bi,pmi):null, serie: getSerie('imor_comercial',bi,'ind'),color: C.SLATE, fmt: fmtPct },
+    { label: 'IMOR Consumo',   val: get('imor_consumo',bi,mi),  prev:pmi!=null?get('imor_consumo',bi,pmi):null,   serie: getSerie('imor_consumo',bi,'ind'),  color: C.SAND,  fmt: fmtPct },
+    { label: 'IMOR Vivienda',  val: get('imor_vivienda',bi,mi), prev:pmi!=null?get('imor_vivienda',bi,pmi):null,  serie: getSerie('imor_vivienda',bi,'ind'), color: C.TEAL,  fmt: fmtPct },
+    { label: 'IMORA',          val: get('imora',bi,mi),          prev:pmi!=null?get('imora',bi,pmi):null,          serie: getSerie('imora',bi,'ind'),         color: C.RUST,  fmt: fmtPct },
+    { label: 'TDA',            val: get('tda',bi,mi),            prev:pmi!=null?get('tda',bi,pmi):null,            serie: getSerie('tda',bi,'ind'),           color: C.DARK,  fmt: fmtPct },
+    { label: 'ICOR Total',     val: get('icor',bi,mi),           prev:pmi!=null?get('icor',bi,pmi):null,           serie: getSerie('icor',bi,'ind'),          color: C.TEAL,  fmt: fmtX   },
+    { label: 'EPRC/Cartera',   val: get('eprc_ratio',bi,mi),     prev:pmi!=null?get('eprc_ratio',bi,pmi):null,     serie: getSerie('eprc_ratio',bi,'ind'),    color: C.DARK,  fmt: fmtPct },
+    { label: 'Cartera Neta',   val: getBal('cartera_neto',bi,mi),prev:pmi!=null?getBal('cartera_neto',bi,pmi):null,serie: getSerie('cartera_neto',bi,'bal'),  color: C.DARK,  fmt: fmtMXN },
+  ];
+  document.getElementById('kpi-cartera').innerHTML = kpis.map(k => kpiCard(k.label, k.val, k.serie, k.color, k.fmt, k.prev)).join('');
+
+  lineChart('chart-cart-imor', [
+    { label: 'Total',     data: getSerie('imor', bi, 'ind'),          borderColor: C.DARK },
+    { label: 'Comercial', data: getSerie('imor_comercial', bi, 'ind'), borderColor: C.RUST },
+    { label: 'Consumo',   data: getSerie('imor_consumo', bi, 'ind'),   borderColor: C.SAND },
+    { label: 'Vivienda',  data: getSerie('imor_vivienda', bi, 'ind'),  borderColor: C.TEAL },
+  ]);
+
+  const si = getSI();
+  lineChart('chart-cart-icor', [
+    { label: 'ICOR ' + bankDisplay(bi), data: getSerie('icor', bi, 'ind'), borderColor: C.DARK },
+    si !== -1 && si !== bi ? { label: 'ICOR Sistema', data: getSerie('icor', si, 'ind'), borderColor: C.RUST, borderDash: [4, 2] } : null
+  ].filter(Boolean), { fmt: fmtX });
+
+  // Tabla comparativa
+  const rows = DATA.meta.banks
+    .map((code, i) => AGGREGATES.has(code) ? null : {
+      i, code, display: DATA.meta.display[code] || code,
+      imor: get('imor', i, mi), icor: get('icor', i, mi),
+      imora: get('imora', i, mi), tda: get('tda', i, mi)
+    })
+    .filter(Boolean)
+    .sort((a, b) => (b.imor ?? -1) - (a.imor ?? -1));
+
+  let thtml = `<table class="data-table"><thead><tr>
+    <th>#</th><th>Banco</th><th class="num">IMOR</th><th class="num">IMORA</th>
+    <th class="num">TDA</th><th class="num">ICOR</th>
+  </tr></thead><tbody>`;
+  rows.forEach((row, idx) => {
+    const hiBg = row.i === bi ? 'background:var(--light);' : '';
+    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${row.i})">
+      <td><span class="rank-badge">${idx + 1}</span></td>
+      <td class="bank-name">${row.display}</td>
+      <td class="num">${fmtPct(row.imor)}</td>
+      <td class="num">${fmtPct(row.imora)}</td>
+      <td class="num">${fmtPct(row.tda)}</td>
+      <td class="num">${fmtX(row.icor)}</td>
+    </tr>`;
+  });
+  thtml += '</tbody></table>';
+  document.getElementById('table-cartera').innerHTML = thtml;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// TAB LIQUIDEZ
+// ════════════════════════════════════════════════════════════════════════════
+function renderLiquidez() {
+  const bi = STATE.bank, mi = STATE.month;
+  const pmi = mi > 0 ? mi - 1 : null;
+
+  const kpis = [
+    { label: 'Liquidez (FD/DepCP)', val: get('liquidez',bi,mi),        prev:pmi!=null?get('liquidez',bi,pmi):null,        serie: getSerie('liquidez',bi,'ind'),       color: C.DARK,  fmt: fmtX   },
+    { label: 'Efectivo',            val: getBal('efectivo',bi,mi),       prev:pmi!=null?getBal('efectivo',bi,pmi):null,     serie: getSerie('efectivo',bi,'bal'),       color: C.TEAL,  fmt: fmtMXN },
+    { label: 'Dep. Exig. Inmediata',val: getBal('dep_inmediato',bi,mi), prev:pmi!=null?getBal('dep_inmediato',bi,pmi):null,serie: getSerie('dep_inmediato',bi,'bal'),  color: C.DARK,  fmt: fmtMXN },
+    { label: 'Captación Tradicional',val:getBal('captacion_trad',bi,mi),prev:pmi!=null?getBal('captacion_trad',bi,pmi):null,serie:getSerie('captacion_trad',bi,'bal'), color: C.SLATE, fmt: fmtMXN },
+    { label: 'MIF',                 val: get('mif',bi,mi),               prev:pmi!=null?get('mif',bi,pmi):null,             serie: getSerie('mif',bi,'ind'),            color: C.RUST,  fmt: fmtPct },
+    { label: 'Tasa Activa (anual)', val: get('tasa_activa',bi,mi),       prev:pmi!=null?get('tasa_activa',bi,pmi):null,     serie: getSerie('tasa_activa',bi,'ind'),    color: C.DARK,  fmt: fmtPct },
+    { label: 'Tasa Pasiva',         val: get('tasa_pasiva',bi,mi),       prev:pmi!=null?get('tasa_pasiva',bi,pmi):null,     serie: getSerie('tasa_pasiva',bi,'ind'),    color: C.SAND,  fmt: fmtPct },
+    { label: 'Cobertura Int.',      val: getDer('cov_int',bi,mi),         prev:pmi!=null?getDer('cov_int',bi,pmi):null,      serie: getSerie('cov_int',bi,'der'),        color: C.TEAL,  fmt: fmtX   },
+  ];
+  document.getElementById('kpi-liquidez').innerHTML = kpis.map(k => kpiCard(k.label, k.val, k.serie, k.color, k.fmt, k.prev)).join('');
+
+  const si = getSI();
+  lineChart('chart-liq-ratio', [
+    { label: 'Liquidez ' + bankDisplay(bi), data: getSerie('liquidez', bi, 'ind'), borderColor: C.DARK },
+    si !== -1 && si !== bi ? { label: 'Sistema', data: getSerie('liquidez', si, 'ind'), borderColor: C.RUST, borderDash: [4, 2] } : null
+  ].filter(Boolean), { fmt: fmtX });
+
+  lineChart('chart-liq-mif', [
+    { label: 'MIF ' + bankDisplay(bi), data: getSerie('mif', bi, 'ind'), borderColor: C.DARK },
+    si !== -1 && si !== bi ? { label: 'MIF Sistema', data: getSerie('mif', si, 'ind'), borderColor: C.RUST, borderDash: [4, 2] } : null
+  ].filter(Boolean));
+
+  const rows = DATA.meta.banks
+    .map((code, i) => AGGREGATES.has(code) ? null : {
+      i, code, display: DATA.meta.display[code] || code,
+      liq: get('liquidez', i, mi), mif: get('mif', i, mi),
+      tasa_a: get('tasa_activa', i, mi), tasa_p: get('tasa_pasiva', i, mi)
+    })
+    .filter(Boolean)
+    .sort((a, b) => (a.liq ?? 99) - (b.liq ?? 99));
+
+  let thtml = `<table class="data-table"><thead><tr>
+    <th>#</th><th>Banco</th><th class="num">Liquidez</th>
+    <th class="num">MIF</th><th class="num">Tasa Activa</th><th class="num">Tasa Pasiva</th>
+  </tr></thead><tbody>`;
+  rows.forEach((row, idx) => {
+    const hiBg = row.i === bi ? 'background:var(--light);' : '';
+    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${row.i})">
+      <td><span class="rank-badge">${idx + 1}</span></td>
+      <td class="bank-name">${row.display}</td>
+      <td class="num">${fmtX(row.liq)}</td>
+      <td class="num">${fmtPct(row.mif)}</td>
+      <td class="num">${fmtPct(row.tasa_a)}</td>
+      <td class="num">${fmtPct(row.tasa_p)}</td>
+    </tr>`;
+  });
+  thtml += '</tbody></table>';
+  document.getElementById('table-liquidez').innerHTML = thtml;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// TAB CAPITAL
+// ════════════════════════════════════════════════════════════════════════════
+function renderCapital() {
+  const bi = STATE.bank, mi = STATE.month;
+  const pmi = mi > 0 ? mi - 1 : null;
+
+  const kpis = [
+    { label: 'Capital / Activo',   val: getDer('capital_activo',bi,mi), prev:pmi!=null?getDer('capital_activo',bi,pmi):null, serie: getSerie('capital_activo',bi,'der'), color: C.DARK,  fmt: fmtPct  },
+    { label: 'Capital Contable',   val: getBal('capital',bi,mi),         prev:pmi!=null?getBal('capital',bi,pmi):null,        serie: getSerie('capital',bi,'bal'),       color: C.SAND,  fmt: fmtMXN  },
+    { label: 'Activos Totales',    val: getBal('activo',bi,mi),           prev:pmi!=null?getBal('activo',bi,pmi):null,         serie: getSerie('activo',bi,'bal'),        color: C.DARK,  fmt: fmtMXN  },
+    { label: 'Estimación Prev.',   val: getBal('estimacion_prev',bi,mi),  prev:pmi!=null?getBal('estimacion_prev',bi,pmi):null,serie: getSerie('estimacion_prev',bi,'bal'),color: C.RUST, fmt: fmtMXN  },
+    { label: 'Cartera Etapa 3',    val: getBal('cartera_etapa3',bi,mi),   prev:pmi!=null?getBal('cartera_etapa3',bi,pmi):null, serie: getSerie('cartera_etapa3',bi,'bal'), color: C.RUST, fmt: fmtMXN  },
+    { label: 'EPRC / Cartera',     val: get('eprc_ratio',bi,mi),           prev:pmi!=null?get('eprc_ratio',bi,pmi):null,        serie: getSerie('eprc_ratio',bi,'ind'),    color: C.TEAL,  fmt: fmtPct  },
+  ];
+  document.getElementById('kpi-capital').innerHTML = kpis.map(k => kpiCard(k.label, k.val, k.serie, k.color, k.fmt, k.prev)).join('');
+
+  const si = getSI();
+  lineChart('chart-cap-ratio', [
+    { label: 'Capital/Activo ' + bankDisplay(bi), data: getSerie('capital_activo', bi, 'der'), borderColor: C.DARK },
+    si !== -1 && si !== bi ? { label: 'Sistema', data: getSerie('capital_activo', si, 'der'), borderColor: C.RUST, borderDash: [4, 2] } : null
+  ].filter(Boolean));
+
+  lineChart('chart-cap-abs', [
+    { label: 'Activos', data: getSerie('activo', bi, 'bal'), borderColor: C.DARK },
+    { label: 'Capital', data: getSerie('capital', bi, 'bal'), borderColor: C.SAND }
+  ], { fmt: fmtMXN });
+
+  const rows = DATA.meta.banks
+    .map((code, i) => AGGREGATES.has(code) ? null : {
+      i, code, display: DATA.meta.display[code] || code,
+      ca: getDer('capital_activo', i, mi), capital: getBal('capital', i, mi)
+    })
+    .filter(Boolean)
+    .sort((a, b) => (b.ca ?? -1) - (a.ca ?? -1));
+
+  let thtml = `<table class="data-table"><thead><tr>
+    <th>#</th><th>Banco</th><th class="num">Capital/Activo</th><th class="num">Capital Contable (MXN)</th>
+  </tr></thead><tbody>`;
+  rows.forEach((row, idx) => {
+    const hiBg = row.i === bi ? 'background:var(--light);' : '';
+    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${row.i})">
+      <td><span class="rank-badge">${idx + 1}</span></td>
+      <td class="bank-name">${row.display}</td>
+      <td class="num">${fmtPct(row.ca)}</td>
+      <td class="num">${fmtMXN(row.capital)}</td>
+    </tr>`;
+  });
+  thtml += '</tbody></table>';
+  document.getElementById('table-capital').innerHTML = thtml;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// TAB RENTABILIDAD
+// ════════════════════════════════════════════════════════════════════════════
+function renderRentabilidad() {
+  const bi = STATE.bank, mi = STATE.month;
+  const pmi = mi > 0 ? mi - 1 : null;
+
+  const kpis = [
+    { label: 'ROA',              val: get('roa',bi,mi),            prev:pmi!=null?get('roa',bi,pmi):null,             serie: getSerie('roa',bi,'ind'),          color: C.DARK,  fmt: fmtPct },
+    { label: 'ROE',              val: get('roe',bi,mi),            prev:pmi!=null?get('roe',bi,pmi):null,             serie: getSerie('roe',bi,'ind'),          color: C.RUST,  fmt: fmtPct },
+    { label: 'Resultado Neto',   val: getBal('resultado_neto',bi,mi),prev:pmi!=null?getBal('resultado_neto',bi,pmi):null,serie:getSerie('resultado_neto',bi,'bal'),color:C.DARK, fmt: fmtMXN },
+    { label: 'Margen Financiero',val: getBal('margen_fin',bi,mi),   prev:pmi!=null?getBal('margen_fin',bi,pmi):null,   serie:getSerie('margen_fin',bi,'bal'),    color: C.TEAL,  fmt: fmtMXN },
+    { label: 'Margen Ajustado',  val: getBal('margen_aj',bi,mi),    prev:pmi!=null?getBal('margen_aj',bi,pmi):null,    serie:getSerie('margen_aj',bi,'bal'),     color: C.SAND,  fmt: fmtMXN },
+    { label: 'Gastos Adm.',      val: getBal('gastos_adm',bi,mi),   prev:pmi!=null?getBal('gastos_adm',bi,pmi):null,   serie:getSerie('gastos_adm',bi,'bal'),    color: C.SLATE, fmt: fmtMXN },
+    { label: 'Efic. (G/Margen)', val: getDer('efic_margen',bi,mi),  prev:pmi!=null?getDer('efic_margen',bi,pmi):null,  serie:getSerie('efic_margen',bi,'der'),   color: C.RUST,  fmt: fmtPct },
+    { label: 'Efic. (G/Activo)', val: getDer('efic_activo',bi,mi),  prev:pmi!=null?getDer('efic_activo',bi,pmi):null,  serie:getSerie('efic_activo',bi,'der'),   color: C.DARK,  fmt: fmtPct },
+  ];
+  document.getElementById('kpi-rent').innerHTML = kpis.map(k => kpiCard(k.label, k.val, k.serie, k.color, k.fmt, k.prev)).join('');
+
+  // Waterfall
+  document.getElementById('wf-title').textContent = 'Composición del Margen — ' + bankDisplay(bi) + ' · ' + monthLabel(DATA.meta.months[mi]);
+  renderWaterfall(bi, mi);
+
+  const si = getSI();
+  lineChart('chart-rent-roa', [
+    { label: 'ROA ' + bankDisplay(bi), data: getSerie('roa', bi, 'ind'), borderColor: C.DARK },
+    si !== -1 && si !== bi ? { label: 'ROA Sistema', data: getSerie('roa', si, 'ind'), borderColor: C.RUST, borderDash: [4, 2] } : null
+  ].filter(Boolean));
+
+  lineChart('chart-rent-efic', [
+    { label: 'G/Margen', data: getSerie('efic_margen', bi, 'der'), borderColor: C.DARK },
+    { label: 'G/Activo', data: getSerie('efic_activo', bi, 'der'), borderColor: C.RUST }
+  ]);
+
+  const rows = DATA.meta.banks
+    .map((code, i) => AGGREGATES.has(code) ? null : {
+      i, code, display: DATA.meta.display[code] || code,
+      roa: get('roa', i, mi), roe: get('roe', i, mi), efic: getDer('efic_margen', i, mi)
+    })
+    .filter(Boolean)
+    .sort((a, b) => (b.roa ?? -99) - (a.roa ?? -99));
+
+  let thtml = `<table class="data-table"><thead><tr>
+    <th>#</th><th>Banco</th><th class="num">ROA</th><th class="num">ROE</th><th class="num">Efic. G/Margen</th>
+  </tr></thead><tbody>`;
+  rows.forEach((row, idx) => {
+    const hiBg = row.i === bi ? 'background:var(--light);' : '';
+    thtml += `<tr style="${hiBg}cursor:pointer" onclick="selectBank(${row.i})">
+      <td><span class="rank-badge">${idx + 1}</span></td>
+      <td class="bank-name">${row.display}</td>
+      <td class="num">${fmtPct(row.roa)}</td>
+      <td class="num">${fmtPct(row.roe)}</td>
+      <td class="num">${fmtPct(row.efic)}</td>
+    </tr>`;
+  });
+  thtml += '</tbody></table>';
+  document.getElementById('table-rentabilidad').innerHTML = thtml;
+}
+
+function renderWaterfall(bi, mi) {
+  const ingInt = getBal('ingresos_int', bi, mi);
+  const gtoInt = getBal('gastos_int',   bi, mi);
+  const margen = getBal('margen_fin',   bi, mi);
+  const marAj  = getBal('margen_aj',    bi, mi);
+  const gasAdm = getBal('gastos_adm',   bi, mi);
+  const result = getBal('resultado_neto',bi, mi);
+  const canvas = document.getElementById('chart-waterfall');
+  if (!ingInt || !gtoInt || !margen || !gasAdm || !result) { canvas.style.display = 'none'; return; }
+  canvas.style.display = '';
+
+  const provPL = margen - (marAj || margen);
+  const otros  = result - ((marAj || margen) - gasAdm);
+  const labels = ['Ingresos Int.', 'Gastos Int.', 'Provisiones', 'Gastos Adm.', 'Otros/Imp.', 'Resultado'];
+  const base   = [0, ingInt - gtoInt, ingInt - gtoInt - provPL, (marAj||margen), (marAj||margen) - gasAdm, 0];
+  const vals   = [ingInt, gtoInt, provPL, gasAdm, otros, result];
+  const colors = [C.TEAL, C.RUST, C.RUST, C.RUST, otros >= 0 ? C.TEAL : C.RUST, result >= 0 ? C.GREEN : C.RUST];
+
+  destroyChart('chart-waterfall');
+  const ctx = canvas.getContext('2d');
+  CHARTS['chart-waterfall'] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [
+        { data: base, backgroundColor: 'transparent', borderColor: 'transparent' },
+        { data: vals, backgroundColor: colors, borderRadius: 3 }
+      ]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => c.datasetIndex === 1 ? fmtMXN(c.raw) : '' } } },
+      scales: { x: { stacked: true, ticks: { font: { size: 11 } } }, y: { stacked: true, ticks: { font: { size: 10 }, callback: fmtMXN } } }
+    }
+  });
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// TAB BENCHMARK
+// ════════════════════════════════════════════════════════════════════════════
+function renderBenchmark() {
+  const mi = STATE.month;
+  const sortKey = document.getElementById('bench-sort').value;
+
+  function getVal(i) {
+    switch (sortKey) {
+      case 'ifb':          return computeCAMELS(i, mi).ifb;
+      case 'imor':         return get('imor', i, mi);
+      case 'icor':         return get('icor', i, mi);
+      case 'roa':          return get('roa', i, mi);
+      case 'roe':          return get('roe', i, mi);
+      case 'liquidez':     return get('liquidez', i, mi);
+      case 'efic_margen':  return getDer('efic_margen', i, mi);
+      case 'capital_activo': return getDer('capital_activo', i, mi);
+      case 'activo':       return getBal('activo', i, mi);
+      default: return null;
+    }
+  }
+
+  const fmtMap = { ifb: v => fmtNum(v), imor: fmtPct, icor: fmtX, roa: fmtPct, roe: fmtPct,
+                   liquidez: fmtX, efic_margen: fmtPct, capital_activo: fmtPct, activo: fmtMXN };
+  const fmt = fmtMap[sortKey] || fmtNum;
+  const lowBetter = ['imor', 'efic_margen'].includes(sortKey);
+
+  const rows = DATA.meta.banks
+    .map((code, i) => AGGREGATES.has(code) ? null : { i, code, display: DATA.meta.display[code] || code, val: getVal(i), ifb: computeCAMELS(i, mi).ifb })
+    .filter(Boolean)
+    .sort((a, b) => lowBetter ? (a.val ?? 99) - (b.val ?? 99) : (b.val ?? -99) - (a.val ?? -99));
+
+  const maxVal = Math.max(...rows.map(r => Math.abs(r.val ?? 0)));
+
+  let thtml = `<table class="data-table"><thead><tr>
+    <th>#</th><th>Banco</th><th>Grupo</th><th class="num">${sortKey.toUpperCase()}</th>
+    <th style="width:200px">Posición relativa</th><th class="num">IFB</th>
+  </tr></thead><tbody>`;
+  rows.forEach((row, idx) => {
+    const pct = maxVal ? Math.abs(row.val ?? 0) / maxVal * 100 : 0;
+    const tercio = idx < rows.length / 3 ? (lowBetter ? C.GREEN : C.RUST)
+                 : idx < rows.length * 2 / 3 ? C.YELLOW : (lowBetter ? C.RUST : C.GREEN);
+    const cat = ifbCategory(row.ifb);
+    thtml += `<tr>
+      <td><span class="rank-badge">${idx + 1}</span></td>
+      <td class="bank-name">${row.display}</td>
+      <td><span class="group-badge">${groupName(row.code)}</span></td>
+      <td class="num">${fmt(row.val)}</td>
+      <td><div style="background:var(--border);border-radius:3px;height:8px">
+        <div style="background:${tercio};width:${pct.toFixed(1)}%;height:100%;border-radius:3px"></div>
+      </div></td>
+      <td class="num ${scoreClass(row.ifb)}">${row.ifb != null ? row.ifb.toFixed(2) : '—'}</td>
+    </tr>`;
+  });
+  thtml += '</tbody></table>';
+  document.getElementById('bench-table').innerHTML = thtml;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// TAB ICTL
+// ════════════════════════════════════════════════════════════════════════════
+function renderICTL() {
+  const bi = STATE.bank, mi = STATE.month;
+  const thr = DATA.meta.ictl_thresholds;
+
+  function scoreInd(val, verde, amarillo, dir) {
+    if (val == null) return null;
+    if (dir === 'high') {
+      if (val >= verde)   return 100;
+      if (val >= amarillo) return 50 + 50 * (val - amarillo) / (verde - amarillo);
+      return Math.max(0, 50 * val / amarillo);
+    } else {
+      if (val <= verde)   return 100;
+      if (val <= amarillo) return Math.max(0, 100 - 50 * (val - verde) / (amarillo - verde));
+      return Math.max(0, 50 - 50 * (val - amarillo) / amarillo);
+    }
+  }
+
+  const ilon  = getDer('ictl_ilon',  bi, mi);
+  const icint = getDer('ictl_icint', bi, mi);
+  const itl   = getDer('ictl_itl',   bi, mi);
+
+  const s_ilon  = scoreInd(ilon,  thr.ilon.verde,  thr.ilon.amarillo,  thr.ilon.dir);
+  const s_icint = scoreInd(icint, thr.icint.verde, thr.icint.amarillo, thr.icint.dir);
+  const s_itl   = scoreInd(itl,   thr.itl.verde,   thr.itl.amarillo,   thr.itl.dir);
+
+  let ictl = null, tw = 0;
+  if (s_ilon != null || s_icint != null || s_itl != null) {
+    ictl = 0;
+    if (s_ilon  != null) { ictl += s_ilon  * thr.ilon.peso;  tw += thr.ilon.peso; }
+    if (s_icint != null) { ictl += s_icint * thr.icint.peso; tw += thr.icint.peso; }
+    if (s_itl   != null) { ictl += s_itl   * thr.itl.peso;   tw += thr.itl.peso; }
+    ictl = tw > 0 ? ictl / tw : null;
+  }
+
+  const ictlClass = ictl == null ? 'ictl-0' : ictl > 80 ? 'ictl-80' : ictl > 60 ? 'ictl-60' : ictl > 40 ? 'ictl-40' : 'ictl-0';
+  const ictlLevel = ictl == null ? '—' : ictl > 80 ? 'Tensión Baja' : ictl > 60 ? 'Tensión Moderada' : ictl > 40 ? 'Tensión Alta' : 'Tensión Crítica';
+
+  // Histórico ICTL
+  const ictlHist = DATA.meta.months.map((_, m) => {
+    const a = getDer('ictl_ilon', bi, m); const b2 = getDer('ictl_icint', bi, m); const c2 = getDer('ictl_itl', bi, m);
+    const sa = scoreInd(a, thr.ilon.verde, thr.ilon.amarillo, thr.ilon.dir);
+    const sb = scoreInd(b2, thr.icint.verde, thr.icint.amarillo, thr.icint.dir);
+    const sc = scoreInd(c2, thr.itl.verde, thr.itl.amarillo, thr.itl.dir);
+    let s = null, w2 = 0;
+    if (sa != null || sb != null || sc != null) {
+      s = 0;
+      if (sa != null) { s += sa * thr.ilon.peso;  w2 += thr.ilon.peso; }
+      if (sb != null) { s += sb * thr.icint.peso; w2 += thr.icint.peso; }
+      if (sc != null) { s += sc * thr.itl.peso;   w2 += thr.itl.peso; }
+      s = w2 > 0 ? s / w2 : null;
+    }
+    return s;
+  });
+
+  function compCard(id, label, val, score, verde, amarillo, dir, fmt) {
+    const scoreColor = score == null ? C.SLATE : score >= 75 ? C.GREEN : score >= 50 ? C.YELLOW : C.RUST;
+    const pct = score != null ? score.toFixed(0) + '%' : '—';
+    return `<div class="ictl-comp">
+      <div class="ic-label">${label}</div>
+      <div class="ic-val">${fmt(val)}</div>
+      <div class="ic-score" style="color:${scoreColor}">Score: ${pct}</div>
+      <div class="ictl-bar"><div class="ictl-bar-fill" style="width:${score!=null?score.toFixed(0):0}%;background:${scoreColor}"></div></div>
+      <div style="font-size:10px;color:var(--slate);margin-top:6px">Verde ≥ ${fmt(verde)} · Amarillo ≥ ${fmt(amarillo)}</div>
+    </div>`;
+  }
+
+  const html = `
+    <div class="ictl-score-row">
+      <div class="ictl-num-box">
+        <div class="ictl-num ${ictlClass}">${ictl != null ? ictl.toFixed(1) : '—'}</div>
+        <div style="font-size:12px;font-weight:600;margin-top:6px">${ictlLevel}</div>
+        <div style="font-size:11px;color:var(--slate);margin-top:4px">ICTL · ${bankDisplay(bi)}</div>
+      </div>
+      <div>
+        <div style="font-size:12px;color:var(--slate);margin-bottom:8px">
+          Índice de Criticidad de Tensión de Liquidez — 3 componentes disponibles (sin cartera ≤30d).
+          Escala 0–100 · &gt;80 = bajo · 60–79 = moderado · 40–59 = alto · &lt;40 = crítico
+        </div>
+        <div class="ictl-components">
+          ${compCard('ilon',  'ILON — Efectivo / Dep. Inm.',      ilon,  s_ilon,  thr.ilon.verde,  thr.ilon.amarillo,  thr.ilon.dir,  fmtX)}
+          ${compCard('icint', 'ICInt — Ing. Int. / Gto. Int.',   icint, s_icint, thr.icint.verde, thr.icint.amarillo, thr.icint.dir, fmtX)}
+          ${compCard('itl',   'ITL — Dep. Inm. / Efectivo (inv.)',itl,   s_itl,   thr.itl.verde,   thr.itl.amarillo,   thr.itl.dir,   fmtX)}
+        </div>
+      </div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">Histórico ICTL — ${bankDisplay(bi)}</div>
+      <div class="chart-canvas"><canvas id="chart-ictl-hist" height="200"></canvas></div>
+    </div>
+    <div class="chart-wrap">
+      <div class="chart-title">ICTL — Ranking · Período seleccionado</div>
+      <div id="ictl-ranking"></div>
+    </div>`;
+  document.getElementById('ictl-content').innerHTML = html;
+
+  lineChart('chart-ictl-hist', [{
+    label: 'ICTL', data: ictlHist, borderColor: C.DARK, backgroundColor: 'rgba(22,48,67,0.08)', fill: true
+  }], { fmt: v => v != null ? v.toFixed(1) : '—', legend: false });
+
+  // Ranking ICTL
+  const ictlRows = DATA.meta.banks.map((code, i) => {
+    if (AGGREGATES.has(code)) return null;
+    const a = getDer('ictl_ilon', i, mi); const b2 = getDer('ictl_icint', i, mi); const c2 = getDer('ictl_itl', i, mi);
+    const sa = scoreInd(a, thr.ilon.verde, thr.ilon.amarillo, thr.ilon.dir);
+    const sb = scoreInd(b2, thr.icint.verde, thr.icint.amarillo, thr.icint.dir);
+    const sc = scoreInd(c2, thr.itl.verde, thr.itl.amarillo, thr.itl.dir);
+    let s = null, w2 = 0;
+    if (sa != null || sb != null || sc != null) {
+      s = 0;
+      if (sa != null) { s += sa * thr.ilon.peso;  w2 += thr.ilon.peso; }
+      if (sb != null) { s += sb * thr.icint.peso; w2 += thr.icint.peso; }
+      if (sc != null) { s += sc * thr.itl.peso;   w2 += thr.itl.peso; }
+      s = w2 > 0 ? s / w2 : null;
+    }
+    return { i, code, display: DATA.meta.display[code] || code, ictl: s };
+  }).filter(Boolean).sort((a, b) => (a.ictl ?? 99) - (b.ictl ?? 99));
+
+  let thtml = `<table class="data-table"><thead><tr>
+    <th>#</th><th>Banco</th><th class="num">ICTL</th><th>Nivel</th>
+  </tr></thead><tbody>`;
+  ictlRows.forEach((row, idx) => {
+    const lv = row.ictl == null ? '—' : row.ictl > 80 ? 'Bajo' : row.ictl > 60 ? 'Moderado' : row.ictl > 40 ? 'Alto' : 'Crítico';
+    const cl = row.ictl == null ? '' : row.ictl > 80 ? 'score-3' : row.ictl > 60 ? 'score-2' : 'score-1';
+    thtml += `<tr><td><span class="rank-badge">${idx + 1}</span></td>
+      <td class="bank-name">${row.display}</td>
+      <td class="num ${cl}">${row.ictl != null ? row.ictl.toFixed(1) : '—'}</td>
+      <td>${lv}</td></tr>`;
+  });
+  thtml += '</tbody></table>';
+  document.getElementById('ictl-ranking').innerHTML = thtml;
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// CAMELS MODAL
+// ════════════════════════════════════════════════════════════════════════════
+function showCAMELSDetail(dim) {
+  const bi = STATE.bank, mi = STATE.month;
+  const { dims } = computeCAMELS(bi, mi);
+  const score = dims[dim];
+
+  const dimMeta = {
+    C: { name: 'Capital', w: '25%', inds: [
+      { label: 'Capital Contable / Activo', val: getDer('capital_activo',bi,mi), fmt: fmtPct, tL: '8.4%', tH: '16.6%', dir: '↑' }
+    ]},
+    A: { name: 'Activos', w: '20%', inds: [
+      { label: 'IMOR (Morosidad Total)', val: get('imor',bi,mi), fmt: fmtPct, tL: '0.85%', tH: '3.47%', dir: '↓', w: '40%' },
+      { label: 'ICOR (Cobertura)',       val: get('icor',bi,mi), fmt: fmtX,   tL: '0.95x', tH: '1.79x', dir: '↑', w: '40%' },
+      { label: 'TDA (Tasa Deterioro)',   val: get('tda',bi,mi),  fmt: fmtPct, tL: '1.3%',  tH: '5.7%',  dir: '↓', w: '20%' }
+    ]},
+    M: { name: 'Gestión', w: '15%', inds: [
+      { label: 'Gastos Adm. / Margen Fin.', val: getDer('efic_margen',bi,mi), fmt: fmtPct, tL: '59.5%', tH: '138.3%', dir: '↓' },
+      { label: 'Gastos Adm. / Activo',      val: getDer('efic_activo',bi,mi), fmt: fmtPct, tL: '0.8%',  tH: '3.2%',   dir: '↓' }
+    ]},
+    E: { name: 'Rentabilidad', w: '20%', inds: [
+      { label: 'ROA', val: get('roa',bi,mi), fmt: fmtPct, tL: '0.4%',  tH: '1.8%',  dir: '↑' },
+      { label: 'ROE', val: get('roe',bi,mi), fmt: fmtPct, tL: '2.8%',  tH: '15.6%', dir: '↑' }
+    ]},
+    L: { name: 'Liquidez', w: '15%', inds: [
+      { label: 'Liquidez FD/DepCP (score peer)', val: get('liquidez',bi,mi), fmt: fmtX, tL: '0.36x', tH: '1.26x', dir: '↑' }
+    ]},
+    S: { name: 'Sensibilidad', w: '5%', inds: [
+      { label: 'MIF (Margen de Intermediación)', val: get('mif',bi,mi), fmt: fmtPct, tL: '2.2%', tH: '6.1%', dir: '↑' }
+    ]}
+  };
+
+  const meta = dimMeta[dim];
+  document.getElementById('camels-modal-dim').textContent = dim;
+  document.getElementById('camels-modal-name').textContent = meta.name;
+  document.getElementById('camels-modal-weight').textContent = 'Peso: ' + meta.w;
+
+  let body = '';
+  meta.inds.forEach(ind => {
+    body += `<div class="modal-ind-row">
+      <div><span style="font-weight:600">${ind.label}</span><br>
+        <span style="font-size:11px;color:var(--slate)">Ref: tLow ${ind.tL} · tHigh ${ind.tH} · ${ind.dir === '↑' ? 'mayor=mejor' : 'menor=mejor'}</span>
+        ${ind.w ? `<span style="font-size:11px;color:var(--slate)"> · peso ${ind.w}</span>` : ''}
+      </div>
+      <div style="font-size:18px;font-weight:700">${ind.fmt(ind.val)}</div>
+    </div>`;
+  });
+  document.getElementById('camels-modal-body').innerHTML = body;
+
+  const scoreEl = document.getElementById('camels-modal-score');
+  const si2 = score != null ? Math.round(Math.min(3, Math.max(1, score))) : null;
+  scoreEl.textContent = score != null ? score.toFixed(2) : '—';
+  scoreEl.className = 'modal-total-score ' + (si2 ? 'score-' + si2 : 'score-null');
+  document.getElementById('camels-modal-overlay').classList.add('open');
+}
+
+function closeModal() { document.getElementById('camels-modal-overlay').classList.remove('open'); }
+
+// ════════════════════════════════════════════════════════════════════════════
+// NAVEGACIÓN
+// ════════════════════════════════════════════════════════════════════════════
+function switchTab(tab) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('pane-' + tab).classList.add('active');
+  event.target.classList.add('active');
+  if (tab === 'ictl') renderICTL();
+}
+
+function setView(tipo) {
+  STATE.view = tipo;
+  document.getElementById('btn-sistema').classList.toggle('active', tipo === 'sistema');
+  document.getElementById('btn-banco').classList.toggle('active', tipo === 'banco');
+  populateBankSel(tipo);
+}
+
+function populateBankSel(tipo) {
+  const sel = document.getElementById('bank-sel');
+  sel.innerHTML = '';
+  const banks = DATA.meta.banks;
+
+  if (tipo === 'sistema') {
+    // Agregados primero
+    const aggregateOrder = ['5', '59', '60', '61', '62', '63', '64'];
+    aggregateOrder.forEach(code => {
+      const i = banks.indexOf(code);
+      if (i !== -1) {
+        const opt = document.createElement('option');
+        opt.value = i; opt.textContent = DATA.meta.display[code] || code;
+        sel.appendChild(opt);
+      }
+    });
+  } else {
+    // Solo bancos individuales, ordenados alfabéticamente por display
+    banks.map((code, i) => ({ code, i, display: DATA.meta.display[code] || code }))
+      .filter(b => !AGGREGATES.has(b.code))
+      .sort((a, b) => a.display.localeCompare(b.display, 'es'))
+      .forEach(b => {
+        const opt = document.createElement('option'); opt.value = b.i; opt.textContent = b.display; sel.appendChild(opt);
+      });
+  }
+  // Restore selection if possible
+  if (STATE.bank != null) {
+    const opt = sel.querySelector(`option[value="${STATE.bank}"]`);
+    if (opt) sel.value = STATE.bank;
+    else { sel.selectedIndex = 0; STATE.bank = +sel.value; }
+  }
+}
+
+function selectBank(bi) {
+  const code = DATA.meta.banks[bi];
+  const tipo = AGGREGATES.has(code) ? 'sistema' : 'banco';
+  if (tipo !== STATE.view) setView(tipo);
+  STATE.bank = bi;
+  document.getElementById('bank-sel').value = bi;
+  switchTab('ejecutivo');
+  renderAll();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// RENDER ALL
+// ════════════════════════════════════════════════════════════════════════════
+function renderAll() {
+  renderIFB();
+  renderEjecutivo();
+  renderCartera();
+  renderLiquidez();
+  renderCapital();
+  renderRentabilidad();
+  renderBenchmark();
+  const ictlPane = document.getElementById('pane-ictl');
+  if (ictlPane.classList.contains('active')) renderICTL();
+}
+
+// ════════════════════════════════════════════════════════════════════════════
+// INIT
+// ════════════════════════════════════════════════════════════════════════════
+async function init() {
+  document.getElementById('header-subtitle').textContent = 'Cargando datos...';
+  try {
+    const res = await fetch('./data/bancos_mx.json');
+    DATA = await res.json();
+
+    const months = DATA.meta.months;
+    const generated = DATA.meta.generated;
+
+    // Período selector
+    const pSel = document.getElementById('period-sel');
+    months.forEach((m, i) => {
+      const opt = document.createElement('option'); opt.value = i; opt.textContent = monthLabel(m); pSel.appendChild(opt);
+    });
+    pSel.selectedIndex = months.length - 1;
+    STATE.month = months.length - 1;
+
+    // Banco selector: sistema por defecto
+    populateBankSel('sistema');
+    STATE.bank = 0; // Total Sistema ('5') suele quedar primero
+
+    // Header
+    document.getElementById('header-subtitle').textContent = `${months[0]} → ${months[months.length - 1]} · ${DATA.meta.banks.filter(c => !AGGREGATES.has(c)).length} bancos · Fuente: CNBV`;
+    document.getElementById('header-generated').textContent = 'Generado: ' + generated;
+    document.getElementById('meta-info').textContent = `${months.length} períodos · Saldo puntual (130)`;
+
+    renderAll();
+  } catch (e) {
+    document.getElementById('header-subtitle').textContent = 'Error cargando datos: ' + e.message;
+    console.error(e);
+  }
+}
+
+init();
+</script>
+</body>
+</html>
