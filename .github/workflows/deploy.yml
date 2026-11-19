@@ -1,0 +1,27 @@
+name: Deploy a Sakbé
+
+# Publica docs/ en sakbeconsultores.com/mexico/monitor-bancos/ en cada push a main.
+# Mismo mecanismo que sakbe-monitor-bancos-ec. Requiere en este repo los secretos
+# HOSTINGER_SSH_KEY, HOSTINGER_HOST, HOSTINGER_PORT y HOSTINGER_USER (los mismos de Ecuador).
+# --delete: lo que no esté en docs/ se borra del servidor en esa carpeta.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: easingthemes/ssh-deploy@v6.0.1
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.HOSTINGER_SSH_KEY }}
+          REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
+          REMOTE_PORT: ${{ secrets.HOSTINGER_PORT }}
+          REMOTE_USER: ${{ secrets.HOSTINGER_USER }}
+          SOURCE: "docs/"
+          TARGET: "/home/u329876859/domains/sakbeconsultores.com/public_html/mexico/monitor-bancos/"
+          ARGS: "-avzr --delete"

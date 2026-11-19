@@ -14,3 +14,4 @@ __pycache__/
 # Respaldos de catalogos y datos
 data/*.bak_*
 src/*.bak_*
+archivo_prototipo_jun2026/*.bak_*
